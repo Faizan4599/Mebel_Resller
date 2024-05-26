@@ -7,6 +7,8 @@ import 'package:meta/meta.dart';
 import 'package:reseller_app/common/failed_data_model.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/landscreen/model/get_categories_data_model.dart';
+import 'package:reseller_app/features/landscreen/model/get_regions_data_model.dart';
+import 'package:reseller_app/features/landscreen/model/get_sub_categories1.dart';
 import 'package:reseller_app/features/login/model/login_data_mode.dart';
 import 'package:reseller_app/helper/preference_utils.dart';
 import 'package:reseller_app/repo/api_repository.dart';
@@ -18,6 +20,9 @@ part 'land_state.dart';
 
 class LandBloc extends Bloc<LandEvent, LandState> {
   List<GetCategoriesDataModel> categoryList = <GetCategoriesDataModel>[];
+  List<GetSubCategories1DataModel> subCategoryList =
+      <GetSubCategories1DataModel>[];
+  List<GetRegionsDataModel> regionList = <GetRegionsDataModel>[];
   List<FailedCommonDataModel> failedList = <FailedCommonDataModel>[];
   bool show = false;
   List<String> selectedData = [];
@@ -41,17 +46,6 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     on<LandLogoutEvent>(landLogoutEvent);
   }
 
-  String styleDropdownValue = '';
-  var styleItems = [
-    'Contemporary',
-    'Scandinavian furniture style',
-    'Minimalism',
-    'Art Deco',
-    'Industrial',
-    'Rustic',
-    'Traditional furniture style',
-    'Mission style furniture'
-  ];
   String materialDropdownValue = '';
   var materialItems = [
     'High',
@@ -72,18 +66,10 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     'top',
     'good'
   ];
-  String colorDropdownValue = '';
-  var colourItems = [
-    'Red',
-    'Blue',
-    'Yellow',
-    'Black',
-    'Gold',
-    'Brown',
-    'Silver',
-    'Green'
-  ];
 
+  String categoryVal = '';
+  String subCategoryVal = '';
+  String regionVal = '';
   double start = 30.0;
   double end = 50.0;
   bool isChecked = false;
@@ -96,9 +82,42 @@ class LandBloc extends Bloc<LandEvent, LandState> {
   }
 
   FutureOr<void> landSubcategoryDropDownEvent(
-      LandSubcategoryDropDownEvent event, Emitter<LandState> emit) {
-    emit(LandSubcategoryDropdownState(
-        styleDropDownValue: event.styleDropDownValue, items: event.items));
+      LandSubcategoryDropDownEvent event, Emitter<LandState> emit) async {
+    // emit(LandSubcategoryDropdownState(
+    //     styleDropDownValue: event.styleDropDownValue, items: event.items));
+    try {
+      Map<String, String> subCatParameter = {
+        "access_token1": Constant.access_token1,
+        "access_token2": Constant.access_token2,
+        "access_token3": Constant.access_token3,
+        "category_id": event.category_id
+      };
+      var response = await APIRepository()
+          .getCommonMethodAPI(subCatParameter, APIUrls.getSubcategories1);
+      if (response is Success) {
+        subCategoryList.clear();
+        if (response.response is List<GetSubCategories1DataModel>) {
+          subCategoryList =
+              response.response as List<GetSubCategories1DataModel>;
+        } else if (response.response is GetSubCategories1DataModel) {
+          subCategoryList.add(response.response as GetSubCategories1DataModel);
+        }
+        subCategoryVal = '';
+        emit(LandSubcategoryDropdownState(
+            subCategoryDropDownValue: event.subCategoryDropDownValue,
+            category_id: event.category_id,
+            items: subCategoryList));
+      } else if (response is Failed) {
+        failedList = response.response as List<FailedCommonDataModel>;
+        emit(LandErrorState(message: failedList.first.message.toString()));
+      } else if (response is Failure) {
+        emit(LandErrorState(message: response.errorResponse.toString()));
+      } else {
+        emit(LandErrorState(message: "An error occurred"));
+      }
+    } catch (e) {
+      emit(LandErrorState(message: "Error occurred ${e.toString()}"));
+    }
   }
 
   FutureOr<void> landSubcategory2DropDownEvent(
@@ -109,9 +128,38 @@ class LandBloc extends Bloc<LandEvent, LandState> {
   }
 
   FutureOr<void> landRegionDropDownEvent(
-      LandRegionDropDownEvent event, Emitter<LandState> emit) {
-    emit(LandRegionDropdownState(
-        sortingDropDownValue: event.sortingDropDownValue, items: event.items));
+      LandRegionDropDownEvent event, Emitter<LandState> emit) async {
+    // emit(LandRegionDropdownState(
+    //     regionValue: event.sortingDropDownValue, items: event.items));
+    try {
+      Map<String, String> regionParameter = {
+        "access_token1": Constant.access_token1,
+        "access_token2": Constant.access_token2,
+        "access_token3": Constant.access_token3,
+      };
+      var response = await APIRepository()
+          .getCommonMethodAPI(regionParameter, APIUrls.getRegions);
+      if (response is Success) {
+        regionList.clear();
+        if (response.response is List<GetRegionsDataModel>) {
+          regionList = response.response as List<GetRegionsDataModel>;
+        } else if (response.response is GetRegionsDataModel) {
+          regionList.add(response.response as GetRegionsDataModel);
+        }
+
+        emit(LandRegionDropdownState(
+            regionValue: event.regionDropDownValue, items: event.items));
+      } else if (response is Failed) {
+        failedList = response.response as List<FailedCommonDataModel>;
+        emit(LandErrorState(message: failedList.first.message.toString()));
+      } else if (response is Failure) {
+        emit(LandErrorState(message: response.errorResponse.toString()));
+      } else {
+        emit(LandErrorState(message: "An error occurred"));
+      }
+    } catch (e) {
+      emit(LandErrorState(message: "Error occurred ${e.toString()}"));
+    }
   }
 
   FutureOr<void> landCategoryDropDownEvent(

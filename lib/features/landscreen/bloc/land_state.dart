@@ -26,10 +26,13 @@ class LandDropDownState extends LandState {
 }
 
 class LandSubcategoryDropdownState extends LandState {
-  String styleDropDownValue;
-  List<String> items;
+  String subCategoryDropDownValue;
+  String category_id;
+  List<GetSubCategories1DataModel> items;
   LandSubcategoryDropdownState(
-      {required this.styleDropDownValue, required this.items});
+      {required this.subCategoryDropDownValue,
+      required this.category_id,
+      required this.items});
 }
 
 class LandSubcategory2DropdownState extends LandState {
@@ -40,17 +43,15 @@ class LandSubcategory2DropdownState extends LandState {
 }
 
 class LandRegionDropdownState extends LandState {
-  String sortingDropDownValue;
-  List<String> items;
-  LandRegionDropdownState(
-      {required this.sortingDropDownValue, required this.items});
+  String regionValue;
+  List<GetRegionsDataModel> items;
+  LandRegionDropdownState({required this.regionValue, required this.items});
 }
 
 class LandCategoryDropdownState extends LandState {
   String categoryValue;
   List<GetCategoriesDataModel> items;
-  LandCategoryDropdownState(
-      {required this.categoryValue, required this.items});
+  LandCategoryDropdownState({required this.categoryValue, required this.items});
 }
 
 class LandPriceRangeSliderState extends LandState {

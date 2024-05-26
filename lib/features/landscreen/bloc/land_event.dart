@@ -9,10 +9,13 @@ class LandDropdownEvent extends LandEvent {
 }
 
 class LandSubcategoryDropDownEvent extends LandEvent {
-  String styleDropDownValue;
-  List<String> items;
+  String subCategoryDropDownValue;
+  List<GetSubCategories1DataModel> items;
+  String category_id;
   LandSubcategoryDropDownEvent(
-      {required this.styleDropDownValue, required this.items});
+      {required this.subCategoryDropDownValue,
+      required this.items,
+      required this.category_id});
 }
 
 class LandSubcategory2DropDownEvent extends LandEvent {
@@ -23,10 +26,10 @@ class LandSubcategory2DropDownEvent extends LandEvent {
 }
 
 class LandRegionDropDownEvent extends LandEvent {
-  String sortingDropDownValue;
-  List<String> items;
+  String regionDropDownValue;
+  List<GetRegionsDataModel> items;
   LandRegionDropDownEvent(
-      {required this.sortingDropDownValue, required this.items});
+      {required this.regionDropDownValue, required this.items});
 }
 
 class LandCategoryDropDownEvent extends LandEvent {
