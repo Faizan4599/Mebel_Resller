@@ -227,6 +227,11 @@ class LandUi extends StatelessWidget {
                                       print(
                                           "+++++ ${_landBloc.subCategoryVal}");
                                       _landBloc.subCategoryVal = value!;
+                                      _landBloc.add(
+                                          LandSubcategoryDropDownEvent(
+                                              subCategoryDropDownValue: '',
+                                              items: [],
+                                              category_id: ''));
                                     },
                                   ),
                                   customDropDownButton(
