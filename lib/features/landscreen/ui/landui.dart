@@ -442,73 +442,96 @@ class LandUi extends StatelessWidget {
                           }
                           return false;
                         },
-                        child: GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2),
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    color: CommonColors.primary),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
+                        child: BlocListener(
+                          bloc: _landBloc,
+                          listenWhen: (previous, current) =>
+                              current is LandNavigateToQuoteState,
+                          listener: (context, state) {
+                            if (state is LandNavigateToQuoteState) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => QuoteUi(
+                                      perticularData: _landBloc.perticularData,
+                                    ),
+                                  ));
+                            }
+                          },
+                          child: GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2),
+                            itemCount: data.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    _landBloc.add(LandNavigateToQuoteEvent());
+                                  },
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                        color: CommonColors.primary),
+                                    child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10),
-                                          child: Text(data[index].product_id ?? "",
-                                              style: const TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.white)),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 10),
+                                              child: Text(
+                                                  data[index].product_id ?? "",
+                                                  style: const TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.white)),
+                                            ),
+                                            IconButton(
+                                              onPressed: () {},
+                                              icon: const Icon(Icons.share),
+                                              iconSize: 20,
+                                              color: Colors.white,
+                                            ),
+                                          ],
                                         ),
-                                        IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(Icons.share),
-                                          iconSize: 20,
-                                          color: Colors.white,
+                                        Expanded(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                    data[index].product_url ??
+                                                        ""),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 10, bottom: 10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "\u{20B9} ${data[index].price}",
+                                                style: const TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.white),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),
-                                    Expanded(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                                data[index].product_url ?? ""),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 10,bottom: 10),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "\u{20B9} ${data[index].price}",
-                                            style: const TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.white),
-                                          ),
-                                                                       
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
                       ),
                     );
