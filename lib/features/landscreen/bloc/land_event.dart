@@ -19,10 +19,13 @@ class LandSubcategoryDropDownEvent extends LandEvent {
 }
 
 class LandSubcategory2DropDownEvent extends LandEvent {
-  String materialDropDownValue;
-  List<String> items;
+  String subcategory2DropDownValue;
+  String subCategoryId;
+  List<GetSubCategories2DataModel> items;
   LandSubcategory2DropDownEvent(
-      {required this.materialDropDownValue, required this.items});
+      {required this.subcategory2DropDownValue,
+      required this.subCategoryId,
+      required this.items});
 }
 
 class LandRegionDropDownEvent extends LandEvent {

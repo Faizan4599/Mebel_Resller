@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/landscreen/bloc/land_bloc.dart';
@@ -14,6 +16,10 @@ class LandUi extends StatelessWidget {
     _landBloc
         .add(LandCategoryDropDownEvent(categoryDropDownValue: '', items: []));
     _landBloc.add(LandRegionDropDownEvent(regionDropDownValue: '', items: []));
+    _landBloc.add(LandSubcategoryDropDownEvent(
+        subCategoryDropDownValue: '', items: [], category_id: ''));
+    _landBloc.add(LandSubcategory2DropDownEvent(
+        subcategory2DropDownValue: '', subCategoryId: '', items: []));
   }
   final TextEditingController txt1 = TextEditingController();
   final TextEditingController txt2 = TextEditingController();
@@ -227,17 +233,27 @@ class LandUi extends StatelessWidget {
                                       print(
                                           "+++++ ${_landBloc.subCategoryVal}");
                                       _landBloc.subCategoryVal = value!;
+                                      _landBloc.add(
+                                          LandSubcategory2DropDownEvent(
+                                              subcategory2DropDownValue: '',
+                                              subCategoryId: value,
+                                              items: []));
+                                      _landBloc.add(
+                                          LandSubcategoryDropDownEvent(
+                                              subCategoryDropDownValue: '',
+                                              items: [],
+                                              category_id: ''));
                                     },
                                   ),
                                   customDropDownButton(
                                       context: context,
                                       isExpanded: true,
-                                      items: _landBloc.materialItems
+                                      items: _landBloc.subCategory2List
                                           .map((item) =>
                                               DropdownMenuItem<String>(
-                                                value: item,
+                                                value: item.subcategory2_id,
                                                 child: Text(
-                                                  item,
+                                                  item.subcategory2_name,
                                                   style: const TextStyle(
                                                     color:
                                                         CommonColors.planeWhite,
@@ -247,20 +263,18 @@ class LandUi extends StatelessWidget {
                                               ))
                                           .toList(),
                                       onChanged: (value) {
-                                        _landBloc.materialDropdownValue =
-                                            value!;
+                                        _landBloc.subCategory2Val = value!;
                                         _landBloc.add(
-                                            LandSubcategory2DropDownEvent(
-                                                materialDropDownValue: _landBloc
-                                                    .materialDropdownValue,
-                                                items:
-                                                    _landBloc.materialItems));
+                                          LandSubcategory2DropDownEvent(
+                                              subcategory2DropDownValue: value,
+                                              subCategoryId: '',
+                                              items: []),
+                                        );
                                       },
                                       title: "SUBCATEGORY 2",
-                                      value:
-                                          _landBloc.materialDropdownValue == ''
-                                              ? null
-                                              : _landBloc.materialDropdownValue,
+                                      value: _landBloc.subCategory2Val == ''
+                                          ? null
+                                          : _landBloc.subCategory2Val,
                                       containerColor: CommonColors.primary,
                                       dropdownColor: CommonColors.primary,
                                       iconEnabledColor: CommonColors.planeWhite,
@@ -287,6 +301,11 @@ class LandUi extends StatelessWidget {
                                         width:
                                             Constant.screenWidth(context) * 0.4,
                                         child: TextField(
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: <TextInputFormatter>[
+                                            FilteringTextInputFormatter
+                                                .digitsOnly
+                                          ],
                                           cursorColor: CommonColors.primary,
                                           controller: productId,
                                           decoration: const InputDecoration(
@@ -323,7 +342,7 @@ class LandUi extends StatelessWidget {
                                       BlocProvider(
                                         create: (context) => LandBloc(),
                                         child: Text(
-                                          "\$${_landBloc.start.toStringAsFixed(2)} - \$:${_landBloc.end.toStringAsFixed(2)}",
+                                          "\u{20B9}${_landBloc.start.toStringAsFixed(2)} - \u{20B9}:${_landBloc.end.toStringAsFixed(2)}",
                                           style: const TextStyle(
                                             fontSize: 16.0,
                                           ),
@@ -361,8 +380,8 @@ class LandUi extends StatelessWidget {
                                                     start: value.start,
                                                     end: value.end));
                                           },
-                                          min: 10.0,
-                                          max: 80.0,
+                                          min: 1000.0,
+                                          max: 500000.0,
                                         ),
                                       );
                                     },
@@ -403,6 +422,7 @@ class LandUi extends StatelessWidget {
                     current is LandLoadMoreDataState,
                 bloc: _landBloc,
                 builder: (context, state) {
+                  print("STATE CHECK FOR PRODUCTS>>>> $state");
                   if (state is LoadDataState ||
                       state is LandLoadMoreDataState) {
                     var data = (state is LoadDataState)
@@ -444,7 +464,7 @@ class LandUi extends StatelessWidget {
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(left: 10),
-                                          child: Text(data[index].productId,
+                                          child: Text(data[index].product_id ?? "",
                                               style: const TextStyle(
                                                   fontSize: 15,
                                                   color: Colors.white)),
@@ -461,63 +481,28 @@ class LandUi extends StatelessWidget {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
-                                            image: AssetImage(
-                                                data[index].productImage),
+                                            image: NetworkImage(
+                                                data[index].product_url ?? ""),
                                             fit: BoxFit.cover,
                                           ),
                                         ),
                                       ),
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10),
-                                          child: Text(
-                                            "\$ ${data[index].productPrice}",
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10,bottom: 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "\u{20B9} ${data[index].price}",
                                             style: const TextStyle(
                                                 fontSize: 15,
                                                 color: Colors.white),
                                           ),
-                                        ),
-                                        BlocBuilder<LandBloc, LandState>(
-                                          bloc: _landBloc,
-                                          buildWhen: (previous, current) =>
-                                              current is LandCheckboxState,
-                                          builder: (context, state) {
-                                            return Checkbox(
-                                              side: WidgetStateBorderSide
-                                                  .resolveWith(
-                                                (states) => const BorderSide(
-                                                    width: 1.0,
-                                                    color: CommonColors
-                                                        .planeWhite),
-                                              ),
-                                              focusColor:
-                                                  CommonColors.planeWhite,
-                                              checkColor: CommonColors.primary,
-                                              activeColor:
-                                                  CommonColors.planeWhite,
-                                              value: _landBloc
-                                                  .localData[index].isChecked,
-                                              onChanged: (value) {
-                                                _landBloc.add(
-                                                  LandCheckboxEvent(
-                                                      index: index,
-                                                      isChecked: value!,
-                                                      image: _landBloc
-                                                          .localData[index]
-                                                          .productImage,
-                                                      data: _landBloc
-                                                          .localData[index]),
-                                                );
-                                              },
-                                            );
-                                          },
-                                        ),
-                                      ],
+                                                                       
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -528,7 +513,8 @@ class LandUi extends StatelessWidget {
                       ),
                     );
                   } else {
-                    return const Center(child: CircularProgressIndicator());
+                    // return const Center(child: CircularProgressIndicator());
+                    return const Center(child: SizedBox());
                   }
                 },
               ),
@@ -536,86 +522,86 @@ class LandUi extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(bottom: 10, left: 5, right: 5),
-        child: Container(
-          height: 50,
-          decoration: const BoxDecoration(
-            color: CommonColors.secondary,
-            borderRadius: BorderRadius.all(
-              Radius.circular(8.0),
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                // customPdfButton(() {}, "PDF", "0"),
-                // customCommonButton(() {}, "PPT"),
-                // customCommonButton(() {}, "XLS"),
-                customCommonButton(() {
-                  _landBloc.add(
-                    LandDownloadImageEvent(data: _landBloc.selectedData),
-                  );
-                  _showDownloadDialog(context, "download");
-                }, "IMAGE"),
-                // IconButton(
-                //     onPressed: () {},
-                //     icon: Icon(
-                //       Icons.file_download_outlined,
-                //       size: 25,
-                //     )),
-                // InkWell(
-                //   onTap: () {},
-                //   child: const Icon(Icons.file_download_outlined),
-                // ),
-                const VerticalDivider(
-                  // color: Colors.black,
-                  thickness: 1,
-                ),
-                BlocListener<LandBloc, LandState>(
-                  bloc: _landBloc,
-                  listenWhen: (previous, current) =>
-                      current is LandNavigateToQuoteState,
-                  listener: (context, state) {
-                    if (state is LandNavigateToQuoteState) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => QuoteUi(
-                              perticularData: _landBloc.perticularData,
-                            ),
-                          ));
-                    }
-                  },
-                  child: InkWell(
-                    onTap: () {
-                      _landBloc.add(LandNavigateToQuoteEvent());
-                    },
-                    child: Container(
-                      height: 40,
-                      width: 55,
-                      decoration: const BoxDecoration(
-                        color: CommonColors.primary,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8.0),
-                        ),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "QUOTE",
-                          style: TextStyle(color: CommonColors.planeWhite),
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
+      // bottomNavigationBar: Padding(
+      //   padding: const EdgeInsets.only(bottom: 10, left: 5, right: 5),
+      //   child: Container(
+      //     height: 50,
+      //     decoration: const BoxDecoration(
+      //       color: CommonColors.secondary,
+      //       borderRadius: BorderRadius.all(
+      //         Radius.circular(8.0),
+      //       ),
+      //     ),
+      //     child: Padding(
+      //       padding: const EdgeInsets.all(8.0),
+      //       child: Row(
+      //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //         children: [
+      //           // customPdfButton(() {}, "PDF", "0"),
+      //           // customCommonButton(() {}, "PPT"),
+      //           // customCommonButton(() {}, "XLS"),
+      //           customCommonButton(() {
+      //             _landBloc.add(
+      //               LandDownloadImageEvent(data: _landBloc.selectedData),
+      //             );
+      //             _showDownloadDialog(context, "download");
+      //           }, "IMAGE"),
+      //           // IconButton(
+      //           //     onPressed: () {},
+      //           //     icon: Icon(
+      //           //       Icons.file_download_outlined,
+      //           //       size: 25,
+      //           //     )),
+      //           // InkWell(
+      //           //   onTap: () {},
+      //           //   child: const Icon(Icons.file_download_outlined),
+      //           // ),
+      //           const VerticalDivider(
+      //             // color: Colors.black,
+      //             thickness: 1,
+      //           ),
+      //           BlocListener<LandBloc, LandState>(
+      //             bloc: _landBloc,
+      //             listenWhen: (previous, current) =>
+      //                 current is LandNavigateToQuoteState,
+      //             listener: (context, state) {
+      //               if (state is LandNavigateToQuoteState) {
+      //                 Navigator.push(
+      //                     context,
+      //                     MaterialPageRoute(
+      //                       builder: (context) => QuoteUi(
+      //                         perticularData: _landBloc.perticularData,
+      //                       ),
+      //                     ));
+      //               }
+      //             },
+      //             child: InkWell(
+      //               onTap: () {
+      //                 _landBloc.add(LandNavigateToQuoteEvent());
+      //               },
+      //               child: Container(
+      //                 height: 40,
+      //                 width: 55,
+      //                 decoration: const BoxDecoration(
+      //                   color: CommonColors.primary,
+      //                   borderRadius: BorderRadius.all(
+      //                     Radius.circular(8.0),
+      //                   ),
+      //                 ),
+      //                 child: const Center(
+      //                   child: Text(
+      //                     "QUOTE",
+      //                     style: TextStyle(color: CommonColors.planeWhite),
+      //                   ),
+      //                 ),
+      //               ),
+      //             ),
+      //           )
+      //         ],
+      //       ),
+      //     ),
+      //   ),
+      // ),
     );
   }
 
@@ -632,51 +618,62 @@ class LandUi extends StatelessWidget {
     required void Function(String?)? onChanged,
     Color? hintTextColor,
   }) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title ?? "",
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Column(
-          children: [
-            DropdownButtonHideUnderline(
-              child: Container(
-                width: Constant.screenWidth(context) * 0.4,
-                height: 40,
-                decoration: BoxDecoration(
-                    border: Border.all(width: 1), color: containerColor),
-                child: ButtonTheme(
-                  alignedDropdown: true,
-                  child: BlocProvider.value(
-                    // create: (context) => LandBloc(),
-                    value: _landBloc,
-                    child: DropdownButton(
-                      isExpanded: isExpanded,
-                      dropdownColor: dropdownColor,
-                      iconEnabledColor: iconEnabledColor,
-                      hint: Text(
-                        "Select criteria",
-                        style: TextStyle(color: hintTextColor, fontSize: 14),
-                      ),
-                      value: value,
-                      items: items,
-                      //isExpanded: true,
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      // onTap: () {
+    return BlocProvider.value(
+      // create: (context) => LandBloc(),
+      value: _landBloc,
+      child: BlocBuilder<LandBloc, LandState>(
+        bloc: _landBloc,
+        builder: (context, state) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title ?? "",
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Column(
+                children: [
+                  DropdownButtonHideUnderline(
+                    child: Container(
+                      width: Constant.screenWidth(context) * 0.4,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 1), color: containerColor),
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: BlocProvider.value(
+                          // create: (context) => LandBloc(),
+                          value: _landBloc,
+                          child: DropdownButton(
+                            isExpanded: isExpanded,
+                            dropdownColor: dropdownColor,
+                            iconEnabledColor: iconEnabledColor,
+                            hint: Text(
+                              "Select criteria",
+                              style:
+                                  TextStyle(color: hintTextColor, fontSize: 14),
+                            ),
+                            value: value,
+                            items: items,
+                            //isExpanded: true,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            // onTap: () {
 
-                      // },
-                      onChanged: onChanged,
+                            // },
+                            onChanged: onChanged,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          );
+        },
+      ),
     );
   }
 

@@ -7,8 +7,10 @@ import 'package:meta/meta.dart';
 import 'package:reseller_app/common/failed_data_model.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/landscreen/model/get_categories_data_model.dart';
+import 'package:reseller_app/features/landscreen/model/get_products_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_regions_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_sub_categories1.dart';
+import 'package:reseller_app/features/landscreen/model/get_sub_categories2.dart';
 import 'package:reseller_app/features/login/model/login_data_mode.dart';
 import 'package:reseller_app/helper/preference_utils.dart';
 import 'package:reseller_app/repo/api_repository.dart';
@@ -22,8 +24,11 @@ class LandBloc extends Bloc<LandEvent, LandState> {
   List<GetCategoriesDataModel> categoryList = <GetCategoriesDataModel>[];
   List<GetSubCategories1DataModel> subCategoryList =
       <GetSubCategories1DataModel>[];
+  List<GetSubCategories2DataModel> subCategory2List =
+      <GetSubCategories2DataModel>[];
   List<GetRegionsDataModel> regionList = <GetRegionsDataModel>[];
   List<FailedCommonDataModel> failedList = <FailedCommonDataModel>[];
+  List<GetProductsDataModel> productsList = <GetProductsDataModel>[];
   bool show = false;
   List<String> selectedData = [];
   List<SampleDataModel> perticularData = [];
@@ -46,15 +51,6 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     on<LandLogoutEvent>(landLogoutEvent);
   }
 
-  String materialDropdownValue = '';
-  var materialItems = [
-    'High',
-    'Low',
-    'Medium',
-    'Low ',
-    'Price high to low',
-    'Price low to high',
-  ];
   String sortDropdownValue = '';
   var sortItems = [
     'Best furniture stores',
@@ -69,9 +65,10 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
   String categoryVal = '';
   String subCategoryVal = '';
+  String subCategory2Val = '';
   String regionVal = '';
-  double start = 30.0;
-  double end = 50.0;
+  double start = 1000.0;
+  double end = 100000.0;
   bool isChecked = false;
   List<SampleDataModel> localData = [];
 
@@ -95,18 +92,24 @@ class LandBloc extends Bloc<LandEvent, LandState> {
       var response = await APIRepository()
           .getCommonMethodAPI(subCatParameter, APIUrls.getSubcategories1);
       if (response is Success) {
+        subCategoryVal = '';
         subCategoryList.clear();
+        subCategory2Val = '';
+        subCategory2List.clear();
         if (response.response is List<GetSubCategories1DataModel>) {
           subCategoryList =
               response.response as List<GetSubCategories1DataModel>;
         } else if (response.response is GetSubCategories1DataModel) {
           subCategoryList.add(response.response as GetSubCategories1DataModel);
         }
-        subCategoryVal = '';
-        emit(LandSubcategoryDropdownState(
+        // subCategoryVal = '';
+        emit(
+          LandSubcategoryDropdownState(
             subCategoryDropDownValue: event.subCategoryDropDownValue,
+            items: event.items,
             category_id: event.category_id,
-            items: subCategoryList));
+          ),
+        );
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(LandErrorState(message: failedList.first.message.toString()));
@@ -121,10 +124,40 @@ class LandBloc extends Bloc<LandEvent, LandState> {
   }
 
   FutureOr<void> landSubcategory2DropDownEvent(
-      LandSubcategory2DropDownEvent event, Emitter<LandState> emit) {
-    emit(LandSubcategory2DropdownState(
-        materialDropDownValue: event.materialDropDownValue,
-        items: event.items));
+      LandSubcategory2DropDownEvent event, Emitter<LandState> emit) async {
+    try {
+      Map<String, String> subcategory2Parameter = {
+        "access_token1": Constant.access_token1,
+        "access_token2": Constant.access_token2,
+        "access_token3": Constant.access_token3,
+        "subcategory1_id": event.subCategoryId
+      };
+      var response = await APIRepository()
+          .getCommonMethodAPI(subcategory2Parameter, APIUrls.getSubcategories2);
+      if (response is Success) {
+        subCategory2Val = '';
+        subCategory2List.clear();
+        if (response.response is List<GetSubCategories2DataModel>) {
+          subCategory2List =
+              response.response as List<GetSubCategories2DataModel>;
+        } else if (response.response is GetSubCategories2DataModel) {
+          subCategory2List.add(response.response as GetSubCategories2DataModel);
+        }
+
+        emit(LandSubcategory2DropdownState(
+            subcategoryDropDownValue: event.subcategory2DropDownValue,
+            items: event.items));
+      } else if (response is Failed) {
+        failedList = response.response as List<FailedCommonDataModel>;
+        emit(LandErrorState(message: failedList.first.message.toString()));
+      } else if (response is Failure) {
+        emit(LandErrorState(message: response.errorResponse.toString()));
+      } else {
+        emit(LandErrorState(message: "An error occurred"));
+      }
+    } catch (e) {
+      emit(LandErrorState(message: "Error occurred ${e.toString()}"));
+    }
   }
 
   FutureOr<void> landRegionDropDownEvent(
@@ -173,14 +206,19 @@ class LandBloc extends Bloc<LandEvent, LandState> {
       var response = await APIRepository()
           .getCommonMethodAPI(categoryParameter, APIUrls.getCategories);
       if (response is Success) {
+        categoryVal = '';
+        subCategoryVal = '';
+        subCategory2Val = '';
         categoryList.clear();
+        subCategoryList.clear();
+        subCategory2List.clear();
         if (response.response is List<GetCategoriesDataModel>) {
           categoryList = response.response as List<GetCategoriesDataModel>;
         } else if (response.response is GetCategoriesDataModel) {
           categoryList.add(response.response as GetCategoriesDataModel);
         }
         emit(LandCategoryDropdownState(
-            categoryValue: event.categoryDropDownValue, items: categoryList));
+            categoryValue: event.categoryDropDownValue, items: event.items));
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(LandErrorState(message: failedList.first.message.toString()));
@@ -272,31 +310,76 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
   Future<void> _fetchData(Emitter<LandState> emit,
       {bool isLoadMore = false}) async {
-    final String response =
-        await rootBundle.loadString('lib/localdatabase/data.json');
+    // final String response =
+    //     await rootBundle.loadString('lib/localdatabase/data.json');
+    // var data = await json.decode(response);
+    // if (response.isEmpty) {
+    //   emit(LandErrorState(message: "Failed to load data"));
+    // } else if (data == null) {
+    //   emit(LandErrorState(message: "No data!"));
+    // } else {
+    //   List<SampleDataModel> allData =
+    //       sampleDataModelFromJson(json.encode(data));
+    //   List<SampleDataModel> paginatedData = allData
+    //       .skip((currentPage - 1) * itemsPerPage)
+    //       .take(itemsPerPage)
+    //       .toList();
 
-    var data = await json.decode(response);
+    //   hasMoreData = paginatedData.length == itemsPerPage;
+    //   if (isLoadMore) {
+    //     localData.addAll(paginatedData);
+    //     emit(LandLoadMoreDataState(data: localData));
+    //   } else {
+    //     localData = paginatedData;
+    //     emit(LoadDataState(data: localData));
+    //   }
+    // }
 
-    if (response.isEmpty) {
-      emit(LandErrorState(message: "Failed to load data"));
-    } else if (data == null) {
-      emit(LandErrorState(message: "No data!"));
-    } else {
-      List<SampleDataModel> allData =
-          sampleDataModelFromJson(json.encode(data));
-      List<SampleDataModel> paginatedData = allData
-          .skip((currentPage - 1) * itemsPerPage)
-          .take(itemsPerPage)
-          .toList();
-
-      hasMoreData = paginatedData.length == itemsPerPage;
-      if (isLoadMore) {
-        localData.addAll(paginatedData);
-        emit(LandLoadMoreDataState(data: localData));
+    try {
+      print(
+          "Loging time id>>>>>>>${PreferenceUtils.getString(UserData.id.name)}");
+      Map<String, String> productsParameter = {
+        "access_token1": Constant.access_token1,
+        "access_token2": Constant.access_token2,
+        "access_token3": Constant.access_token3,
+        "user_id": PreferenceUtils.getString(UserData.id.name),
+      };
+      var response2 = await APIRepository()
+          .getCommonMethodAPI(productsParameter, APIUrls.getProducts);
+      print(";;;;;;${response2}");
+      if (response2 is Success) {
+        productsList.clear();
+        if (response2.response is List<GetProductsDataModel>) {
+          productsList = response2.response as List<GetProductsDataModel>;
+        } else if (response2 is GetProductsDataModel) {
+          productsList.add(response2.response as GetProductsDataModel);
+        }
+        print(">>>>>>>>>>>>>>>>>>${productsList.first}");
+        List<GetProductsDataModel> allData2 = [];
+        allData2.addAll(productsList);
+        List<GetProductsDataModel> paginatedData2 = allData2
+            .skip((currentPage - 1) * itemsPerPage)
+            .take(itemsPerPage)
+            .toList();
+        hasMoreData = paginatedData2.length == itemsPerPage;
+        if (isLoadMore) {
+          productsList.addAll(paginatedData2);
+          emit(LandLoadMoreDataState(data: productsList));
+        } else {
+          productsList = paginatedData2;
+          emit(LoadDataState(data: productsList));
+        }
+      } else if (response2 is Failed) {
+        failedList = response2.response as List<FailedCommonDataModel>;
+        emit(LandErrorState(message: failedList.first.message.toString()));
+      } else if (response2 is Failure) {
+        emit(LandErrorState(message: response2.errorResponse.toString()));
       } else {
-        localData = paginatedData;
-        emit(LoadDataState(data: localData));
+        emit(LandErrorState(message: "An error occurred"));
       }
+    } catch (e) {
+      print("ERROR ${e.toString()}");
+      emit(LandErrorState(message: "Error occurred ${e.toString()}"));
     }
   }
 

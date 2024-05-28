@@ -27,8 +27,9 @@ class LandDropDownState extends LandState {
 
 class LandSubcategoryDropdownState extends LandState {
   String subCategoryDropDownValue;
-  String category_id;
   List<GetSubCategories1DataModel> items;
+  String category_id;
+
   LandSubcategoryDropdownState(
       {required this.subCategoryDropDownValue,
       required this.category_id,
@@ -36,10 +37,10 @@ class LandSubcategoryDropdownState extends LandState {
 }
 
 class LandSubcategory2DropdownState extends LandState {
-  String materialDropDownValue;
-  List<String> items;
+  String subcategoryDropDownValue;
+  List<GetSubCategories2DataModel> items;
   LandSubcategory2DropdownState(
-      {required this.materialDropDownValue, required this.items});
+      {required this.subcategoryDropDownValue, required this.items});
 }
 
 class LandRegionDropdownState extends LandState {
@@ -61,7 +62,7 @@ class LandPriceRangeSliderState extends LandState {
 }
 
 class LoadDataState extends LandState {
-  List<SampleDataModel> data;
+  List<GetProductsDataModel> data;
   LoadDataState({required this.data});
 }
 
@@ -83,13 +84,18 @@ class LandDownloadImageState extends LandState {
 }
 
 class LandLoadMoreDataState extends LandState {
-  List<SampleDataModel> data;
+  List<GetProductsDataModel> data;
   LandLoadMoreDataState({required this.data});
 }
 
 class LandRefreshDataState extends LandState {
-  List<SampleDataModel> data;
+  List<GetProductsDataModel> data;
   LandRefreshDataState({required this.data});
+}
+
+class LandSearchDataEvent {
+  List<GetProductsDataModel> data;
+  LandSearchDataEvent({required this.data});
 }
 
 class LandLogoutState extends LandState {}
