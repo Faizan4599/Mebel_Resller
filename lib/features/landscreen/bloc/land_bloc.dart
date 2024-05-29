@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:reseller_app/common/failed_data_model.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/landscreen/model/get_categories_data_model.dart';
+import 'package:reseller_app/features/landscreen/model/get_product_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_products_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_regions_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_sub_categories1.dart';
@@ -26,6 +27,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
       <GetSubCategories1DataModel>[];
   List<GetSubCategories2DataModel> subCategory2List =
       <GetSubCategories2DataModel>[];
+  List<GetProductDataModel> singleProductList = <GetProductDataModel>[];
   List<GetRegionsDataModel> regionList = <GetRegionsDataModel>[];
   List<FailedCommonDataModel> failedList = <FailedCommonDataModel>[];
   List<GetProductsDataModel> productsList = <GetProductsDataModel>[];
@@ -49,6 +51,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     on<LandLoadNextPageEvent>(landLoadNextPageEvent);
     on<LandRefreshDataEvent>(landRefreshDataEvent);
     on<LandLogoutEvent>(landLogoutEvent);
+    on<LandSearchDataEvent>(landSearchDataEvent);
   }
 
   String sortDropdownValue = '';
@@ -289,8 +292,40 @@ class LandBloc extends Bloc<LandEvent, LandState> {
   }
 
   FutureOr<void> landNavigateToQuoteEvent(
-      LandNavigateToQuoteEvent event, Emitter<LandState> emit) {
-    emit(LandNavigateToQuoteState());
+      LandNavigateToQuoteEvent event, Emitter<LandState> emit) async {
+    // emit(LandNavigateToQuoteState(productData: []));
+    try {
+      Map<String, String> productParameter = {
+        "access_token1": Constant.access_token1,
+        "access_token2": Constant.access_token2,
+        "access_token3": Constant.access_token3,
+        "user_id": PreferenceUtils.getString(UserData.id.name),
+        "product_id": event.productId.toString(),
+      };
+      var response = await APIRepository()
+          .getCommonMethodAPI(productParameter, APIUrls.getProduct);
+      print(">><><<>> ${response}");
+      if (response is Success) {
+        singleProductList.clear();
+        if (response.response is List<GetProductDataModel>) {
+          singleProductList = response.response as List<GetProductDataModel>;
+        } else if (response.response is GetProductDataModel) {
+          singleProductList.add(response.response as GetProductDataModel);
+        }
+        print("DATA>>> ${singleProductList.first.name}");
+        emit(LandNavigateToQuoteState(productData: singleProductList));
+      } else if (response is Failed) {
+        failedList = response.response as List<FailedCommonDataModel>;
+        emit(LandErrorState(message: failedList.first.message.toString()));
+      } else if (response is Failure) {
+        emit(LandErrorState(message: response.errorResponse.toString()));
+      } else {
+        emit(LandErrorState(message: "An error occurred"));
+      }
+    } catch (e) {
+      print("ERR ${e.toString()}");
+      emit(LandErrorState(message: "Error occurred ${e.toString()}"));
+    }
   }
 
   FutureOr<void> landLoadNextPageEvent(
@@ -336,8 +371,6 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     // }
 
     try {
-      print(
-          "Loging time id>>>>>>>${PreferenceUtils.getString(UserData.id.name)}");
       Map<String, String> productsParameter = {
         "access_token1": Constant.access_token1,
         "access_token2": Constant.access_token2,
@@ -388,4 +421,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     await PreferenceUtils.clearData();
     emit(LandLogoutState());
   }
+
+  FutureOr<void> landSearchDataEvent(
+      LandSearchDataEvent event, Emitter<LandState> emit) {}
 }

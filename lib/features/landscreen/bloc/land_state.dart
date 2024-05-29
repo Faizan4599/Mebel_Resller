@@ -3,7 +3,7 @@ part of 'land_bloc.dart';
 @immutable
 abstract class LandState {}
 
-abstract class LandActionState {}
+abstract class LandActionState extends LandState {}
 
 class LandInitial extends LandState {}
 
@@ -93,11 +93,11 @@ class LandRefreshDataState extends LandState {
   LandRefreshDataState({required this.data});
 }
 
-class LandSearchDataEvent {
-  List<GetProductsDataModel> data;
-  LandSearchDataEvent({required this.data});
-}
+class LandSearchDataState extends LandState {}
 
 class LandLogoutState extends LandState {}
 
-class LandNavigateToQuoteState extends LandState {}
+class LandNavigateToQuoteState extends LandState {
+  List<GetProductDataModel>? productData;
+  LandNavigateToQuoteState({required this.productData});
+}

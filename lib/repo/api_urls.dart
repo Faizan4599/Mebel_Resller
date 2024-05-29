@@ -5,4 +5,5 @@ class APIUrls {
   static const String getSubcategories1 = "getSubcategories1";
   static const String getSubcategories2 = "getSubcategories2";
   static const String getProducts = "getProducts";
+  static const String getProduct = "getProduct";
 }

@@ -6,6 +6,7 @@ import 'package:reseller_app/common/failed_data_model.dart';
 import 'package:reseller_app/common/outer_response.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/landscreen/model/get_categories_data_model.dart';
+import 'package:reseller_app/features/landscreen/model/get_product_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_products_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_regions_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_sub_categories1.dart';
@@ -119,6 +120,20 @@ class APIRepository {
                     .toList();
               } else if (outerResponse.data is Map) {
                 responseData = GetProductsDataModel.fromJson(
+                    outerResponse.data as Map<String, dynamic>);
+              }
+              return Success(code: APICode.SUCCESS, response: responseData);
+            // =====
+            case APIUrls.getProduct:
+              if (outerResponse.data is List) {
+                responseData = (outerResponse.data as List<dynamic>)
+                    .map(
+                      (e) => GetProductDataModel.fromJson(
+                          e as Map<String, dynamic>),
+                    )
+                    .toList();
+              } else if (outerResponse.data is Map) {
+                responseData = GetProductDataModel.fromJson(
                     outerResponse.data as Map<String, dynamic>);
               }
               return Success(code: APICode.SUCCESS, response: responseData);

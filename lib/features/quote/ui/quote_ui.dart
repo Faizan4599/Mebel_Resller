@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/add_to_cart/ui/add_to_cart.dart';
+import 'package:reseller_app/features/landscreen/model/get_product_data_model.dart';
 import 'package:reseller_app/utils/common_colors.dart';
 
 import '../../landscreen/model/sample_data_model.dart';
@@ -11,15 +12,15 @@ import '../bloc/quote_bloc.dart';
 class QuoteUi extends StatelessWidget {
   final QuoteBloc _quoteBloc = QuoteBloc();
 
-  final List<SampleDataModel> perticularData;
+  final List<GetProductDataModel> perticularData;
   final PageController _pageController = PageController();
   final ScrollController _scrollController = ScrollController();
   QuoteUi({Key? key, required this.perticularData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<SampleDataModel> allData = [];
-    allData.addAll(perticularData);
+    GetProductDataModel allData = perticularData.first;
+
     ;
     print("<<<<<<<<<<${allData}");
 
@@ -61,7 +62,7 @@ class QuoteUi extends StatelessWidget {
                                   curve: Curves.easeInOut,
                                 );
                               },
-                              itemCount: allData.length,
+                              itemCount: allData.product_urls?.length ?? 0,
                               itemBuilder: (context, index) {
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -75,8 +76,8 @@ class QuoteUi extends StatelessWidget {
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(8)),
                                       ),
-                                      child: Image.asset(
-                                        allData[index].productImage,
+                                      child: Image.network(
+                                        allData.product_urls![index],
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -108,7 +109,7 @@ class QuoteUi extends StatelessWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: List.generate(
-                                    allData.length,
+                                    allData.product_urls?.length ?? 0,
                                     (index) {
                                       return Padding(
                                         padding: const EdgeInsets.symmetric(
@@ -149,7 +150,7 @@ class QuoteUi extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => AddToCartUi(
-                                  cartItems: allData,
+                                  cartItems: perticularData,
                                 ),
                               ));
                         }
@@ -164,7 +165,10 @@ class QuoteUi extends StatelessWidget {
                           ),
                           backgroundColor: CommonColors.primary,
                         ),
-                        child: const Text("Add to cart"),
+                        child: const Text(
+                          "Add to cart",
+                          style: TextStyle(color: CommonColors.planeWhite),
+                        ),
                       ),
                     ),
                   ],
@@ -179,38 +183,10 @@ class QuoteUi extends StatelessWidget {
                     ),
                   ],
                 ),
-                const Column(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "1. Our furniture embodies timeless elegance, blending seamlessly with any interior décor style.",
-                    ),
-                    Text(
-                      "2. Crafted with precision and attention to detail, our furniture pieces exude quality and durability.",
-                    ),
-                    Text(
-                      "3. Each piece is thoughtfully designed to maximize functionality without compromising on style.",
-                    ),
-                    Text(
-                      "4. From sleek modern designs to classic and traditional styles, we offer furniture to suit every taste.",
-                    ),
-                    Text(
-                      "5. Our furniture is crafted from high-quality materials, ensuring longevity and enduring beauty.",
-                    ),
-                    Text(
-                      "6. Transform your living space with our versatile furniture collections, curated for comfort and style.",
-                    ),
-                    Text(
-                      "7. Experience the perfect balance of form and function with our meticulously crafted furniture.",
-                    ),
-                    Text(
-                      "8. Elevate your home's aesthetic with our range of sophisticated and chic furniture options.",
-                    ),
-                    Text(
-                      "9. Whether it's a cozy sofa, elegant dining set, or luxurious bed frame, our furniture adds character to any room.",
-                    ),
-                    Text(
-                      "10. Discover the art of living well with our exquisite furniture, designed to inspire and delight.",
-                    ),
+                    Text(allData.description ?? ""),
                   ],
                 ),
                 const SizedBox(height: 10),

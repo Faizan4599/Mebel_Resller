@@ -442,19 +442,20 @@ class LandUi extends StatelessWidget {
                           }
                           return false;
                         },
-                        child: BlocListener(
+                        child: BlocListener<LandBloc, LandState>(
                           bloc: _landBloc,
                           listenWhen: (previous, current) =>
                               current is LandNavigateToQuoteState,
                           listener: (context, state) {
                             if (state is LandNavigateToQuoteState) {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => QuoteUi(
-                                      perticularData: _landBloc.perticularData,
-                                    ),
-                                  ));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => QuoteUi(
+                                    perticularData: state.productData ?? [],
+                                  ),
+                                ),
+                              );
                             }
                           },
                           child: GridView.builder(
@@ -467,7 +468,10 @@ class LandUi extends StatelessWidget {
                                 padding: const EdgeInsets.all(4.0),
                                 child: InkWell(
                                   onTap: () {
-                                    _landBloc.add(LandNavigateToQuoteEvent());
+                                    _landBloc.add(
+                                      LandNavigateToQuoteEvent(
+                                          productId: data[index].product_id),
+                                    );
                                   },
                                   child: Container(
                                     decoration: const BoxDecoration(

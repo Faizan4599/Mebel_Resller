@@ -73,4 +73,26 @@ class LandRefreshDataEvent extends LandEvent {}
 
 class LandLogoutEvent extends LandEvent {}
 
-class LandNavigateToQuoteEvent extends LandEvent {}
+class LandSearchDataEvent extends LandEvent {
+  final int startRange;
+  final int endRange;
+  final String? regionId;
+  final String? categoryId;
+  final String? subCategoryId;
+  final String? subCategory2Id;
+  final String? productId;
+
+  LandSearchDataEvent(
+      {required this.startRange,
+      required this.endRange,
+      this.regionId,
+      this.categoryId,
+      this.subCategoryId,
+      this.subCategory2Id,
+      this.productId});
+}
+
+class LandNavigateToQuoteEvent extends LandEvent {
+  String? productId;
+  LandNavigateToQuoteEvent({required this.productId});
+}

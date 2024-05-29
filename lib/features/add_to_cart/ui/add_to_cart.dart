@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:reseller_app/features/landscreen/model/get_product_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/sample_data_model.dart';
 
 class AddToCartUi extends StatelessWidget {
-  List<SampleDataModel> cartItems;
+  List<GetProductDataModel> cartItems;
   AddToCartUi({Key? key, required this.cartItems}) : super(key: key);
 
   @override
@@ -19,7 +20,7 @@ class AddToCartUi extends StatelessWidget {
             child: ListView.builder(
               itemCount: cartItems.length,
               itemBuilder: (BuildContext context, int index) {
-                return Text(cartItems[index].productPrice);
+                return Text(cartItems[index].price.toString());
               },
             ),
           ),
