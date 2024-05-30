@@ -388,45 +388,49 @@ class LandUi extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              ButtonTheme(
-                                minWidth: 200,
-                                height: 40,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    _landBloc.add(
-                                      LandSearchDataEvent(
-                                          startRange: _landBloc.start,
-                                          endRange: _landBloc.end,
-                                          regionId: _landBloc.regionVal.isEmpty
-                                              ? null
-                                              : _landBloc.regionVal,
-                                          categoryId:
-                                              _landBloc.categoryVal.isEmpty
-                                                  ? null
-                                                  : _landBloc.categoryVal,
-                                          subCategoryId:
-                                              _landBloc.subCategoryVal.isEmpty
-                                                  ? null
-                                                  : _landBloc.subCategoryVal,
-                                          subCategory2Id:
-                                              _landBloc.subCategory2Val,
-                                          productId: productId.text.isEmpty
-                                              ? null
-                                              : productId.text),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5.0)),
-                                      backgroundColor: CommonColors.primary),
-                                  child: const Text(
-                                    "SEARCH",
-                                    style: TextStyle(
-                                        color: CommonColors.planeWhite),
-                                  ),
-                                ),
-                              ),
+                            ButtonTheme(
+  minWidth: 200,
+  height: 40,
+  child: ElevatedButton(
+    onPressed: () {
+      bool isFilterSelected = _landBloc.regionVal.isNotEmpty ||
+                              _landBloc.categoryVal.isNotEmpty ||
+                              _landBloc.subCategoryVal.isNotEmpty ||
+                              _landBloc.subCategory2Val.isNotEmpty ||
+                              productId.text.isNotEmpty;
+      
+      if (isFilterSelected) {
+        _landBloc.add(
+          LandSearchDataEvent(
+            startRange: _landBloc.start,
+            endRange: _landBloc.end,
+            regionId: _landBloc.regionVal.isEmpty ? null : _landBloc.regionVal,
+            categoryId: _landBloc.categoryVal.isEmpty ? null : _landBloc.categoryVal,
+            subCategoryId: _landBloc.subCategoryVal.isEmpty ? null : _landBloc.subCategoryVal,
+            subCategory2Id: _landBloc.subCategory2Val.isEmpty ? null : _landBloc.subCategory2Val,
+            productId: productId.text.isEmpty ? null : productId.text,
+          ),
+        );
+      } else {
+        // Show an alert or message that at least one filter should be selected
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please select at least one filter.'),
+          ),
+        );
+      }
+    },
+    style: ElevatedButton.styleFrom(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+      backgroundColor: CommonColors.primary,
+    ),
+    child: const Text(
+      "SEARCH",
+      style: TextStyle(color: CommonColors.planeWhite),
+    ),
+  ),
+),
+
                               const SizedBox(
                                 height: 10,
                               )
