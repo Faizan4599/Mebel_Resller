@@ -74,8 +74,8 @@ class LandRefreshDataEvent extends LandEvent {}
 class LandLogoutEvent extends LandEvent {}
 
 class LandSearchDataEvent extends LandEvent {
-  final int startRange;
-  final int endRange;
+  final double startRange;
+  final double endRange;
   final String? regionId;
   final String? categoryId;
   final String? subCategoryId;

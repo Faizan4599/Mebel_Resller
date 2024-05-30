@@ -93,7 +93,10 @@ class LandRefreshDataState extends LandState {
   LandRefreshDataState({required this.data});
 }
 
-class LandSearchDataState extends LandState {}
+class LandSearchDataState extends LandState {
+  List<GetProductsDataModel> filteredData;
+  LandSearchDataState({required this.filteredData});
+}
 
 class LandLogoutState extends LandState {}
 

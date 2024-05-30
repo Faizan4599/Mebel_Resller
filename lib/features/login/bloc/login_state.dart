@@ -20,4 +20,9 @@ class LoginSuccessState extends LoginState {
   LoginSuccessState({required this.data});
 }
 
+class LoginShowPasswordState extends LoginState {
+  bool showPass;
+  LoginShowPasswordState({required this.showPass});
+}
+
 class LoginNavigateToState extends LoginActionState {}

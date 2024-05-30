@@ -183,10 +183,14 @@ class QuoteUi extends StatelessWidget {
                     ),
                   ],
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: [
-                    Text(allData.description ?? ""),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(allData.description ?? ""),
+                      ],
+                    ),
                   ],
                 ),
                 const SizedBox(height: 10),

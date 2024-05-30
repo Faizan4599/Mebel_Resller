@@ -343,33 +343,8 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     await _fetchData(emit);
   }
 
-  Future<void> _fetchData(Emitter<LandState> emit,
+  Future<List<GetProductsDataModel>> _fetchData(Emitter<LandState> emit,
       {bool isLoadMore = false}) async {
-    // final String response =
-    //     await rootBundle.loadString('lib/localdatabase/data.json');
-    // var data = await json.decode(response);
-    // if (response.isEmpty) {
-    //   emit(LandErrorState(message: "Failed to load data"));
-    // } else if (data == null) {
-    //   emit(LandErrorState(message: "No data!"));
-    // } else {
-    //   List<SampleDataModel> allData =
-    //       sampleDataModelFromJson(json.encode(data));
-    //   List<SampleDataModel> paginatedData = allData
-    //       .skip((currentPage - 1) * itemsPerPage)
-    //       .take(itemsPerPage)
-    //       .toList();
-
-    //   hasMoreData = paginatedData.length == itemsPerPage;
-    //   if (isLoadMore) {
-    //     localData.addAll(paginatedData);
-    //     emit(LandLoadMoreDataState(data: localData));
-    //   } else {
-    //     localData = paginatedData;
-    //     emit(LoadDataState(data: localData));
-    //   }
-    // }
-
     try {
       Map<String, String> productsParameter = {
         "access_token1": Constant.access_token1,
@@ -402,17 +377,22 @@ class LandBloc extends Bloc<LandEvent, LandState> {
           productsList = paginatedData2;
           emit(LoadDataState(data: productsList));
         }
+        return productsList;
       } else if (response2 is Failed) {
         failedList = response2.response as List<FailedCommonDataModel>;
         emit(LandErrorState(message: failedList.first.message.toString()));
+        return [];
       } else if (response2 is Failure) {
         emit(LandErrorState(message: response2.errorResponse.toString()));
+        return [];
       } else {
         emit(LandErrorState(message: "An error occurred"));
+        return [];
       }
     } catch (e) {
       print("ERROR ${e.toString()}");
       emit(LandErrorState(message: "Error occurred ${e.toString()}"));
+      return [];
     }
   }
 
@@ -423,5 +403,39 @@ class LandBloc extends Bloc<LandEvent, LandState> {
   }
 
   FutureOr<void> landSearchDataEvent(
-      LandSearchDataEvent event, Emitter<LandState> emit) {}
+      LandSearchDataEvent event, Emitter<LandState> emit) async {
+    List<GetProductsDataModel> allData = await _fetchData(emit);
+
+    List<GetProductsDataModel> filteredData = allData.where(
+      (item) {
+        double? itemPrice =
+            item.price != null ? double.tryParse(item.price!) : null;
+        bool matechesRange = itemPrice != null &&
+            itemPrice >= event.startRange &&
+            itemPrice <= event.endRange;
+        bool matchesRegion =
+            event.regionId == null || item.region_id == event.regionId;
+        bool matechesCategory =
+            event.categoryId == null || item.category_id == event.categoryId;
+        bool matchSubCategory = event.subCategoryId == null ||
+            item.subcategory1_id == event.subCategoryId;
+        bool matchSubCategory2 = event.subCategory2Id == null ||
+            item.subcategory2_id == event.subCategory2Id;
+        bool matchesProduct =
+            event.productId == null || item.product_id == event.productId;
+              print("event.startRange ${event.startRange}");
+              print("event.endRange ${event.endRange}");
+              print("match matechesRange $matechesRange");
+        return matechesRange &&
+            matchesRegion &&
+            matechesCategory &&
+            matchSubCategory &&
+            matchSubCategory2 &&
+            matchesProduct;
+      },
+    ).toList();
+  
+    print(">>>Filter>>> ${filteredData.map((e) => e.product_id,)}");
+    emit(LandSearchDataState(filteredData: filteredData));
+  }
 }

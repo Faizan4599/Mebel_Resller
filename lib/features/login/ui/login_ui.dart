@@ -74,7 +74,7 @@ class LoginUi extends StatelessWidget {
                             Text(
                               "Email/ Mobile number",
                               style: TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.bold),
+                                  fontSize: 15, fontWeight: FontWeight.bold),
                             )
                           ],
                         ),
@@ -85,6 +85,8 @@ class LoginUi extends StatelessWidget {
                           cursorColor: CommonColors.primary,
                           controller: emailOrMobileTxt,
                           decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 10.0),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                       color: CommonColors.primary, width: 1)),
@@ -110,22 +112,53 @@ class LoginUi extends StatelessWidget {
                             Text(
                               "Password",
                               style: TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.bold),
+                                  fontSize: 15, fontWeight: FontWeight.bold),
                             )
                           ],
                         ),
                         const SizedBox(
                           height: 5,
                         ),
-                        TextField(
-                          cursorColor: CommonColors.primary,
-                          controller: passTxt,
-                          decoration: const InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: CommonColors.primary, width: 1)),
-                              hintText: "please enter password",
-                              border: OutlineInputBorder()),
+                        BlocBuilder<LoginBloc, LoginState>(
+                          bloc: _loginBloc,
+                          buildWhen: (previous, current) =>
+                              current is LoginShowPasswordState,
+                          builder: (context, state) {
+                            return TextField(
+                              cursorColor: CommonColors.primary,
+                              controller: passTxt,
+                              obscureText: state is LoginShowPasswordState
+                                  ? !state.showPass
+                                  : true,
+                              decoration: InputDecoration(
+                                  suffixIcon: InkWell(
+                                      onTap: () {
+                                        print("SSs");
+                                        _loginBloc.add(LoginShowPasswordEvent(
+                                            showPass: !_loginBloc.showPass));
+                                      },
+                                      child: BlocBuilder<LoginBloc, LoginState>(
+                                        bloc: _loginBloc,
+                                        buildWhen: (previous, current) =>
+                                            current is LoginShowPasswordState,
+                                        builder: (context, state) {
+                                          return Icon(
+                                              (state is LoginShowPasswordState &&
+                                                      _loginBloc.showPass)
+                                                  ? Icons.visibility
+                                                  : Icons.visibility_off);
+                                        },
+                                      )),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 10.0, horizontal: 10.0),
+                                  focusedBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: CommonColors.primary,
+                                          width: 1)),
+                                  hintText: "please enter password",
+                                  border: const OutlineInputBorder()),
+                            );
+                          },
                         ),
                       ],
                     ),

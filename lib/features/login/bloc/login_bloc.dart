@@ -5,17 +5,15 @@ import 'package:meta/meta.dart';
 import 'package:reseller_app/common/failed_data_model.dart';
 import 'package:reseller_app/features/login/model/login_data_mode.dart';
 import 'package:reseller_app/helper/preference_utils.dart';
-
 import 'package:reseller_app/repo/api_urls.dart';
-
 import '../../../constant/constant.dart';
 import '../../../repo/api_repository.dart';
 import '../../../repo/response_handler.dart';
-
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  bool showPass = false;
   bool validateCredentials(String username, String password) {
     if (username.isEmpty) {
       Constant.showLongToast("Please enter user name");
@@ -29,6 +27,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginBloc() : super(LoginInitial()) {
     on<LoginOnTapEvent>(loginOnTapEvent);
+    on<LoginShowPasswordEvent>(loginShowPasswordEvent);
   }
 
   FutureOr<void> loginOnTapEvent(
@@ -81,5 +80,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     PreferenceUtils.setString(UserData.id.key, userDataList.first.id ?? "");
     PreferenceUtils.setString(UserData.name.key, userDataList.first.name ?? "");
     PreferenceUtils.setString(UserData.isLogin.key, true.toString());
+  }
+
+  FutureOr<void> loginShowPasswordEvent(
+      LoginShowPasswordEvent event, Emitter<LoginState> emit) {
+    print("BLOC METHOD ${event.showPass}");
+    showPass = event.showPass;
+    emit(LoginShowPasswordState(showPass: showPass));
   }
 }

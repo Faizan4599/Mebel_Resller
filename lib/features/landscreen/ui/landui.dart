@@ -392,7 +392,29 @@ class LandUi extends StatelessWidget {
                                 minWidth: 200,
                                 height: 40,
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    _landBloc.add(
+                                      LandSearchDataEvent(
+                                          startRange: _landBloc.start,
+                                          endRange: _landBloc.end,
+                                          regionId: _landBloc.regionVal.isEmpty
+                                              ? null
+                                              : _landBloc.regionVal,
+                                          categoryId:
+                                              _landBloc.categoryVal.isEmpty
+                                                  ? null
+                                                  : _landBloc.categoryVal,
+                                          subCategoryId:
+                                              _landBloc.subCategoryVal.isEmpty
+                                                  ? null
+                                                  : _landBloc.subCategoryVal,
+                                          subCategory2Id:
+                                              _landBloc.subCategory2Val,
+                                          productId: productId.text.isEmpty
+                                              ? null
+                                              : productId.text),
+                                    );
+                                  },
                                   style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
@@ -419,15 +441,19 @@ class LandUi extends StatelessWidget {
               child: BlocBuilder<LandBloc, LandState>(
                 buildWhen: (previous, current) =>
                     current is LoadDataState ||
-                    current is LandLoadMoreDataState,
+                    current is LandLoadMoreDataState ||
+                    current is LandSearchDataState,
                 bloc: _landBloc,
                 builder: (context, state) {
                   print("STATE CHECK FOR PRODUCTS>>>> $state");
                   if (state is LoadDataState ||
-                      state is LandLoadMoreDataState) {
+                      state is LandLoadMoreDataState ||
+                      state is LandSearchDataState) {
                     var data = (state is LoadDataState)
                         ? state.data
-                        : (state as LandLoadMoreDataState).data;
+                        : (state is LandLoadMoreDataState)
+                            ? state.data
+                            : (state as LandSearchDataState).filteredData;
                     return RefreshIndicator(
                       onRefresh: () async {
                         _landBloc.add(LandRefreshDataEvent());
