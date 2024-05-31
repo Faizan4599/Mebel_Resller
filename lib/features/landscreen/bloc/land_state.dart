@@ -104,3 +104,9 @@ class LandNavigateToQuoteState extends LandState {
   List<GetProductDataModel>? productData;
   LandNavigateToQuoteState({required this.productData});
 }
+
+class LandClearDataState extends LandState {
+  String? value;
+  List<dynamic> list;
+  LandClearDataState({required this.value, required this.list});
+}

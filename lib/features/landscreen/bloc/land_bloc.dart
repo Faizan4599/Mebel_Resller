@@ -52,6 +52,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     on<LandRefreshDataEvent>(landRefreshDataEvent);
     on<LandLogoutEvent>(landLogoutEvent);
     on<LandSearchDataEvent>(landSearchDataEvent);
+    on<LandClearDataEvent>(landClearDataEvent);
   }
 
   String sortDropdownValue = '';
@@ -338,6 +339,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
   FutureOr<void> landRefreshDataEvent(
       LandRefreshDataEvent event, Emitter<LandState> emit) async {
+    productsList.clear();
     currentPage = 1;
     hasMoreData = true;
     await _fetchData(emit);
@@ -423,9 +425,9 @@ class LandBloc extends Bloc<LandEvent, LandState> {
             item.subcategory2_id == event.subCategory2Id;
         bool matchesProduct =
             event.productId == null || item.product_id == event.productId;
-              print("event.startRange ${event.startRange}");
-              print("event.endRange ${event.endRange}");
-              print("match matechesRange $matechesRange");
+        print("event.startRange ${event.startRange}");
+        print("event.endRange ${event.endRange}");
+        print("match matechesRange $matechesRange");
         return matechesRange &&
             matchesRegion &&
             matechesCategory &&
@@ -434,8 +436,17 @@ class LandBloc extends Bloc<LandEvent, LandState> {
             matchesProduct;
       },
     ).toList();
-  
-    print(">>>Filter>>> ${filteredData.map((e) => e.product_id,)}");
+
+    print(">>>Filter>>> ${filteredData.map(
+      (e) => e.product_id,
+    )}");
     emit(LandSearchDataState(filteredData: filteredData));
+  }
+
+  FutureOr<void> landClearDataEvent(
+      LandClearDataEvent event, Emitter<LandState> emit) {
+    event.value = '';
+    event.list.clear();
+    emit(LandClearDataState(value: event.value, list: event.list));
   }
 }

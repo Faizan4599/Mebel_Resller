@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/landscreen/ui/landui.dart';
 import 'package:reseller_app/features/login/ui/login_ui.dart';
 import 'package:reseller_app/features/splash/bloc/splash_bloc.dart';
@@ -50,22 +51,11 @@ class SplashUi extends StatelessWidget {
                           ),
                         ),
                 );
-                // Timer(
-                //   Duration(
-                //     seconds: 0,
-                //   ),
-                //   () => Navigator.pushReplacement(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (context) => SplashUi(),
-                //     ),
-                //   ),
-                // );
               }
             },
             builder: (context, state) {
               return const Center(
-                child: Text("Reseller App"),
+                child: Text(Constant.appName),
               );
             },
           ),

@@ -96,3 +96,9 @@ class LandNavigateToQuoteEvent extends LandEvent {
   String? productId;
   LandNavigateToQuoteEvent({required this.productId});
 }
+
+class LandClearDataEvent extends LandEvent {
+  String value;
+  List<dynamic> list;
+  LandClearDataEvent({required this.value, required this.list});
+}

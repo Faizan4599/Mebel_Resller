@@ -7,15 +7,15 @@ import 'package:reseller_app/features/landscreen/model/get_product_data_model.da
 import 'package:reseller_app/utils/common_colors.dart';
 
 import '../../landscreen/model/sample_data_model.dart';
-import '../bloc/quote_bloc.dart';
+import '../bloc/product_bloc.dart';
 
-class QuoteUi extends StatelessWidget {
-  final QuoteBloc _quoteBloc = QuoteBloc();
+class ProductUi extends StatelessWidget {
+  final ProductBloc _ProductBloc = ProductBloc();
 
   final List<GetProductDataModel> perticularData;
   final PageController _pageController = PageController();
   final ScrollController _scrollController = ScrollController();
-  QuoteUi({Key? key, required this.perticularData}) : super(key: key);
+  ProductUi({Key? key, required this.perticularData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +25,10 @@ class QuoteUi extends StatelessWidget {
     print("<<<<<<<<<<${allData}");
 
     return BlocProvider(
-      create: (_) => QuoteBloc(),
+      create: (_) => ProductBloc(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Quote"),
+          title: const Text("Product"),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -45,15 +45,15 @@ class QuoteUi extends StatelessWidget {
                           color: Color.fromARGB(52, 196, 196, 196),
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
-                        child: BlocBuilder<QuoteBloc, QuoteState>(
+                        child: BlocBuilder<ProductBloc, ProductState>(
                           builder: (context, state) {
-                            final quoteBloc =
-                                BlocProvider.of<QuoteBloc>(context);
+                            final productBloc =
+                                BlocProvider.of<ProductBloc>(context);
                             return PageView.builder(
                               controller: _pageController,
                               onPageChanged: (index) {
-                                quoteBloc.add(
-                                    QuoteSlideImageEvent(currentPage: index));
+                                productBloc.add(
+                                    ProductSlideImageEvent(currentPage: index));
 
                                 // Automatically scroll the dots to keep the current one visible
                                 _scrollController.animateTo(
@@ -89,9 +89,9 @@ class QuoteUi extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      BlocBuilder<QuoteBloc, QuoteState>(
+                      BlocBuilder<ProductBloc, ProductState>(
                         builder: (context, state) {
-                          final currentPage = state is QuoteSlideImageState
+                          final currentPage = state is ProductSlideImageState
                               ? state.currentPage
                               : 0;
 
@@ -140,12 +140,12 @@ class QuoteUi extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    BlocListener<QuoteBloc, QuoteState>(
-                      bloc: _quoteBloc,
+                    BlocListener<ProductBloc, ProductState>(
+                      bloc: _ProductBloc,
                       listenWhen: (previous, current) =>
-                          current is QuoteActionState,
+                          current is ProductActionState,
                       listener: (context, state) {
-                        if (state is QuoteNavigateToAddToCartState) {
+                        if (state is ProductNavigateToAddToCartState) {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -157,7 +157,7 @@ class QuoteUi extends StatelessWidget {
                       },
                       child: ElevatedButton(
                         onPressed: () {
-                          _quoteBloc.add(QuoteGotoAddToCartEvent());
+                          _ProductBloc.add(ProductGotoAddToCartEvent());
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
