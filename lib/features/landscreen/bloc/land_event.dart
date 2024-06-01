@@ -43,8 +43,8 @@ class LandCategoryDropDownEvent extends LandEvent {
 }
 
 class LandPriceRangeSliderEvent extends LandEvent {
-  double start;
-  double end;
+  int start;
+  int end;
   LandPriceRangeSliderEvent({required this.start, required this.end});
 }
 
@@ -74,8 +74,8 @@ class LandRefreshDataEvent extends LandEvent {}
 class LandLogoutEvent extends LandEvent {}
 
 class LandSearchDataEvent extends LandEvent {
-  final double startRange;
-  final double endRange;
+  final int startRange;
+  final int endRange;
   final String? regionId;
   final String? categoryId;
   final String? subCategoryId;

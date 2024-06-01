@@ -155,34 +155,35 @@ class LandUi extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       customDropDownButton(
-                                          title: "REGION",
-                                          context: context,
-                                          isExpanded: true,
-                                          hint: "Select Region",
-                                          value: _landBloc.regionVal == ''
-                                              ? null
-                                              : _landBloc.regionVal,
-                                          items: _landBloc.regionList
-                                              .map((item) =>
-                                                  DropdownMenuItem<String>(
-                                                    value: item.region_id,
-                                                    child: Text(
-                                                      item.region_name,
-                                                      style: const TextStyle(
-                                                        fontSize: 14,
-                                                      ),
+                                        title: "REGION",
+                                        context: context,
+                                        isExpanded: true,
+                                        hint: "Select Region",
+                                        value: _landBloc.regionVal == ''
+                                            ? null
+                                            : _landBloc.regionVal,
+                                        items: _landBloc.regionList
+                                            .map((item) =>
+                                                DropdownMenuItem<String>(
+                                                  value: item.region_id,
+                                                  child: Text(
+                                                    item.region_name,
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
                                                     ),
-                                                  ))
-                                              .toList(),
-                                          onChanged: (value) {
-                                            _landBloc.regionVal = value!;
-                                            _landBloc.add(
-                                              LandRegionDropDownEvent(
-                                                  regionDropDownValue: _landBloc
-                                                      .sortDropdownValue,
-                                                  items: _landBloc.regionList),
-                                            );
-                                          }),
+                                                  ),
+                                                ))
+                                            .toList(),
+                                        onChanged: (value) {
+                                          _landBloc.regionVal = value!;
+                                          _landBloc.add(
+                                            LandRegionDropDownEvent(
+                                                regionDropDownValue:
+                                                    _landBloc.sortDropdownValue,
+                                                items: _landBloc.regionList),
+                                          );
+                                        },
+                                      ),
                                       customDropDownButton(
                                         title: "CATEGORY",
                                         hint: "Select Category",
@@ -376,7 +377,7 @@ class LandUi extends StatelessWidget {
                                           BlocProvider(
                                             create: (context) => LandBloc(),
                                             child: Text(
-                                              "\u{20B9}${_landBloc.start.toStringAsFixed(2)} - \u{20B9}:${_landBloc.end.toStringAsFixed(2)}",
+                                              "\u{20B9} ${_landBloc.start} - \u{20B9} ${_landBloc.end}",
                                               style: const TextStyle(
                                                 fontSize: 16.0,
                                               ),
@@ -392,8 +393,8 @@ class LandUi extends StatelessWidget {
                                             value: _landBloc,
                                             child: RangeSlider(
                                               values: RangeValues(
-                                                  _landBloc.start,
-                                                  _landBloc.end),
+                                                  _landBloc.start.toDouble(),
+                                                  _landBloc.end.toDouble()),
                                               labels: RangeLabels(
                                                   _landBloc.start.toString(),
                                                   _landBloc.end.toString()),
@@ -412,8 +413,10 @@ class LandUi extends StatelessWidget {
                                               onChangeEnd: (value) {
                                                 _landBloc.add(
                                                     LandPriceRangeSliderEvent(
-                                                        start: value.start,
-                                                        end: value.end));
+                                                        start:
+                                                            value.start.toInt(),
+                                                        end:
+                                                            value.end.toInt()));
                                               },
                                               min: 1000.0,
                                               max: 500000.0,
@@ -464,15 +467,30 @@ class LandUi extends StatelessWidget {
                                             ),
                                           );
                                         } else {
-                                          // Show an alert or message that at least one filter should be selected
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                  'Please select at least one filter.'),
-                                            ),
-                                          );
+                                          Constant.showLongToast(
+                                              'Please select at least one filter.');
                                         }
+
+                                        _landBloc.add(LandClearDataEvent(
+                                            value: _landBloc.regionVal,
+                                            list: _landBloc.regionList));
+                                        _landBloc.add(LandClearDataEvent(
+                                            value: _landBloc.categoryVal,
+                                            list: _landBloc.categoryList));
+                                        _landBloc.add(LandClearDataEvent(
+                                            value: _landBloc.subCategoryVal,
+                                            list: _landBloc.subCategoryList));
+                                        _landBloc.add(LandClearDataEvent(
+                                            value: _landBloc.subCategory2Val,
+                                            list: _landBloc.subCategory2List));
+                                        productId.text = '';
+
+                                        _landBloc.add(LandCategoryDropDownEvent(
+                                            categoryDropDownValue: '',
+                                            items: []));
+                                        _landBloc.add(LandRegionDropDownEvent(
+                                            regionDropDownValue: '',
+                                            items: []));
                                       },
                                       style: ElevatedButton.styleFrom(
                                         shape: RoundedRectangleBorder(
@@ -533,7 +551,7 @@ class LandUi extends StatelessWidget {
                           child: GridView.builder(
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2),
+                                    crossAxisCount: 1),
                             itemCount: data.length,
                             itemBuilder: (context, index) {
                               return Padding(
@@ -552,26 +570,38 @@ class LandUi extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10),
-                                              child: Text(
-                                                  data[index].product_id ?? "",
-                                                  style: const TextStyle(
-                                                      fontSize: 15,
-                                                      color: Colors.white)),
-                                            ),
-                                            IconButton(
-                                              onPressed: () {},
-                                              icon: const Icon(Icons.share),
-                                              iconSize: 20,
-                                              color: Colors.white,
-                                            ),
-                                          ],
+                                        Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                data[index].product_id ?? "",
+                                                style: const TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.white),
+                                              ),
+                                              // IconButton(
+                                              //   onPressed: () {},
+                                              //   icon: const Icon(Icons.share),
+                                              //   iconSize: 20,
+                                              //   color: Colors.white,
+                                              // ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 10),
+                                                child: InkWell(
+                                                    onTap: () {},
+                                                    child: const Icon(
+                                                      Icons.share,
+                                                      color: CommonColors
+                                                          .planeWhite,
+                                                      size: 23,
+                                                    )),
+                                              )
+                                            ],
+                                          ),
                                         ),
                                         Expanded(
                                           child: Container(
@@ -585,22 +615,88 @@ class LandUi extends StatelessWidget {
                                             ),
                                           ),
                                         ),
+                                        // Padding(
+                                        //   padding: const EdgeInsets.only(
+                                        //       top: 10, bottom: 10),
+                                        //   child: Row(
+                                        //     mainAxisAlignment:
+                                        //         MainAxisAlignment.center,
+                                        //     children: [
+                                        //       Text(
+                                        //         "\u{20B9} ${data[index].price}",
+                                        //         style: const TextStyle(
+                                        //             fontSize: 15,
+                                        //             color: Colors.white),
+                                        //       ),
+                                        //     ],
+                                        //   ),
+                                        // ),
                                         Padding(
                                           padding: const EdgeInsets.only(
-                                              top: 10, bottom: 10),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            top: 5,
+                                            bottom: 5,
+                                            left: 10,
+                                            right: 10,
+                                          ),
+                                          child: Column(
                                             children: [
-                                              Text(
-                                                "\u{20B9} ${data[index].price}",
-                                                style: const TextStyle(
-                                                    fontSize: 15,
-                                                    color: Colors.white),
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    width: 100,
+                                                    child: Text(
+                                                      data[index]
+                                                          .name
+                                                          .toString(),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: const TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.normal,
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        data[index]
+                                                            .region
+                                                            .toString(),
+                                                        style: const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Text(
+                                                    "\u{20B9} ${data[index].price}",
+                                                    style: const TextStyle(
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
-                                        ),
+                                        )
                                       ],
                                     ),
                                   ),

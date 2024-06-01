@@ -13,7 +13,6 @@ import 'package:reseller_app/features/landscreen/model/get_sub_categories1.dart'
 import 'package:reseller_app/features/landscreen/model/get_sub_categories2.dart';
 import 'package:reseller_app/repo/api_urls.dart';
 import 'package:reseller_app/repo/response_handler.dart';
-
 import '../features/login/model/login_data_mode.dart';
 
 class APIRepository {
@@ -137,13 +136,27 @@ class APIRepository {
                     outerResponse.data as Map<String, dynamic>);
               }
               return Success(code: APICode.SUCCESS, response: responseData);
+            case APIUrls.addToCart:
+              if (outerResponse.data is List) {
+                responseData = (outerResponse.data as List<dynamic>)
+                    .map(
+                      (e) => FailedCommonDataModel.fromJson(
+                          e as Map<String, dynamic>),
+                    )
+                    .toList();
+              } else if (outerResponse.data is Map) {
+                responseData = FailedCommonDataModel.fromJson(
+                    outerResponse.data as Map<String, dynamic>);
+              }
+              return Success(code: APICode.SUCCESS, response: responseData);
 
             default:
               return ApiResponseModel(
-                  outerReponse: outerResponse,
-                  responseData: Failure(
-                      code: APICode.UNKNOWN_ERROR,
-                      errorResponse: "Unknown error"));
+                outerReponse: outerResponse,
+                responseData: Failure(
+                    code: APICode.UNKNOWN_ERROR,
+                    errorResponse: "Unknown error"),
+              );
           }
         } else if (jsonMap["Response"]["Status"].toLowerCase() == "failed") {
           var failedData;

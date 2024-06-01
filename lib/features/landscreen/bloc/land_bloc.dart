@@ -71,8 +71,8 @@ class LandBloc extends Bloc<LandEvent, LandState> {
   String subCategoryVal = '';
   String subCategory2Val = '';
   String regionVal = '';
-  double start = 1000.0;
-  double end = 100000.0;
+  int start = 1000;
+  int end = 100000;
   bool isChecked = false;
   List<SampleDataModel> localData = [];
 
@@ -410,8 +410,8 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
     List<GetProductsDataModel> filteredData = allData.where(
       (item) {
-        double? itemPrice =
-            item.price != null ? double.tryParse(item.price!) : null;
+        int? itemPrice =
+            item.price != null ? int.tryParse(item.price!) : null;
         bool matechesRange = itemPrice != null &&
             itemPrice >= event.startRange &&
             itemPrice <= event.endRange;

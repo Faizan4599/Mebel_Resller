@@ -42,7 +42,7 @@ class ProductUi extends StatelessWidget {
                         width: Constant.screenWidth(context),
                         height: Constant.screenHeight(context) * 0.3,
                         decoration: const BoxDecoration(
-                          color: Color.fromARGB(52, 196, 196, 196),
+                          color: Color(0x34C4C4C4),
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
                         child: BlocBuilder<ProductBloc, ProductState>(
@@ -194,10 +194,58 @@ class ProductUi extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
+                const Divider(
+                  thickness: 2,
+                  color: Color(0x34C4C4C4),
+                ),
+                Column(
+                  children: [
+                    productInfo("Product Name", allData.name.toString()),
+                    productInfo("Region", allData.region.toString()),
+                    productInfo("Category", allData.category.toString()),
+                    productInfo("Subcategory", allData.subcategory1.toString()),
+                    productInfo(
+                        "Subcategory 2", allData.subcategory2.toString()),
+                    productInfo("Price", allData.price.toString()),
+                    productInfo("Poduct ID", allData.product_id.toString()),
+                  ],
+                )
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget productInfo(String title, String infoData) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5,bottom: 5),
+      child: Row(
+        children: [
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: '$title :  ',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black, // Specify the color if needed
+                  ),
+                ),
+                TextSpan(
+                  text: infoData,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black, // Specify the color if needed
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

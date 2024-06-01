@@ -56,8 +56,8 @@ class LandCategoryDropdownState extends LandState {
 }
 
 class LandPriceRangeSliderState extends LandState {
-  double start;
-  double end;
+  int start;
+  int end;
   LandPriceRangeSliderState({required this.start, required this.end});
 }
 
