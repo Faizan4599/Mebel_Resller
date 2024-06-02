@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:open_file_plus/open_file_plus.dart';
 import 'package:reseller_app/constant/constant.dart';
-import 'package:reseller_app/features/add_to_cart/ui/add_to_cart.dart';
+import 'package:reseller_app/features/cart/ui/cart_ui.dart';
 import 'package:reseller_app/features/landscreen/model/get_product_data_model.dart';
 import 'package:reseller_app/utils/common_colors.dart';
-
-import '../../landscreen/model/sample_data_model.dart';
 import '../bloc/product_bloc.dart';
 
 class ProductUi extends StatelessWidget {
-  final ProductBloc _ProductBloc = ProductBloc();
+  final ProductBloc _productBloc = ProductBloc();
 
   final List<GetProductDataModel> perticularData;
   final PageController _pageController = PageController();
@@ -141,7 +138,7 @@ class ProductUi extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     BlocListener<ProductBloc, ProductState>(
-                      bloc: _ProductBloc,
+                      bloc: _productBloc,
                       listenWhen: (previous, current) =>
                           current is ProductActionState,
                       listener: (context, state) {
@@ -149,15 +146,20 @@ class ProductUi extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => AddToCartUi(
+                                builder: (context) => CartUi(
                                   cartItems: perticularData,
                                 ),
                               ));
+                        } else if (state is ProductErrorState) {
+                          Constant.showLongToast(state.message);
+                        } else if (state is ProductSuccessState) {
+                          Constant.showLongToast(state.message);
                         }
                       },
                       child: ElevatedButton(
                         onPressed: () {
-                          _ProductBloc.add(ProductGotoAddToCartEvent());
+                          _productBloc.add(ProductGotoAddToCartEvent(
+                              product_id: allData.product_id ?? ""));
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -220,7 +222,7 @@ class ProductUi extends StatelessWidget {
 
   Widget productInfo(String title, String infoData) {
     return Padding(
-      padding: const EdgeInsets.only(top: 5,bottom: 5),
+      padding: const EdgeInsets.only(top: 5, bottom: 5),
       child: Row(
         children: [
           RichText(

@@ -9,9 +9,17 @@ class ProductInitial extends ProductState {}
 
 class ProductLoadingState extends ProductState {}
 
-class ProductErrorState extends ProductState {}
+class ProductErrorState extends ProductState {
+  String message;
+  String? discription;
+  ProductErrorState({required this.message, this.discription});
+}
 
-class ProductSuccessState extends ProductState {}
+class ProductSuccessState extends ProductState {
+  String message;
+  String? discription;
+  ProductSuccessState({required this.message, this.discription});
+}
 
 class ProductSlideImageState extends ProductState {
   final int currentPage;

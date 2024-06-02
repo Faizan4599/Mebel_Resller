@@ -8,4 +8,7 @@ class ProductSlideImageEvent extends ProductEvent {
   ProductSlideImageEvent({required this.currentPage});
 }
 
-class ProductGotoAddToCartEvent extends ProductEvent {}
+class ProductGotoAddToCartEvent extends ProductEvent {
+  String product_id;
+  ProductGotoAddToCartEvent({required this.product_id});
+}

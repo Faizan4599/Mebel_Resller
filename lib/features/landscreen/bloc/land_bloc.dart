@@ -410,8 +410,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
     List<GetProductsDataModel> filteredData = allData.where(
       (item) {
-        int? itemPrice =
-            item.price != null ? int.tryParse(item.price!) : null;
+        int? itemPrice = item.price != null ? int.tryParse(item.price!) : null;
         bool matechesRange = itemPrice != null &&
             itemPrice >= event.startRange &&
             itemPrice <= event.endRange;
