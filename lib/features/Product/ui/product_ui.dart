@@ -17,10 +17,6 @@ class ProductUi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GetProductDataModel allData = perticularData.first;
-
-    ;
-    print("<<<<<<<<<<${allData}");
-
     return BlocProvider(
       create: (_) => ProductBloc(),
       child: Scaffold(
@@ -40,7 +36,9 @@ class ProductUi extends StatelessWidget {
                         height: Constant.screenHeight(context) * 0.3,
                         decoration: const BoxDecoration(
                           color: Color(0x34C4C4C4),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
                         ),
                         child: BlocBuilder<ProductBloc, ProductState>(
                           builder: (context, state) {
@@ -50,7 +48,8 @@ class ProductUi extends StatelessWidget {
                               controller: _pageController,
                               onPageChanged: (index) {
                                 productBloc.add(
-                                    ProductSlideImageEvent(currentPage: index));
+                                  ProductSlideImageEvent(currentPage: index),
+                                );
 
                                 // Automatically scroll the dots to keep the current one visible
                                 _scrollController.animateTo(
@@ -140,24 +139,28 @@ class ProductUi extends StatelessWidget {
                     BlocListener<ProductBloc, ProductState>(
                       bloc: _productBloc,
                       listenWhen: (previous, current) =>
-                          current is ProductActionState,
+                          current is ProductNavigateToAddToCartState ||
+                          current is ProductSuccessState ||
+                          current is ProductErrorState,
                       listener: (context, state) {
-                        if (state is ProductNavigateToAddToCartState) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CartUi(
-                                  cartItems: perticularData,
-                                ),
-                              ));
+                        print("Check state .....${state}");
+                        if (state is ProductSuccessState) {
+                          Constant.showLongToast(state.message);
                         } else if (state is ProductErrorState) {
                           Constant.showLongToast(state.message);
-                        } else if (state is ProductSuccessState) {
-                          Constant.showLongToast(state.message);
+                        } else if (state is ProductNavigateToAddToCartState) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CartUi(
+                                cartItems: perticularData,
+                              ),
+                            ),
+                          );
                         }
                       },
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           _productBloc.add(ProductGotoAddToCartEvent(
                               product_id: allData.product_id ?? ""));
                         },

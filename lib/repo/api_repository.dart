@@ -5,6 +5,7 @@ import 'package:reseller_app/common/api_response_model.dart';
 import 'package:reseller_app/common/failed_data_model.dart';
 import 'package:reseller_app/common/outer_response.dart';
 import 'package:reseller_app/constant/constant.dart';
+import 'package:reseller_app/features/Product/model/product_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_categories_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_product_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_products_data_model.dart';
@@ -27,10 +28,7 @@ class APIRepository {
       };
       Uri uri = Uri.parse(url);
       final finalUri = uri.replace(queryParameters: parameters);
-      print("API Url: $url");
-      print("Parameters: $parameters");
       final response = await http.get(finalUri, headers: header);
-
       var jsonMap = json.decode(response.body);
 
       if (response.statusCode == 201) {
@@ -136,20 +134,22 @@ class APIRepository {
                     outerResponse.data as Map<String, dynamic>);
               }
               return Success(code: APICode.SUCCESS, response: responseData);
+            // =====
             case APIUrls.addToCart:
+              print("REPO LIST >>>> ${outerResponse.data is List}");
+              print("REPO MAP>>>> ${outerResponse.data is Map}");
               if (outerResponse.data is List) {
                 responseData = (outerResponse.data as List<dynamic>)
                     .map(
-                      (e) => FailedCommonDataModel.fromJson(
-                          e as Map<String, dynamic>),
+                      (e) =>
+                          ProductDataModel.fromJson(e as Map<String, dynamic>),
                     )
                     .toList();
               } else if (outerResponse.data is Map) {
-                responseData = FailedCommonDataModel.fromJson(
+                responseData = ProductDataModel.fromJson(
                     outerResponse.data as Map<String, dynamic>);
               }
               return Success(code: APICode.SUCCESS, response: responseData);
-
             default:
               return ApiResponseModel(
                 outerReponse: outerResponse,

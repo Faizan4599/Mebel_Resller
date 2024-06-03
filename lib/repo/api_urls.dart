@@ -7,4 +7,5 @@ class APIUrls {
   static const String getProducts = "getProducts";
   static const String getProduct = "getProduct";
   static const String addToCart = "addToCart";
+  static const String getCartDetails = "getCartDetails";
 }
