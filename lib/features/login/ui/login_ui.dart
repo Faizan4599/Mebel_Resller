@@ -35,12 +35,9 @@ class LoginUi extends StatelessWidget {
               const SizedBox(
                 width: 5,
               ),
-              const Text(
+              Text(
                 Constant.appName,
-                style: TextStyle(
-                    fontSize: 35,
-                    fontWeight: FontWeight.bold,
-                    color: CommonColors.primary),
+                style: Theme.of(context).textTheme.displayLarge,
               ),
             ],
           ),
@@ -69,12 +66,11 @@ class LoginUi extends StatelessWidget {
                     width: 300,
                     child: Column(
                       children: [
-                        const Row(
+                        Row(
                           children: [
                             Text(
                               "Email/ Mobile number",
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
+                              style: Theme.of(context).textTheme.titleMedium,
                             )
                           ],
                         ),
@@ -82,6 +78,7 @@ class LoginUi extends StatelessWidget {
                           height: 5,
                         ),
                         TextField(
+                          style: Theme.of(context).textTheme.titleSmall,
                           cursorColor: CommonColors.primary,
                           controller: emailOrMobileTxt,
                           decoration: const InputDecoration(
@@ -107,12 +104,11 @@ class LoginUi extends StatelessWidget {
                     width: 300,
                     child: Column(
                       children: [
-                        const Row(
+                        Row(
                           children: [
                             Text(
                               "Password",
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
+                              style: Theme.of(context).textTheme.titleMedium,
                             )
                           ],
                         ),
@@ -125,6 +121,7 @@ class LoginUi extends StatelessWidget {
                               current is LoginShowPasswordState,
                           builder: (context, state) {
                             return TextField(
+                              style: Theme.of(context).textTheme.titleSmall,
                               cursorColor: CommonColors.primary,
                               controller: passTxt,
                               obscureText: state is LoginShowPasswordState

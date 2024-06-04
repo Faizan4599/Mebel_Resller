@@ -76,33 +76,41 @@ class CartUi extends StatelessWidget {
                                         ),
                                       ),
                                       Container(
+                                        height: 40,
                                         decoration: BoxDecoration(
-                                          color: Colors.black,
+                                          color: CommonColors.primary,
                                           borderRadius: BorderRadius.circular(
                                             8.0,
                                           ),
                                         ),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          // mainAxisAlignment:
+                                          //     MainAxisAlignment.spaceBetween,
                                           children: [
                                             InkWell(
                                               onTap: () {
                                                 print("+");
                                               },
                                               child: const Icon(
-                                                size: 26,
+                                                size: 25,
                                                 Icons.add,
                                                 color: CommonColors.planeWhite,
                                               ),
                                             ),
                                             Container(
                                               width: 40,
+                                              height: Constant.screenHeight(
+                                                  context),
                                               color: CommonColors.planeWhite,
                                               child: Center(
-                                                child: Text(data[index]
-                                                    .cart_qty
-                                                    .toString()),
+                                                child: Text(
+                                                  data[index]
+                                                      .cart_qty
+                                                      .toString(),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .displaySmall,
+                                                ),
                                               ),
                                             ),
                                             InkWell(
@@ -110,7 +118,7 @@ class CartUi extends StatelessWidget {
                                                 print("-");
                                               },
                                               child: const Icon(
-                                                size: 26,
+                                                size: 25,
                                                 Icons.remove,
                                                 color: CommonColors.planeWhite,
                                               ),
