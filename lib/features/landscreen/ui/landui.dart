@@ -168,9 +168,9 @@ class LandUi extends StatelessWidget {
                                                   value: item.region_id,
                                                   child: Text(
                                                     item.region_name,
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                    ),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleMedium,
                                                   ),
                                                 ))
                                             .toList(),
@@ -350,7 +350,7 @@ class LandUi extends StatelessWidget {
                                                   ),
                                                   hintText: "Enter product id",
                                                   hintStyle:
-                                                      TextStyle(fontSize: 12),
+                                                      TextStyle(fontSize: 13),
                                                   border: OutlineInputBorder(
                                                       borderRadius:
                                                           BorderRadius.zero)),
@@ -369,18 +369,19 @@ class LandUi extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text(
+                                          Text(
                                             "PRICE RANGE",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge,
                                           ),
                                           BlocProvider(
                                             create: (context) => LandBloc(),
                                             child: Text(
                                               "\u{20B9} ${_landBloc.start} - \u{20B9} ${_landBloc.end}",
-                                              style: const TextStyle(
-                                                fontSize: 16.0,
-                                              ),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleLarge,
                                             ),
                                           ),
                                         ],
@@ -578,9 +579,9 @@ class LandUi extends StatelessWidget {
                                             children: [
                                               Text(
                                                 data[index].product_id ?? "",
-                                                style: const TextStyle(
-                                                    fontSize: 15,
-                                                    color: Colors.white),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge,
                                               ),
                                               // IconButton(
                                               //   onPressed: () {},
@@ -650,11 +651,7 @@ class LandUi extends StatelessWidget {
                                                           .toString(),
                                                       overflow:
                                                           TextOverflow.ellipsis,
-                                                      style: const TextStyle(
-                                                          fontSize: 15,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          color: Colors.white),
+                                                      style: Theme.of(context).textTheme.bodyLarge,
                                                     ),
                                                   ),
                                                 ],
@@ -675,22 +672,13 @@ class LandUi extends StatelessWidget {
                                                         data[index]
                                                             .region
                                                             .toString(),
-                                                        style: const TextStyle(
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color:
-                                                                Colors.white),
+                                                        style: Theme.of(context).textTheme.bodyMedium,
                                                       ),
                                                     ],
                                                   ),
                                                   Text(
                                                     "\u{20B9} ${data[index].price}",
-                                                    style: const TextStyle(
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.white),
+                                                    style:Theme.of(context).textTheme.bodyLarge,
                                                   ),
                                                 ],
                                               ),
@@ -746,8 +734,7 @@ class LandUi extends StatelessWidget {
             children: [
               Text(
                 title ?? "",
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               Column(
                 children: [
@@ -858,30 +845,30 @@ class LandUi extends StatelessWidget {
     );
   }
 
-  Widget customCommonButton(
-    Function()? onTap,
-    String buttonTitle,
-  ) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        height: 40,
-        width: 50,
-        decoration: BoxDecoration(
-          border: Border.all(width: 1, color: CommonColors.primary),
-          borderRadius: const BorderRadius.all(
-            Radius.circular(8),
-          ),
-        ),
-        child: Center(
-          child: Text(
-            buttonTitle,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget customCommonButton(
+  //   Function()? onTap,
+  //   String buttonTitle,
+  // ) {
+  //   return InkWell(
+  //     onTap: onTap,
+  //     child: Container(
+  //       height: 40,
+  //       width: 50,
+  //       decoration: BoxDecoration(
+  //         border: Border.all(width: 1, color: CommonColors.primary),
+  //         borderRadius: const BorderRadius.all(
+  //           Radius.circular(8),
+  //         ),
+  //       ),
+  //       child: Center(
+  //         child: Text(
+  //           buttonTitle,
+  //           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void _showDownloadDialog(BuildContext context, String dialogType) {
     showDialog(

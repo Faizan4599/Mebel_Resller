@@ -32,6 +32,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       };
       var response = await APIRepository()
           .getCommonMethodAPI(getCartDataParameter, APIUrls.getCartDetails);
+      print("Response ${response}");
       if (response is Success) {
         getCartDetailsList.clear();
         if (response.response is List<GetCartDetailsDataModel>) {
@@ -40,6 +41,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         } else if (response.response is GetCartDetailsDataModel) {
           getCartDetailsList.add(response.response as GetCartDetailsDataModel);
         }
+        emit(CartSuccessState(data: getCartDetailsList));
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(CartErrorState(message: failedList.first.message));

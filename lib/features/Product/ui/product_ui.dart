@@ -50,7 +50,6 @@ class ProductUi extends StatelessWidget {
                                 productBloc.add(
                                   ProductSlideImageEvent(currentPage: index),
                                 );
-
                                 // Automatically scroll the dots to keep the current one visible
                                 _scrollController.animateTo(
                                   index * 21.0, // width of each dot + padding
@@ -179,12 +178,12 @@ class ProductUi extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                const Row(
+                 Row(
                   children: [
                     Text(
                       "Description",
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                          Theme.of(context).textTheme.headlineLarge,
                     ),
                   ],
                 ),
@@ -193,7 +192,7 @@ class ProductUi extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(allData.description ?? ""),
+                        Text(allData.description ?? "",style: Theme.of(context).textTheme.bodyLarge,),
                       ],
                     ),
                   ],

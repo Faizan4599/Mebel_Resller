@@ -31,7 +31,9 @@ class APIRepository {
       final finalUri = uri.replace(queryParameters: parameters);
       final response = await http.get(finalUri, headers: header);
       var jsonMap = json.decode(response.body);
-
+      print("API --$uri");
+      print("API --$parameters");
+      print("API Data ${response.body}");
       if (response.statusCode == 201) {
         var outerResponse = OuterReponse.fromJson(jsonMap['Response']);
         statusKey = outerResponse.status ?? "";

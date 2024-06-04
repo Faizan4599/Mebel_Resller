@@ -16,11 +16,8 @@ class SplashUi extends StatelessWidget {
     _bloc.add(SplashInitNavigateEvent());
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        textSelectionTheme: TextSelectionThemeData(
-          selectionHandleColor: Colors.transparent,
-        ),
-      ),
+      theme: 
+      Constant.lightTheme,
       home: Scaffold(
         body: SafeArea(
           child: BlocConsumer<SplashBloc, SplashState>(

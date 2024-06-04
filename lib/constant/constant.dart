@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:reseller_app/utils/common_colors.dart';
 
 class Constant {
   static const String appName = "Luxury Furniture";
@@ -29,4 +31,32 @@ class Constant {
       toastLength: Toast.LENGTH_SHORT,
     );
   }
+
+  static ThemeData lightTheme = ThemeData(
+    brightness: Brightness.light,
+    useMaterial3: true,
+    textSelectionTheme: const TextSelectionThemeData(
+      selectionHandleColor: Colors.transparent,
+    ),
+    textTheme: const TextTheme(
+        headlineLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        titleLarge: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+        titleMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        bodyLarge: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          color: CommonColors.planeWhite,
+        ),
+        bodyMedium: TextStyle(
+            fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
+    appBarTheme: const AppBarTheme(
+      color: CommonColors.primary,
+      titleTextStyle: TextStyle(
+          color: CommonColors.planeWhite,
+          fontSize: 20,
+          fontWeight: FontWeight.bold),
+      iconTheme: IconThemeData(color: Colors.white),
+    ),
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+  );
 }
