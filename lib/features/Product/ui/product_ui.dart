@@ -178,12 +178,11 @@ class ProductUi extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                 Row(
+                Row(
                   children: [
                     Text(
                       "Description",
-                      style:
-                          Theme.of(context).textTheme.headlineLarge,
+                      style: Theme.of(context).textTheme.headlineLarge,
                     ),
                   ],
                 ),
@@ -192,7 +191,10 @@ class ProductUi extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(allData.description ?? "",style: Theme.of(context).textTheme.bodyLarge,),
+                        Text(
+                          allData.description ?? "",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
                       ],
                     ),
                   ],

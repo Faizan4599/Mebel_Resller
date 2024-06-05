@@ -51,8 +51,8 @@ class SplashUi extends StatelessWidget {
               }
             },
             builder: (context, state) {
-              return const Center(
-                child: Text(Constant.appName),
+              return  Center(
+                child: Text(Constant.appName, style: Theme.of(context).textTheme.displayLarge,),
               );
             },
           ),

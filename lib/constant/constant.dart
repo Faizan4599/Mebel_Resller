@@ -39,22 +39,23 @@ class Constant {
       selectionHandleColor: Colors.transparent,
     ),
     textTheme: const TextTheme(
-        displayLarge: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-            color: CommonColors.primary),
-        headlineLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        titleLarge: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-        titleMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-        titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
-        displaySmall: TextStyle(fontSize: 14),
-        bodyLarge: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.normal,
-          color: CommonColors.planeWhite,
-        ),
-        bodyMedium: TextStyle(
-            fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
+      displayLarge: TextStyle(
+          fontSize: 30,
+          fontWeight: FontWeight.bold,
+          color: CommonColors.primary),
+      headlineLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      titleLarge: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+      titleMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+      titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+      displaySmall: TextStyle(fontSize: 15),
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.normal,
+        color: CommonColors.planeWhite,
+      ),
+      bodyMedium: TextStyle(
+          fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+    ),
     appBarTheme: const AppBarTheme(
       color: CommonColors.primary,
       titleTextStyle: TextStyle(
@@ -63,6 +64,6 @@ class Constant {
           fontWeight: FontWeight.bold),
       iconTheme: IconThemeData(color: Colors.white),
     ),
-    colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+    colorScheme: ColorScheme.fromSeed(seedColor: CommonColors.primary),
   );
 }
