@@ -8,4 +8,6 @@ class APIUrls {
   static const String getProduct = "getProduct";
   static const String addToCart = "addToCart";
   static const String getCartDetails = "getCartDetails";
+  static const String getUpdateCart = "updateCart";
+  static const String getRemoveFromCart = "removeFromCart";
 }

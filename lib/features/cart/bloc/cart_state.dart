@@ -20,4 +20,13 @@ class CartSuccessState extends CartState {
   CartSuccessState({required this.data});
 }
 
+class CartAddCountState extends CartState {}
+
+class CartRemoveCountState extends CartState {}
+
 class CartNavigateTo extends CartActionState {}
+
+class CartDeleteSingleItemState extends CartState {
+  String message;
+  CartDeleteSingleItemState({required this.message});
+}
