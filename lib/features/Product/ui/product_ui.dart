@@ -144,9 +144,9 @@ class ProductUi extends StatelessWidget {
                       listener: (context, state) {
                         print("Check state .....${state}");
                         if (state is ProductSuccessState) {
-                          Constant.showLongToast(state.message);
+                          Constant.showShortToast(state.message);
                         } else if (state is ProductErrorState) {
-                          Constant.showLongToast(state.message);
+                          Constant.showShortToast(state.message);
                         } else if (state is ProductNavigateToAddToCartState) {
                           Navigator.push(
                             context,

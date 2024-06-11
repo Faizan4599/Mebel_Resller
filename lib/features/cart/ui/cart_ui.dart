@@ -31,7 +31,9 @@ class CartUi extends StatelessWidget {
         children: [
           BlocBuilder<CartBloc, CartState>(
             bloc: _cartBloc,
-            buildWhen: (previous, current) => current is CartSuccessState,
+            buildWhen: (previous, current) =>
+                current is CartSuccessState ||
+                current is CartDeleteSingleItemState,
             builder: (context, state) {
               if (state is CartSuccessState) {
                 var data = state.data;
@@ -101,11 +103,17 @@ class CartUi extends StatelessWidget {
                                                 children: [
                                                   InkWell(
                                                     onTap: () {
-                                                      _cartBloc.add(CartAddCountEvent(
-                                                          count: int.parse(data[
-                                                                  index]
-                                                              .cart_qty
-                                                              .toString())));
+                                                      _cartBloc.add(
+                                                        CartAddCountEvent(
+                                                            count: int.parse(
+                                                                data[index]
+                                                                    .cart_qty
+                                                                    .toString()),
+                                                            product_id: data[
+                                                                        index]
+                                                                    .product_id ??
+                                                                ""),
+                                                      );
                                                     },
                                                     child: const Icon(
                                                       size: 30,
@@ -122,13 +130,49 @@ class CartUi extends StatelessWidget {
                                                     color:
                                                         CommonColors.planeWhite,
                                                     child: Center(
-                                                      child: Text(
-                                                        data[index]
-                                                            .cart_qty
-                                                            .toString(),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .displaySmall,
+                                                      child: BlocBuilder<
+                                                          CartBloc, CartState>(
+                                                        bloc: _cartBloc,
+                                                        buildWhen: (previous,
+                                                                current) =>
+                                                            current
+                                                                is CartAddCountState ||
+                                                            current
+                                                                is CartRemoveCountState,
+                                                        builder:
+                                                            (context, state) {
+                                                          if (state
+                                                              is CartAddCountState) {
+                                                            return Text(
+                                                              state.count
+                                                                  .toString(),
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .displaySmall,
+                                                            );
+                                                          } else if (state
+                                                              is CartAddCountState) {
+                                                            return Text(
+                                                              state.count
+                                                                  .toString(),
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .displaySmall,
+                                                            );
+                                                          } else {
+                                                            return Text(
+                                                              data[index]
+                                                                  .cart_qty
+                                                                  .toString(),
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .displaySmall,
+                                                            );
+                                                          }
+                                                        },
                                                       ),
                                                     ),
                                                   ),
@@ -136,12 +180,15 @@ class CartUi extends StatelessWidget {
                                                     onTap: () {
                                                       _cartBloc.add(
                                                         CartRemoveCountEvent(
-                                                          count: int.parse(
-                                                            data[index]
-                                                                .cart_qty
-                                                                .toString(),
-                                                          ),
-                                                        ),
+                                                            count: int.parse(
+                                                              data[index]
+                                                                  .cart_qty
+                                                                  .toString(),
+                                                            ),
+                                                            product_id: data[
+                                                                        index]
+                                                                    .product_id ??
+                                                                ""),
                                                       );
                                                       print("-");
                                                     },
@@ -155,12 +202,33 @@ class CartUi extends StatelessWidget {
                                                 ],
                                               ),
                                             ),
-                                            IconButton(
+                                            BlocListener<CartBloc, CartState>(
+                                              bloc: _cartBloc,
+                                              listenWhen: (previous, current) =>
+                                                  current
+                                                      is CartDeleteSingleItemState,
+                                              listener: (context, state) {
+                                                if (state
+                                                    is CartDeleteSingleItemState) {
+                                                  Constant.showLongToast(
+                                                      state.message);
+                                                }
+                                              },
+                                              child: IconButton(
                                                 iconSize: 30,
                                                 color: Colors.red,
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  _cartBloc.add(
+                                                      CartDeleteSingleItem(
+                                                          productId: data[index]
+                                                              .product_id
+                                                              .toString()));
+                                                  _cartBloc.add(GetDataEvent());
+                                                },
                                                 icon: const Icon(
-                                                    Icons.delete_forever))
+                                                    Icons.delete_forever),
+                                              ),
+                                            )
                                           ],
                                         )
                                       ],
@@ -265,174 +333,3 @@ class CartUi extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-  // Row(
-  //                               children: [
-  //                                 Column(
-  //                                   children: [
-  //                                     Row(
-  //                                       children: [
-  //                                         Column(
-  //                                           children: [
-  //                                             SizedBox(
-  //                                               width: Constant.screenWidth(
-  //                                                       context) *
-  //                                                   0.5,
-  //                                               height: Constant.screenHeight(
-  //                                                       context) *
-  //                                                   0.3,
-  //                                               child: Padding(
-  //                                                 padding:
-  //                                                     const EdgeInsets.all(8.0),
-  //                                                 child: ClipRRect(
-  //                                                   borderRadius:
-  //                                                       BorderRadius.circular(
-  //                                                           8.0),
-  //                                                   child: Image.network(
-  //                                                     data![index]
-  //                                                         .product_url
-  //                                                         .toString(),
-  //                                                     fit: BoxFit.cover,
-  //                                                   ),
-  //                                                 ),
-  //                                               ),
-  //                                             ),
-  //                                             Container(
-  //                                               height: 40,
-  //                                               decoration: BoxDecoration(
-  //                                                 color: CommonColors.primary,
-  //                                                 borderRadius:
-  //                                                     BorderRadius.circular(
-  //                                                   8.0,
-  //                                                 ),
-  //                                               ),
-  //                                               child: Row(
-  //                                                 // mainAxisAlignment:
-  //                                                 //     MainAxisAlignment.spaceBetween,
-  //                                                 children: [
-  //                                                   InkWell(
-  //                                                     onTap: () {
-  //                                                       print("+");
-  //                                                     },
-  //                                                     child: const Icon(
-  //                                                       size: 25,
-  //                                                       Icons.add,
-  //                                                       color: CommonColors
-  //                                                           .planeWhite,
-  //                                                     ),
-  //                                                   ),
-  //                                                   Container(
-  //                                                     width: 40,
-  //                                                     height:
-  //                                                         Constant.screenHeight(
-  //                                                             context),
-  //                                                     color: CommonColors
-  //                                                         .planeWhite,
-  //                                                     child: Center(
-  //                                                       child: Text(
-  //                                                         data[index]
-  //                                                             .cart_qty
-  //                                                             .toString(),
-  //                                                         style:
-  //                                                             Theme.of(context)
-  //                                                                 .textTheme
-  //                                                                 .displaySmall,
-  //                                                       ),
-  //                                                     ),
-  //                                                   ),
-  //                                                   InkWell(
-  //                                                     onTap: () {
-  //                                                       print("-");
-  //                                                     },
-  //                                                     child: const Icon(
-  //                                                       size: 25,
-  //                                                       Icons.remove,
-  //                                                       color: CommonColors
-  //                                                           .planeWhite,
-  //                                                     ),
-  //                                                   )
-  //                                                 ],
-  //                                               ),
-  //                                             )
-  //                                           ],
-  //                                         )
-  //                                       ],
-  //                                     ),
-  //                                   ],
-  //                                 ),
-  //                                 Column(
-  //                                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                                   crossAxisAlignment:
-  //                                       CrossAxisAlignment.start,
-  //                                   children: [
-  //                                     Text(
-  //                                       data[index].name ?? "",
-  //                                       style: Theme.of(context)
-  //                                           .textTheme
-  //                                           .titleLarge,
-  //                                     ),
-  //                                     RichText(
-  //                                       text: TextSpan(
-  //                                         children: [
-  //                                           TextSpan(
-  //                                               text: '\u{20B9} ',
-  //                                               style: Theme.of(context)
-  //                                                   .textTheme
-  //                                                   .displaySmall),
-  //                                           TextSpan(
-  //                                               text: data[index].price,
-  //                                               style: Theme.of(context)
-  //                                                   .textTheme
-  //                                                   .titleLarge),
-  //                                         ],
-  //                                       ),
-  //                                     ),
-  //                                     Text(
-  //                                       data[index].description ?? "",
-  //                                       style: Theme.of(context)
-  //                                           .textTheme
-  //                                           .displaySmall,
-  //                                     ),
-  //                                     Text(
-  //                                       data[index].category ?? "",
-  //                                       style: Theme.of(context)
-  //                                           .textTheme
-  //                                           .displaySmall,
-  //                                     ),
-  //                                     Text(
-  //                                       data[index].subcategory1 ?? "",
-  //                                       style: Theme.of(context)
-  //                                           .textTheme
-  //                                           .displaySmall,
-  //                                     ),
-  //                                     Text(
-  //                                       data[index].subcategory2 ?? "",
-  //                                       style: Theme.of(context)
-  //                                           .textTheme
-  //                                           .displaySmall,
-  //                                     ),
-  //                                     ElevatedButton(
-  //                                         onPressed: () {},
-  //                                         style: ButtonStyle(
-  //                                             shape: WidgetStateProperty.all<
-  //                                                     RoundedRectangleBorder>(
-  //                                                 RoundedRectangleBorder(
-  //                                                     borderRadius:
-  //                                                         BorderRadius.circular(
-  //                                                             8.0),
-  //                                                     side: const BorderSide(
-  //                                                         color: CommonColors
-  //                                                             .primary)))),
-  //                                         child: const Text('Delete'))
-  //                                   ],
-  //                                 )
-  //                               ],
-  //                             ),

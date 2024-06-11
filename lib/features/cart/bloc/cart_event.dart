@@ -7,12 +7,14 @@ final class GetDataEvent extends CartEvent {}
 
 class CartAddCountEvent extends CartEvent {
   int count;
-  CartAddCountEvent({required this.count});
+  String product_id;
+  CartAddCountEvent({required this.count, required this.product_id});
 }
 
 class CartRemoveCountEvent extends CartEvent {
   int count;
-  CartRemoveCountEvent({required this.count});
+  String product_id;
+  CartRemoveCountEvent({required this.count, required this.product_id});
 }
 
 class CartDeleteSingleItem extends CartEvent {

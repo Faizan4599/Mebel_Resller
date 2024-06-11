@@ -18,7 +18,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   List<FailedCommonDataModel> failedList = <FailedCommonDataModel>[];
   List<GetCartDetailsDataModel> getCartDetailsList =
       <GetCartDetailsDataModel>[];
-  List<CartCommonDataModel> getDeleteSingleItemList = <CartCommonDataModel>[];
+  List<CartCommonDataModel> cartCommonDataList = <CartCommonDataModel>[];
   CartBloc() : super(CartInitial()) {
     on<GetDataEvent>(getDataEvent);
     on<CartAddCountEvent>(cartAddEvent);
@@ -62,17 +62,84 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   FutureOr<void> cartAddEvent(
-      CartAddCountEvent event, Emitter<CartState> emit) {
-    final data = event.count++;
-    print("Add $data");
-    emit(CartAddCountState());
+      CartAddCountEvent event, Emitter<CartState> emit) async {
+    try {
+      final data = event.count++;
+      print("Add $data");
+      // emit(CartAddCountState());
+      Map<String, String> addCountParameter = {
+        "access_token1": Constant.access_token1,
+        "access_token2": Constant.access_token2,
+        "access_token3": Constant.access_token3,
+        "user_id": PreferenceUtils.getString(UserData.id.name),
+        "product_id": event.product_id,
+        "qty": event.count.toString()
+      };
+      var response = await APIRepository()
+          .getCommonMethodAPI(addCountParameter, APIUrls.getUpdateCart);
+      print("Response ${response}");
+      emit(CartLoadingState());
+      if (response is Success) {
+        cartCommonDataList.clear();
+        if (response.response is List<CartCommonDataModel>) {
+          cartCommonDataList = response.response as List<CartCommonDataModel>;
+        } else if (response.response is CartCommonDataModel) {
+          cartCommonDataList.add(response.response as CartCommonDataModel);
+        }
+
+        emit(CartAddCountState(count: data));
+      } else if (response is Failed) {
+        failedList = response.response as List<FailedCommonDataModel>;
+        emit(CartErrorState(message: failedList.first.message));
+      } else if (response is Failure) {
+        emit(CartErrorState(message: response.errorResponse.toString()));
+      } else {
+        emit(CartErrorState(message: "An error  occurred"));
+      }
+    } catch (e) {
+      emit(CartErrorState(message: "Error occurred ${e.toString()}"));
+      print("Catch Err ${e.toString()}");
+    }
   }
 
   FutureOr<void> cartRemoveEvent(
-      CartRemoveCountEvent event, Emitter<CartState> emit) {
-    final data = event.count--;
-    print("remove $data");
-    emit(CartRemoveCountState());
+      CartRemoveCountEvent event, Emitter<CartState> emit) async {
+    try {
+      final data = event.count--;
+      print("remove $data");
+      // emit(CartAddCountState());
+      Map<String, String> removeCountParameter = {
+        "access_token1": Constant.access_token1,
+        "access_token2": Constant.access_token2,
+        "access_token3": Constant.access_token3,
+        "user_id": PreferenceUtils.getString(UserData.id.name),
+        "product_id": event.product_id,
+        "qty": event.count.toString()
+      };
+      var response = await APIRepository()
+          .getCommonMethodAPI(removeCountParameter, APIUrls.getUpdateCart);
+      emit(CartLoadingState());
+      print("Response ${response}");
+      if (response is Success) {
+        cartCommonDataList.clear();
+        if (response.response is List<CartCommonDataModel>) {
+          cartCommonDataList = response.response as List<CartCommonDataModel>;
+        } else if (response.response is CartCommonDataModel) {
+          cartCommonDataList.add(response.response as CartCommonDataModel);
+        }
+        emit(CartRemoveCountState(count: data));
+      } else if (response is Failed) {
+        failedList = response.response as List<FailedCommonDataModel>;
+        emit(CartErrorState(message: failedList.first.message));
+      } else if (response is Failure) {
+        emit(CartErrorState(message: response.errorResponse.toString()));
+      } else {
+        emit(CartErrorState(message: "An error  occurred"));
+      }
+    } catch (e) {
+      emit(CartErrorState(message: "Error occurred ${e.toString()}"));
+      print("Catch Err ${e.toString()}");
+    }
   }
 
   FutureOr<void> cartDeleteSingleItem(
@@ -89,14 +156,16 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           deleteSingleItemParameter, APIUrls.getRemoveFromCart);
       print("Response ${response}");
       if (response is Success) {
-        getDeleteSingleItemList.clear();
+        cartCommonDataList.clear();
         if (response.response is List<CartCommonDataModel>) {
-          getDeleteSingleItemList =
-              response.response as List<CartCommonDataModel>;
+          cartCommonDataList = response.response as List<CartCommonDataModel>;
         } else if (response.response is CartCommonDataModel) {
-          getDeleteSingleItemList.add(response.response as CartCommonDataModel);
+          cartCommonDataList.add(response.response as CartCommonDataModel);
         }
-        emit(CartSuccessState(data: getCartDetailsList));
+
+        emit(CartDeleteSingleItemState(
+            message: cartCommonDataList.first.message ?? "",
+            description: cartCommonDataList.first.description));
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(CartErrorState(message: failedList.first.message));

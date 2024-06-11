@@ -41,6 +41,12 @@ class LandUi extends StatelessWidget {
         ),
         backgroundColor: CommonColors.primary,
         actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.shopping_cart_outlined),
+            iconSize: 27,
+            color: CommonColors.planeWhite,
+          ),
           BlocListener<LandBloc, LandState>(
             bloc: _landBloc,
             listenWhen: (previous, current) => current is LandLogoutState,
@@ -198,9 +204,9 @@ class LandUi extends StatelessWidget {
                                                   value: item.category_id,
                                                   child: Text(
                                                     item.category_name ?? "",
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                    ),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleMedium,
                                                   ),
                                                 ))
                                             .toList(),
@@ -242,9 +248,9 @@ class LandUi extends StatelessWidget {
                                                 value: item.subcategory1_id,
                                                 child: Text(
                                                   item.subcategory1_name,
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                  ),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleMedium,
                                                 ),
                                               ),
                                             )
@@ -316,11 +322,11 @@ class LandUi extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          const Text(
+                                          Text(
                                             "PRODUCT ID",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium,
                                           ),
                                           SizedBox(
                                             height: 45,
@@ -328,6 +334,9 @@ class LandUi extends StatelessWidget {
                                                 Constant.screenWidth(context) *
                                                     0.4,
                                             child: TextField(
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium,
                                               keyboardType:
                                                   TextInputType.number,
                                               inputFormatters: <TextInputFormatter>[
@@ -427,84 +436,140 @@ class LandUi extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  ButtonTheme(
-                                    minWidth: 200,
-                                    height: 40,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        bool isFilterSelected = _landBloc
-                                                .regionVal.isNotEmpty ||
-                                            _landBloc.categoryVal.isNotEmpty ||
-                                            _landBloc
-                                                .subCategoryVal.isNotEmpty ||
-                                            _landBloc
-                                                .subCategory2Val.isNotEmpty ||
-                                            productId.text.isNotEmpty;
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ButtonTheme(
+                                        minWidth: 200,
+                                        height: 40,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            _landBloc.show = false;
+                                            // bool isFilterSelected = _landBloc
+                                            //         .regionVal.isNotEmpty ||
+                                            //     _landBloc.categoryVal.isNotEmpty ||
+                                            //     _landBloc
+                                            //         .subCategoryVal.isNotEmpty ||
+                                            //     _landBloc
+                                            //         .subCategory2Val.isNotEmpty ||
+                                            //     productId.text.isNotEmpty;
 
-                                        if (isFilterSelected) {
-                                          _landBloc.add(
-                                            LandSearchDataEvent(
-                                              startRange: _landBloc.start,
-                                              endRange: _landBloc.end,
-                                              regionId:
-                                                  _landBloc.regionVal.isEmpty
-                                                      ? null
-                                                      : _landBloc.regionVal,
-                                              categoryId:
-                                                  _landBloc.categoryVal.isEmpty
-                                                      ? null
-                                                      : _landBloc.categoryVal,
-                                              subCategoryId: _landBloc
-                                                      .subCategoryVal.isEmpty
-                                                  ? null
-                                                  : _landBloc.subCategoryVal,
-                                              subCategory2Id: _landBloc
-                                                      .subCategory2Val.isEmpty
-                                                  ? null
-                                                  : _landBloc.subCategory2Val,
-                                              productId: productId.text.isEmpty
-                                                  ? null
-                                                  : productId.text,
-                                            ),
-                                          );
-                                        } else {
-                                          Constant.showLongToast(
-                                              'Please select at least one filter.');
-                                        }
+                                            // if (isFilterSelected) {
 
-                                        _landBloc.add(LandClearDataEvent(
-                                            value: _landBloc.regionVal,
-                                            list: _landBloc.regionList));
-                                        _landBloc.add(LandClearDataEvent(
-                                            value: _landBloc.categoryVal,
-                                            list: _landBloc.categoryList));
-                                        _landBloc.add(LandClearDataEvent(
-                                            value: _landBloc.subCategoryVal,
-                                            list: _landBloc.subCategoryList));
-                                        _landBloc.add(LandClearDataEvent(
-                                            value: _landBloc.subCategory2Val,
-                                            list: _landBloc.subCategory2List));
-                                        productId.text = '';
+                                            // } else {
+                                            //   Constant.showLongToast(
+                                            //       'Please select at least one filter.');
+                                            // }
+                                            _landBloc.add(
+                                              LandSearchDataEvent(
+                                                startRange: _landBloc.start,
+                                                endRange: _landBloc.end,
+                                                regionId:
+                                                    _landBloc.regionVal.isEmpty
+                                                        ? null
+                                                        : _landBloc.regionVal,
+                                                categoryId: _landBloc
+                                                        .categoryVal.isEmpty
+                                                    ? null
+                                                    : _landBloc.categoryVal,
+                                                subCategoryId: _landBloc
+                                                        .subCategoryVal.isEmpty
+                                                    ? null
+                                                    : _landBloc.subCategoryVal,
+                                                subCategory2Id: _landBloc
+                                                        .subCategory2Val.isEmpty
+                                                    ? null
+                                                    : _landBloc.subCategory2Val,
+                                                productId:
+                                                    productId.text.isEmpty
+                                                        ? null
+                                                        : productId.text,
+                                              ),
+                                            );
+                                            // _landBloc.add(LandClearDataEvent(
+                                            //     value: _landBloc.regionVal,
+                                            //     list: _landBloc.regionList));
+                                            // _landBloc.add(LandClearDataEvent(
+                                            //     value: _landBloc.categoryVal,
+                                            //     list: _landBloc.categoryList));
+                                            // _landBloc.add(LandClearDataEvent(
+                                            //     value: _landBloc.subCategoryVal,
+                                            //     list: _landBloc.subCategoryList));
+                                            // _landBloc.add(LandClearDataEvent(
+                                            //     value: _landBloc.subCategory2Val,
+                                            //     list: _landBloc.subCategory2List));
+                                            // productId.text = '';
 
-                                        _landBloc.add(LandCategoryDropDownEvent(
-                                            categoryDropDownValue: '',
-                                            items: []));
-                                        _landBloc.add(LandRegionDropDownEvent(
-                                            regionDropDownValue: '',
-                                            items: []));
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0)),
-                                        backgroundColor: CommonColors.primary,
+                                            // _landBloc.add(LandCategoryDropDownEvent(
+                                            //     categoryDropDownValue: '',
+                                            //     items: []));
+                                            // _landBloc.add(LandRegionDropDownEvent(
+                                            //     regionDropDownValue: '',
+                                            //     items: []));
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0)),
+                                            backgroundColor:
+                                                CommonColors.primary,
+                                          ),
+                                          child: const Text(
+                                            "SEARCH",
+                                            style: TextStyle(
+                                                color: CommonColors.planeWhite),
+                                          ),
+                                        ),
                                       ),
-                                      child: const Text(
-                                        "SEARCH",
-                                        style: TextStyle(
-                                            color: CommonColors.planeWhite),
+                                      SizedBox(
+                                        width: 20,
                                       ),
-                                    ),
+                                      ButtonTheme(
+                                        minWidth: 200,
+                                        height: 40,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            _landBloc.add(LandClearDataEvent(
+                                                value: _landBloc.regionVal,
+                                                list: _landBloc.regionList));
+                                            _landBloc.add(LandClearDataEvent(
+                                                value: _landBloc.categoryVal,
+                                                list: _landBloc.categoryList));
+                                            _landBloc.add(LandClearDataEvent(
+                                                value: _landBloc.subCategoryVal,
+                                                list:
+                                                    _landBloc.subCategoryList));
+                                            _landBloc.add(LandClearDataEvent(
+                                                value:
+                                                    _landBloc.subCategory2Val,
+                                                list: _landBloc
+                                                    .subCategory2List));
+                                            productId.text = '';
+
+                                            _landBloc.add(
+                                                LandCategoryDropDownEvent(
+                                                    categoryDropDownValue: '',
+                                                    items: []));
+                                            _landBloc.add(
+                                                LandRegionDropDownEvent(
+                                                    regionDropDownValue: '',
+                                                    items: []));
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0)),
+                                            backgroundColor:
+                                                CommonColors.primary,
+                                          ),
+                                          child: const Text(
+                                            "RESET",
+                                            style: TextStyle(
+                                                color: CommonColors.planeWhite),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   const SizedBox(
                                     height: 10,
@@ -644,14 +709,18 @@ class LandUi extends StatelessWidget {
                                               Row(
                                                 children: [
                                                   Container(
-                                                    width: 100,
+                                                    width: Constant.screenWidth(
+                                                            context) *
+                                                        0.9,
                                                     child: Text(
                                                       data[index]
                                                           .name
                                                           .toString(),
                                                       overflow:
                                                           TextOverflow.ellipsis,
-                                                      style: Theme.of(context).textTheme.bodyLarge,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyLarge,
                                                     ),
                                                   ),
                                                 ],
@@ -672,13 +741,17 @@ class LandUi extends StatelessWidget {
                                                         data[index]
                                                             .region
                                                             .toString(),
-                                                        style: Theme.of(context).textTheme.bodyMedium,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodyMedium,
                                                       ),
                                                     ],
                                                   ),
                                                   Text(
                                                     "\u{20B9} ${data[index].price}",
-                                                    style:Theme.of(context).textTheme.bodyLarge,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge,
                                                   ),
                                                 ],
                                               ),
