@@ -8,7 +8,7 @@ import '../bloc/product_bloc.dart';
 
 class ProductUi extends StatelessWidget {
   final ProductBloc _productBloc = ProductBloc();
-
+  int qty = 0;
   final List<GetProductDataModel> perticularData;
   final PageController _pageController = PageController();
   final ScrollController _scrollController = ScrollController();
@@ -17,6 +17,7 @@ class ProductUi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GetProductDataModel allData = perticularData.first;
+    qty = int.parse(allData.cart_qty.toString());
     return BlocProvider(
       create: (_) => ProductBloc(),
       child: Scaffold(
@@ -132,6 +133,15 @@ class ProductUi extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
+                (qty > 0)
+                    ? const Text(
+                        "Item is already added to the cart",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                            color: Colors.red),
+                      )
+                    : const SizedBox(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
