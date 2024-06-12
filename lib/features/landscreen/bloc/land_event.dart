@@ -97,6 +97,13 @@ class LandNavigateToQuoteEvent extends LandEvent {
   LandNavigateToQuoteEvent({required this.productId});
 }
 
+class LandNavigateToCartEvent extends LandEvent {}
+
+class LandCartCountEvent extends LandEvent {
+  List<GetCartCountDataModel>? data;
+  LandCartCountEvent({required this.data});
+}
+
 class LandClearDataEvent extends LandEvent {
   String value;
   List<dynamic> list;

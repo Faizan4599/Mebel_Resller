@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reseller_app/constant/constant.dart';
+import 'package:reseller_app/features/cart/ui/cart_ui.dart';
 import 'package:reseller_app/features/landscreen/bloc/land_bloc.dart';
 import 'package:reseller_app/features/login/ui/login_ui.dart';
 import 'package:reseller_app/features/Product/ui/product_ui.dart';
@@ -19,6 +20,7 @@ class LandUi extends StatelessWidget {
             LandCategoryDropDownEvent(categoryDropDownValue: '', items: []));
         _landBloc
             .add(LandRegionDropDownEvent(regionDropDownValue: '', items: []));
+        _landBloc.add(LandCartCountEvent(data: []));
         // _landBloc.add(LandSubcategoryDropDownEvent(
         //     subCategoryDropDownValue: '', items: [], category_id: ''));
         // _landBloc.add(LandSubcategory2DropDownEvent(
@@ -39,13 +41,60 @@ class LandUi extends StatelessWidget {
           PreferenceUtils.getString(UserData.name.name),
           style: const TextStyle(color: CommonColors.planeWhite),
         ),
-        backgroundColor: CommonColors.primary,
+        // backgroundColor: CommonColors.primary,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.shopping_cart_outlined),
-            iconSize: 27,
-            color: CommonColors.planeWhite,
+          Badge(
+            // alignment: Alignment.topLeft,
+            backgroundColor: CommonColors.planeWhite,
+            label: BlocProvider.value(
+            value: _landBloc,
+
+              child: BlocBuilder<LandBloc, LandState>(
+                bloc: _landBloc,
+                buildWhen: (previous, current) => current is LandCartCountState,
+                builder: (context, state) {
+                  print("CNCNC State ${state}");
+                  if (state is LandCartCountState) {
+                    return Text(
+                      state.data!.first.cart_count.toString(),
+                      style:
+                          const TextStyle(fontSize: 11, color: CommonColors.primary),
+                    );
+                  } else {
+                    return const Text(
+                      "",
+                      style:
+                          TextStyle(fontSize: 11, color: CommonColors.primary),
+                    );
+                  }
+                },
+              ),
+            ),
+            child: BlocListener<LandBloc, LandState>(
+              bloc: _landBloc,
+              listenWhen: (previous, current) =>
+                  current is LandNavigateToCartState,
+              listener: (context, state) {
+                if (state is LandNavigateToCartState) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CartUi(cartItems: []),
+                      ));
+                }
+              },
+              child: IconButton(
+                onPressed: () {
+                  _landBloc.add(LandNavigateToCartEvent());
+                },
+                icon: Icon(Icons.shopping_cart_outlined),
+                iconSize: 27,
+                color: CommonColors.planeWhite,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 10,
           ),
           BlocListener<LandBloc, LandState>(
             bloc: _landBloc,
@@ -599,6 +648,7 @@ class LandUi extends StatelessWidget {
                                 ? state.data
                                 : (state as LandSearchDataState).filteredData;
                         return BlocListener<LandBloc, LandState>(
+                          
                           bloc: _landBloc,
                           listenWhen: (previous, current) =>
                               current is LandNavigateToQuoteState,

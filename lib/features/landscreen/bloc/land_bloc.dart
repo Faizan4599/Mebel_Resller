@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:reseller_app/common/failed_data_model.dart';
 import 'package:reseller_app/constant/constant.dart';
+import 'package:reseller_app/features/landscreen/model/get_cart_count_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_categories_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_product_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_products_data_model.dart';
@@ -31,6 +32,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
   List<GetRegionsDataModel> regionList = <GetRegionsDataModel>[];
   List<FailedCommonDataModel> failedList = <FailedCommonDataModel>[];
   List<GetProductsDataModel> productsList = <GetProductsDataModel>[];
+  List<GetCartCountDataModel> countList = <GetCartCountDataModel>[];
   bool show = false;
   List<String> selectedData = [];
   List<SampleDataModel> perticularData = [];
@@ -53,6 +55,8 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     on<LandLogoutEvent>(landLogoutEvent);
     on<LandSearchDataEvent>(landSearchDataEvent);
     on<LandClearDataEvent>(landClearDataEvent);
+    on<LandNavigateToCartEvent>(landNavigateToCartEvent);
+    on<LandCartCountEvent>(landCartCountEvent);
   }
 
   String sortDropdownValue = '';
@@ -435,7 +439,6 @@ class LandBloc extends Bloc<LandEvent, LandState> {
             matchesProduct;
       },
     ).toList();
-
     print(">>>Filter>>> ${filteredData.map(
       (e) => e.product_id,
     )}");
@@ -447,5 +450,44 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     event.value = '';
     event.list.clear();
     emit(LandClearDataState(value: event.value, list: event.list));
+  }
+
+  FutureOr<void> landNavigateToCartEvent(
+      LandNavigateToCartEvent event, Emitter<LandState> emit) {
+    emit(LandNavigateToCartState());
+  }
+
+  FutureOr<void> landCartCountEvent(
+      LandCartCountEvent event, Emitter<LandState> emit) async {
+    try {
+      Map<String, String> cartCountParameter = {
+        "access_token1": Constant.access_token1,
+        "access_token2": Constant.access_token2,
+        "access_token3": Constant.access_token3,
+        "user_id": PreferenceUtils.getString(UserData.id.name)
+      };
+      var response = await APIRepository()
+          .getCommonMethodAPI(cartCountParameter, APIUrls.getCartCount);
+      if (response is Success) {
+        countList.clear();
+        if (response.response is List<GetCartCountDataModel>) {
+          countList = response.response as List<GetCartCountDataModel>;
+        } else if (response.response is GetCartCountDataModel) {
+          countList.add(response.response as GetCartCountDataModel);
+        }
+        event.data?.addAll(countList);
+
+        emit(LandCartCountState(data: event.data));
+      } else if (response is Failed) {
+        failedList = response.response as List<FailedCommonDataModel>;
+        emit(LandErrorState(message: failedList.first.message.toString()));
+      } else if (response is Failure) {
+        emit(LandErrorState(message: response.errorResponse.toString()));
+      } else {
+        emit(LandErrorState(message: "An error occurred"));
+      }
+    } catch (e) {
+      emit(LandErrorState(message: "Error occurred ${e.toString()}"));
+    }
   }
 }
