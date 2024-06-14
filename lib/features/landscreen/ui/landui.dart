@@ -47,8 +47,7 @@ class LandUi extends StatelessWidget {
             // alignment: Alignment.topLeft,
             backgroundColor: CommonColors.planeWhite,
             label: BlocProvider.value(
-            value: _landBloc,
-
+              value: _landBloc,
               child: BlocBuilder<LandBloc, LandState>(
                 bloc: _landBloc,
                 buildWhen: (previous, current) => current is LandCartCountState,
@@ -57,12 +56,12 @@ class LandUi extends StatelessWidget {
                   if (state is LandCartCountState) {
                     return Text(
                       state.data!.first.cart_count.toString(),
-                      style:
-                          const TextStyle(fontSize: 11, color: CommonColors.primary),
+                      style: const TextStyle(
+                          fontSize: 11, color: CommonColors.primary),
                     );
                   } else {
                     return const Text(
-                      "",
+                      "0",
                       style:
                           TextStyle(fontSize: 11, color: CommonColors.primary),
                     );
@@ -80,7 +79,10 @@ class LandUi extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => CartUi(cartItems: []),
-                      ));
+                      )).then((_) {
+                    // print("SSSSSSSSSSSS $val");
+                    _landBloc.add(LandCartCountEvent(data: []));
+                  });
                 }
               },
               child: IconButton(
@@ -648,7 +650,6 @@ class LandUi extends StatelessWidget {
                                 ? state.data
                                 : (state as LandSearchDataState).filteredData;
                         return BlocListener<LandBloc, LandState>(
-                          
                           bloc: _landBloc,
                           listenWhen: (previous, current) =>
                               current is LandNavigateToQuoteState,
@@ -661,7 +662,10 @@ class LandUi extends StatelessWidget {
                                     perticularData: state.productData ?? [],
                                   ),
                                 ),
-                              );
+                              ).then((_){
+                        // print("SSSSSSSSSSSS $val");
+_landBloc.add(LandCartCountEvent(data: []));
+                      });;
                             }
                           },
                           child: GridView.builder(
