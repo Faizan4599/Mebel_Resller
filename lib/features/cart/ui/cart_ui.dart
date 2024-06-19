@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/cart/bloc/cart_bloc.dart';
+import 'package:reseller_app/features/landscreen/bloc/land_bloc.dart';
 
 import 'package:reseller_app/features/landscreen/model/get_product_data_model.dart';
+import 'package:reseller_app/features/landscreen/ui/landui.dart';
+import 'package:reseller_app/features/login/ui/login_ui.dart';
+import 'package:reseller_app/helper/preference_utils.dart';
 import 'package:reseller_app/utils/common_colors.dart';
 
 class CartUi extends StatelessWidget {
@@ -20,21 +24,81 @@ class CartUi extends StatelessWidget {
   }
   List<GetProductDataModel> cartItems;
   CartBloc _cartBloc = CartBloc();
+  LandBloc _landBloc = LandBloc();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cart'),
+        actions: [
+          BlocListener<CartBloc, CartState>(
+            bloc: _cartBloc,
+            listenWhen: (previous, current) =>
+                current is CartNavigateToLandScreenState,
+            listener: (context, state) {
+              if (state is CartNavigateToLandScreenState) {
+                // Navigator.pushReplacement(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => LandUi(),
+                //   ),
+                // );
+                Navigator.pushAndRemoveUntil<dynamic>(
+                  context,
+                  MaterialPageRoute<dynamic>(
+                    builder: (BuildContext context) => LandUi(),
+                  ),
+                  (route) =>
+                      false, //if you want to disable back feature set to false
+                );
+              }
+            },
+            child: IconButton(
+              onPressed: () {
+                _cartBloc.add(CartNavigateToLandScreenEvent());
+              },
+              icon: Icon(Icons.home_outlined),
+              iconSize: 27,
+              color: CommonColors.planeWhite,
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          BlocListener<LandBloc, LandState>(
+            bloc: _landBloc,
+            listenWhen: (previous, current) => current is LandLogoutState,
+            listener: (context, state) async {
+              if (state is LandLogoutState) {
+                Navigator.pop(context); // Close the dialog if it's open
+                await PreferenceUtils.clearData();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginUi(),
+                  ),
+                );
+              }
+            },
+            child: IconButton(
+              onPressed: () {
+                _showDownloadDialog(context, "logout");
+              },
+              icon: const Icon(Icons.logout_outlined),
+              iconSize: 27,
+              color: CommonColors.planeWhite,
+            ),
+          )
+        ],
       ),
       body: Column(
         children: [
           BlocBuilder<CartBloc, CartState>(
             bloc: _cartBloc,
-            buildWhen: (previous, current) =>
-                current is CartSuccessState ||
-                current is CartDeleteSingleItemState,
+            buildWhen: (previous, current) => current is CartSuccessState,
             builder: (context, state) {
+              print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> $state");
               if (state is CartSuccessState) {
                 var data = state.data;
                 return Expanded(
@@ -105,10 +169,6 @@ class CartUi extends StatelessWidget {
                                                     onTap: () {
                                                       _cartBloc.add(
                                                         CartAddCountEvent(
-                                                            count: int.parse(
-                                                                data[index]
-                                                                    .cart_qty
-                                                                    .toString()),
                                                             product_id: data[
                                                                         index]
                                                                     .product_id ??
@@ -130,61 +190,19 @@ class CartUi extends StatelessWidget {
                                                     color:
                                                         CommonColors.planeWhite,
                                                     child: Center(
-                                                      child: BlocBuilder<
-                                                          CartBloc, CartState>(
-                                                        bloc: _cartBloc,
-                                                        buildWhen: (previous,
-                                                                current) =>
-                                                            current
-                                                                is CartAddCountState ||
-                                                            current
-                                                                is CartRemoveCountState,
-                                                        builder:
-                                                            (context, state) {
-                                                          if (state
-                                                              is CartAddCountState) {
-                                                            return Text(
-                                                              state.count
-                                                                  .toString(),
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .displaySmall,
-                                                            );
-                                                          } else if (state
-                                                              is CartAddCountState) {
-                                                            return Text(
-                                                              state.count
-                                                                  .toString(),
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .displaySmall,
-                                                            );
-                                                          } else {
-                                                            return Text(
-                                                              data[index]
-                                                                  .cart_qty
-                                                                  .toString(),
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .displaySmall,
-                                                            );
-                                                          }
-                                                        },
-                                                      ),
-                                                    ),
+                                                        child: Text(
+                                                      state
+                                                          .data![index].cart_qty
+                                                          .toString(),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .displaySmall,
+                                                    )),
                                                   ),
                                                   InkWell(
                                                     onTap: () {
                                                       _cartBloc.add(
                                                         CartRemoveCountEvent(
-                                                            count: int.parse(
-                                                              data[index]
-                                                                  .cart_qty
-                                                                  .toString(),
-                                                            ),
                                                             product_id: data[
                                                                         index]
                                                                     .product_id ??
@@ -210,7 +228,7 @@ class CartUi extends StatelessWidget {
                                               listener: (context, state) {
                                                 if (state
                                                     is CartDeleteSingleItemState) {
-                                                  Constant.showLongToast(
+                                                  Constant.showShortToast(
                                                       state.message);
                                                 }
                                               },
@@ -223,7 +241,6 @@ class CartUi extends StatelessWidget {
                                                           productId: data[index]
                                                               .product_id
                                                               .toString()));
-                                                  _cartBloc.add(GetDataEvent());
                                                 },
                                                 icon: const Icon(
                                                     Icons.delete_forever),
@@ -330,6 +347,89 @@ class CartUi extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+
+  void _showDownloadDialog(BuildContext context, String dialogType) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: SizedBox(
+            // color: Colors.greenAccent,
+            height: 120,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                // mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        (dialogType == "download")
+                            ? "Download Images"
+                            : "Logout",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        (dialogType == "download")
+                            ? "Do you want to download the images?"
+                            : "Are you sure you want to logout?",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      )
+                    ],
+                  ),
+                  Row(
+                    // crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor: CommonColors.primary,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Cancel")),
+                      TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor: CommonColors.primary,
+                          ),
+                          onPressed: () async {
+                            // _landBloc.add(LandDownloadImageEvent(
+                            //     data: _landBloc.selectedData));
+                            // Navigator.pop(context);
+                            if (dialogType == "download") {
+                              // _landBloc.add(LandDownloadImageEvent(
+                              //     data: _landBloc.selectedData));
+                            } else if (dialogType == "logout") {
+                              //  Navigator.pop(context);
+                              _landBloc.add(LandLogoutEvent());
+                            }
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            (dialogType == "download") ? "Download" : "Logout",
+                          ))
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

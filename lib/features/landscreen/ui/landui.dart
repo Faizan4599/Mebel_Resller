@@ -1023,8 +1023,7 @@ _landBloc.add(LandCartCountEvent(data: []));
                         (dialogType == "download")
                             ? "Download Images"
                             : "Logout",
-                        style: const TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold),
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
                   ),
@@ -1034,7 +1033,7 @@ _landBloc.add(LandCartCountEvent(data: []));
                         (dialogType == "download")
                             ? "Do you want to download the images?"
                             : "Are you sure you want to logout?",
-                        style: const TextStyle(fontSize: 15),
+                        style: Theme.of(context).textTheme.titleMedium,
                       )
                     ],
                   ),

@@ -20,6 +20,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc() : super(ProductInitial()) {
     on<ProductSlideImageEvent>(productSlideImageEvent);
     on<ProductGotoAddToCartEvent>(productGotoAddToCartEvent);
+    on<ProductNavigateToLandScreenEvent>(productNavigateToLandScreenEvent);
+    on<ProductNavigateToCartScreenEvent>(productNavigateToCartScreenEvent);
   }
 
   FutureOr<void> productSlideImageEvent(
@@ -61,5 +63,15 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     } catch (e) {
       emit(ProductErrorState(message: "Error occurred ${e.toString()}"));
     }
+  }
+
+  FutureOr<void> productNavigateToLandScreenEvent(
+      ProductNavigateToLandScreenEvent event, Emitter<ProductState> emit) {
+    emit(ProductNavigateToAddToLandScreenState());
+  }
+
+  FutureOr<void> productNavigateToCartScreenEvent(
+      ProductNavigateToCartScreenEvent event, Emitter<ProductState> emit) {
+    emit(ProductNavigateToAddToCartState());
   }
 }

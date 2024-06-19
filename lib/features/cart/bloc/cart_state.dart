@@ -30,7 +30,7 @@ class CartRemoveCountState extends CartState {
   CartRemoveCountState({required this.count});
 }
 
-class CartNavigateTo extends CartActionState {}
+class CartNavigateToLandScreenState extends CartActionState {}
 
 class CartDeleteSingleItemState extends CartState {
   String message;

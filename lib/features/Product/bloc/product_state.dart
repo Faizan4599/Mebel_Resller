@@ -27,3 +27,5 @@ class ProductSlideImageState extends ProductState {
 }
 
 class ProductNavigateToAddToCartState extends ProductActionState {}
+
+class ProductNavigateToAddToLandScreenState extends ProductActionState {}

@@ -24,6 +24,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<CartAddCountEvent>(cartAddEvent);
     on<CartRemoveCountEvent>(cartRemoveEvent);
     on<CartDeleteSingleItem>(cartDeleteSingleItem);
+    on<CartNavigateToLandScreenEvent>(cartNavigateToLandScreenEvent);
   }
 
   FutureOr<void> getDataEvent(
@@ -64,8 +65,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   FutureOr<void> cartAddEvent(
       CartAddCountEvent event, Emitter<CartState> emit) async {
     try {
-      final data = event.count++;
-      print("Add $data");
+      final product = getCartDetailsList
+          .firstWhere((element) => element.product_id == event.product_id);
+      final updatedCount = int.parse(product.cart_qty.toString()) + 1;
+      print("Add $updatedCount");
       // emit(CartAddCountState());
       Map<String, String> addCountParameter = {
         "access_token1": Constant.access_token1,
@@ -73,7 +76,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         "access_token3": Constant.access_token3,
         "user_id": PreferenceUtils.getString(UserData.id.name),
         "product_id": event.product_id,
-        "qty": event.count.toString()
+        "qty": updatedCount.toString()
       };
       var response = await APIRepository()
           .getCommonMethodAPI(addCountParameter, APIUrls.getUpdateCart);
@@ -86,8 +89,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         } else if (response.response is CartCommonDataModel) {
           cartCommonDataList.add(response.response as CartCommonDataModel);
         }
-
-        emit(CartAddCountState(count: data));
+        product.cart_qty = updatedCount.toString();
+        emit(CartSuccessState(data: getCartDetailsList));
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(CartErrorState(message: failedList.first.message));
@@ -105,16 +108,22 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   FutureOr<void> cartRemoveEvent(
       CartRemoveCountEvent event, Emitter<CartState> emit) async {
     try {
-      final data = event.count--;
-      print("remove $data");
+      final product = getCartDetailsList
+          .firstWhere((element) => element.product_id == event.product_id);
+      final updatedCount = int.parse(product.cart_qty.toString()) - 1;
+      print("remove $updatedCount");
       // emit(CartAddCountState());
+      if (updatedCount < 1) {
+        emit(CartErrorState(message: "Quantity cannot be less than 1"));
+        return;
+      }
       Map<String, String> removeCountParameter = {
         "access_token1": Constant.access_token1,
         "access_token2": Constant.access_token2,
         "access_token3": Constant.access_token3,
         "user_id": PreferenceUtils.getString(UserData.id.name),
         "product_id": event.product_id,
-        "qty": event.count.toString()
+        "qty": updatedCount.toString()
       };
       var response = await APIRepository()
           .getCommonMethodAPI(removeCountParameter, APIUrls.getUpdateCart);
@@ -127,7 +136,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         } else if (response.response is CartCommonDataModel) {
           cartCommonDataList.add(response.response as CartCommonDataModel);
         }
-        emit(CartRemoveCountState(count: data));
+        product.cart_qty = updatedCount.toString();
+        emit(CartSuccessState(data: getCartDetailsList));
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(CartErrorState(message: failedList.first.message));
@@ -166,6 +176,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         emit(CartDeleteSingleItemState(
             message: cartCommonDataList.first.message ?? "",
             description: cartCommonDataList.first.description));
+        add(GetDataEvent());
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(CartErrorState(message: failedList.first.message));
@@ -178,5 +189,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       emit(CartErrorState(message: "Error occurred ${e.toString()}"));
       print("Catch Err ${e.toString()}");
     }
+  }
+
+  FutureOr<void> cartNavigateToLandScreenEvent(
+      CartNavigateToLandScreenEvent event, Emitter<CartState> emit) {
+    emit(CartNavigateToLandScreenState());
   }
 }

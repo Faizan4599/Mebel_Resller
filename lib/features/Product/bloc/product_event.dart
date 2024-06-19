@@ -12,3 +12,7 @@ class ProductGotoAddToCartEvent extends ProductEvent {
   String product_id;
   ProductGotoAddToCartEvent({required this.product_id});
 }
+
+class ProductNavigateToLandScreenEvent extends ProductEvent {}
+
+class ProductNavigateToCartScreenEvent extends ProductEvent {}
