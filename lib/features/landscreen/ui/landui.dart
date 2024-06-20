@@ -324,43 +324,36 @@ class LandUi extends StatelessWidget {
                                         },
                                       ),
                                       customDropDownButton(
-                                          context: context,
-                                          hint: "Select Subcategory 2",
-                                          isExpanded: true,
-                                          items: _landBloc.subCategory2List
-                                              .map((item) =>
-                                                  DropdownMenuItem<String>(
-                                                    value: item.subcategory2_id,
-                                                    child: Text(
-                                                      item.subcategory2_name,
-                                                      style: const TextStyle(
-                                                        color: CommonColors
-                                                            .planeWhite,
-                                                        fontSize: 14,
-                                                      ),
-                                                    ),
-                                                  ))
-                                              .toList(),
-                                          onChanged: (value) {
-                                            _landBloc.subCategory2Val = value!;
-                                            _landBloc.add(
-                                              LandSubcategory2DropDownEvent(
-                                                  subcategory2DropDownValue:
-                                                      value,
-                                                  subCategoryId: '',
-                                                  items: []),
-                                            );
-                                          },
-                                          title: "SUBCATEGORY 2",
-                                          value: _landBloc.subCategory2Val == ''
-                                              ? null
-                                              : _landBloc.subCategory2Val,
-                                          containerColor: CommonColors.primary,
-                                          dropdownColor: CommonColors.primary,
-                                          iconEnabledColor:
-                                              CommonColors.planeWhite,
-                                          hintTextColor:
-                                              CommonColors.planeWhite),
+                                        context: context,
+                                        hint: "Select Subcategory 2",
+                                        isExpanded: true,
+                                        items: _landBloc.subCategory2List
+                                            .map((item) =>
+                                                DropdownMenuItem<String>(
+                                                  value: item.subcategory2_id,
+                                                  child: Text(
+                                                    item.subcategory2_name,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleMedium,
+                                                  ),
+                                                ))
+                                            .toList(),
+                                        onChanged: (value) {
+                                          _landBloc.subCategory2Val = value!;
+                                          _landBloc.add(
+                                            LandSubcategory2DropDownEvent(
+                                                subcategory2DropDownValue:
+                                                    value,
+                                                subCategoryId: '',
+                                                items: []),
+                                          );
+                                        },
+                                        title: "SUBCATEGORY 2",
+                                        value: _landBloc.subCategory2Val == ''
+                                            ? null
+                                            : _landBloc.subCategory2Val,
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(
@@ -605,6 +598,9 @@ class LandUi extends StatelessWidget {
                                                 LandRegionDropDownEvent(
                                                     regionDropDownValue: '',
                                                     items: []));
+                                            _landBloc.regionVal = '';
+                                            _landBloc.start = 1000;
+                                            _landBloc.end = 100000;
                                           },
                                           style: ElevatedButton.styleFrom(
                                             shape: RoundedRectangleBorder(
@@ -637,7 +633,8 @@ class LandUi extends StatelessWidget {
                     buildWhen: (previous, current) =>
                         current is LoadDataState ||
                         current is LandLoadMoreDataState ||
-                        current is LandSearchDataState,
+                        current is LandSearchDataState ||
+                        current is LandSearchDataNotFoundState,
                     bloc: _landBloc,
                     builder: (context, state) {
                       print("STATE CHECK FOR PRODUCTS>>>> $state");
@@ -662,10 +659,11 @@ class LandUi extends StatelessWidget {
                                     perticularData: state.productData ?? [],
                                   ),
                                 ),
-                              ).then((_){
-                        // print("SSSSSSSSSSSS $val");
-_landBloc.add(LandCartCountEvent(data: []));
-                      });;
+                              ).then((_) {
+                                // print("SSSSSSSSSSSS $val");
+                                _landBloc.add(LandCartCountEvent(data: []));
+                              });
+                              ;
                             }
                           },
                           child: GridView.builder(
@@ -819,6 +817,20 @@ _landBloc.add(LandCartCountEvent(data: []));
                               );
                             },
                           ),
+                        );
+                      } else if (state is LandSearchDataNotFoundState) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.search_off,
+                              size: 40,
+                            ),
+                            Text(
+                              state.msg,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          ],
                         );
                       } else {
                         // return const Center(child: CircularProgressIndicator());

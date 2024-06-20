@@ -106,7 +106,7 @@ class LandNavigateToQuoteState extends LandState {
 }
 
 class LandCartCountState extends LandState {
- List<GetCartCountDataModel>? data;
+  List<GetCartCountDataModel>? data;
   LandCartCountState({required this.data});
 }
 
@@ -116,4 +116,9 @@ class LandClearDataState extends LandState {
   String? value;
   List<dynamic> list;
   LandClearDataState({required this.value, required this.list});
+}
+
+class LandSearchDataNotFoundState extends LandState {
+  String msg;
+  LandSearchDataNotFoundState({required this.msg});
 }

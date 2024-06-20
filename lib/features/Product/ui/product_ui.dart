@@ -22,8 +22,9 @@ class ProductUi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GetProductDataModel allData = perticularData.first;
-    qty = int.parse(allData.cart_qty.toString());
+    
     _landBloc.add(LandCartCountEvent(data: []));
+    qty = int.parse(allData.cart_qty.toString());
     return BlocProvider(
       create: (_) => ProductBloc(),
       child: Scaffold(
@@ -282,6 +283,8 @@ class ProductUi extends StatelessWidget {
                           ).then((_) {
                             // print("SSSSSSSSSSSS $val");
                             _landBloc.add(LandCartCountEvent(data: []));
+                             qty = int.parse(allData.cart_qty.toString());
+                             print("QTY>>>>>>> $qty");
                           });
                         }
                       },

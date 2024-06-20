@@ -17,6 +17,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   List<ProductDataModel> addToCartList = <ProductDataModel>[];
   List<FailedCommonDataModel> failedList = <FailedCommonDataModel>[];
   int currentPage = 0;
+  int qty = 0;
   ProductBloc() : super(ProductInitial()) {
     on<ProductSlideImageEvent>(productSlideImageEvent);
     on<ProductGotoAddToCartEvent>(productGotoAddToCartEvent);

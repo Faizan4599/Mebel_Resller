@@ -442,7 +442,12 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     print(">>>Filter>>> ${filteredData.map(
       (e) => e.product_id,
     )}");
-    emit(LandSearchDataState(filteredData: filteredData));
+    if (filteredData.isEmpty || filteredData == null) {
+      print("<<<<<<<<<<<");
+      emit(LandSearchDataNotFoundState(msg: "No Product Found"));
+    } else {
+      emit(LandSearchDataState(filteredData: filteredData));
+    }
   }
 
   FutureOr<void> landClearDataEvent(
