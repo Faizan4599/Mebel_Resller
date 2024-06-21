@@ -165,21 +165,37 @@ class CartUi extends StatelessWidget {
                                                 // mainAxisAlignment:
                                                 //     MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  InkWell(
-                                                    onTap: () {
-                                                      _cartBloc.add(
-                                                        CartAddCountEvent(
-                                                            product_id: data[
-                                                                        index]
-                                                                    .product_id ??
-                                                                ""),
-                                                      );
+                                                  BlocListener<CartBloc,
+                                                      CartState>(
+                                                    bloc: _cartBloc,
+                                                    listenWhen: (previous,
+                                                            current) =>
+                                                        current
+                                                            is CartSuccessState,
+                                                    listener: (context, state) {
+                                                      if (state
+                                                          is CartSuccessState) {
+                                                        Constant.showShortToast(
+                                                            state.message
+                                                                .toString());
+                                                      }
                                                     },
-                                                    child: const Icon(
-                                                      size: 30,
-                                                      Icons.add,
-                                                      color: CommonColors
-                                                          .planeWhite,
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        _cartBloc.add(
+                                                          CartAddCountEvent(
+                                                              product_id: data[
+                                                                          index]
+                                                                      .product_id ??
+                                                                  ""),
+                                                        );
+                                                      },
+                                                      child: const Icon(
+                                                        size: 30,
+                                                        Icons.add,
+                                                        color: CommonColors
+                                                            .planeWhite,
+                                                      ),
                                                     ),
                                                   ),
                                                   Container(
@@ -199,22 +215,38 @@ class CartUi extends StatelessWidget {
                                                           .displaySmall,
                                                     )),
                                                   ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      _cartBloc.add(
-                                                        CartRemoveCountEvent(
-                                                            product_id: data[
-                                                                        index]
-                                                                    .product_id ??
-                                                                ""),
-                                                      );
-                                                      print("-");
+                                                  BlocListener<CartBloc,
+                                                      CartState>(
+                                                    bloc: _cartBloc,
+                                                    listenWhen: (previous,
+                                                            current) =>
+                                                        current
+                                                            is CartSuccessState,
+                                                    listener: (context, state) {
+                                                      if (state
+                                                          is CartSuccessState) {
+                                                        Constant.showShortToast(
+                                                            state.message
+                                                                .toString());
+                                                      }
                                                     },
-                                                    child: const Icon(
-                                                      size: 30,
-                                                      Icons.remove,
-                                                      color: CommonColors
-                                                          .planeWhite,
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        _cartBloc.add(
+                                                          CartRemoveCountEvent(
+                                                              product_id: data[
+                                                                          index]
+                                                                      .product_id ??
+                                                                  ""),
+                                                        );
+                                                        print("-");
+                                                      },
+                                                      child: const Icon(
+                                                        size: 30,
+                                                        Icons.remove,
+                                                        color: CommonColors
+                                                            .planeWhite,
+                                                      ),
                                                     ),
                                                   )
                                                 ],
@@ -255,80 +287,74 @@ class CartUi extends StatelessWidget {
                                     height:
                                         Constant.screenHeight(context) * 0.3,
                                     // color: Colors.black,
-                                    child: Column(
-                                      // crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        // Icon(Icons.cancel),
-                                        // SizedBox(
-                                        //   height: 15,
-                                        // ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              width: 130,
-                                              child: Text(
-                                                data[index].name ?? "",
-                                                overflow: TextOverflow.ellipsis,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleLarge,
-                                              ),
-                                            ),
-                                            RichText(
-                                              text: TextSpan(
-                                                children: [
-                                                  TextSpan(
-                                                      text: '\u{20B9} ',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .displaySmall),
-                                                  TextSpan(
-                                                      text: data[index].price,
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .titleLarge),
-                                                ],
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 15,
-                                            ),
-                                            Container(
-                                              width: 130,
-                                              child: Text(
-                                                data[index].description ?? "",
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .displaySmall,
-                                              ),
-                                            ),
-                                            Text(
-                                              data[index].category ?? "",
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: 130,
+                                            child: Text(
+                                              data[index].name ?? "",
+                                              overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .displaySmall,
+                                                  .titleLarge,
                                             ),
-                                            Text(
-                                              data[index].subcategory1 ?? "",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displaySmall,
+                                          ),
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                    text: '\u{20B9} ',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .displaySmall),
+                                                TextSpan(
+                                                    text: data[index].price,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleLarge),
+                                              ],
                                             ),
-                                            Text(
-                                              data[index].subcategory2 ?? "",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displaySmall,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                          ),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          // Container(
+                                          //   width: 130,
+                                          //   child: Text(
+                                          //     data[index].description ?? "",
+                                          //     maxLines: 2,
+                                          //     overflow: TextOverflow.ellipsis,
+                                          //     style: Theme.of(context)
+                                          //         .textTheme
+                                          //         .displaySmall,
+                                          //   ),
+                                          // ),
+                                          // Text(
+                                          //   data[index].category ?? "",
+                                          //   style: Theme.of(context)
+                                          //       .textTheme
+                                          //       .displaySmall,
+                                          // ),
+                                          // Text(
+                                          //   data[index].subcategory1 ?? "",
+                                          //   style: Theme.of(context)
+                                          //       .textTheme
+                                          //       .displaySmall,
+                                          // ),
+                                          Text(
+                                            data[index].subcategory2 ?? "",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .displaySmall,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],

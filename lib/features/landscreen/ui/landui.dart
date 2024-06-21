@@ -45,6 +45,7 @@ class LandUi extends StatelessWidget {
         actions: [
           Badge(
             // alignment: Alignment.topLeft,
+            alignment: Alignment.topCenter,
             backgroundColor: CommonColors.planeWhite,
             label: BlocProvider.value(
               value: _landBloc,

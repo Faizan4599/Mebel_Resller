@@ -90,7 +90,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           cartCommonDataList.add(response.response as CartCommonDataModel);
         }
         product.cart_qty = updatedCount.toString();
-        emit(CartSuccessState(data: getCartDetailsList));
+        print(cartCommonDataList.first.message);
+        emit(CartSuccessState(
+            data: getCartDetailsList,
+            message: cartCommonDataList.first.message));
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(CartErrorState(message: failedList.first.message));
@@ -137,7 +140,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           cartCommonDataList.add(response.response as CartCommonDataModel);
         }
         product.cart_qty = updatedCount.toString();
-        emit(CartSuccessState(data: getCartDetailsList));
+        emit(CartSuccessState(
+            data: getCartDetailsList,
+            message: cartCommonDataList.first.message));
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(CartErrorState(message: failedList.first.message));

@@ -18,6 +18,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   List<FailedCommonDataModel> failedList = <FailedCommonDataModel>[];
   int currentPage = 0;
   int qty = 0;
+  bool addToCart = false;
   ProductBloc() : super(ProductInitial()) {
     on<ProductSlideImageEvent>(productSlideImageEvent);
     on<ProductGotoAddToCartEvent>(productGotoAddToCartEvent);
@@ -53,6 +54,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         emit(ProductSuccessState(
             message: addToCartList.first.message.toString()));
         emit(ProductNavigateToAddToCartState());
+        addToCart = true;
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(ProductErrorState(message: failedList.first.message.toString()));

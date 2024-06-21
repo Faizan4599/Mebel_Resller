@@ -22,7 +22,7 @@ class ProductUi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GetProductDataModel allData = perticularData.first;
-    
+
     _landBloc.add(LandCartCountEvent(data: []));
     qty = int.parse(allData.cart_qty.toString());
     return BlocProvider(
@@ -59,6 +59,7 @@ class ProductUi extends StatelessWidget {
             ),
             Badge(
               // alignment: Alignment.topLeft,
+               alignment: Alignment.topCenter,
               backgroundColor: CommonColors.planeWhite,
               label: BlocProvider.value(
                 value: _landBloc,
@@ -248,15 +249,20 @@ class ProductUi extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                (qty > 0)
-                    ? const Text(
-                        "Item is already added to the cart",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                            color: Colors.red),
-                      )
-                    : const SizedBox(),
+                BlocBuilder<ProductBloc, ProductState>(
+                  bloc: _productBloc,
+                  builder: (context, state) {
+                    return (qty > 0 || _productBloc.addToCart)
+                        ? const Text(
+                            "Item is already added to the cart",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                                color: Colors.red),
+                          )
+                        : const SizedBox();
+                  },
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -281,10 +287,7 @@ class ProductUi extends StatelessWidget {
                               ),
                             ),
                           ).then((_) {
-                            // print("SSSSSSSSSSSS $val");
                             _landBloc.add(LandCartCountEvent(data: []));
-                             qty = int.parse(allData.cart_qty.toString());
-                             print("QTY>>>>>>> $qty");
                           });
                         }
                       },

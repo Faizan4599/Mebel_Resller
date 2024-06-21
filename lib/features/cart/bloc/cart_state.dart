@@ -17,7 +17,8 @@ class CartErrorState extends CartState {
 
 class CartSuccessState extends CartState {
   List<GetCartDetailsDataModel>? data;
-  CartSuccessState({required this.data});
+  String? message;
+  CartSuccessState({required this.data, this.message});
 }
 
 class CartAddCountState extends CartState {
