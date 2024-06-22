@@ -105,10 +105,10 @@ class CartUi extends StatelessWidget {
                     ? Expanded(
                         child: ListView.builder(
                           shrinkWrap: true,
-                          itemCount: data?.length,
+                          itemCount: data.length,
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(6.0),
                               child: Container(
                                 width: Constant.screenWidth(context),
                                 height: Constant.screenHeight(context) * 0.3,
@@ -218,7 +218,7 @@ class CartUi extends StatelessWidget {
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .displaySmall,
+                                                                .bodyMedium,
                                                           )),
                                                         ),
                                                         BlocListener<CartBloc,
@@ -323,10 +323,10 @@ class CartUi extends StatelessWidget {
                                                     children: [
                                                       TextSpan(
                                                           text: '\u{20B9} ',
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .textTheme
-                                                              .displaySmall),
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .labelLarge),
                                                       TextSpan(
                                                           text:
                                                               data[index].price,
@@ -368,13 +368,13 @@ class CartUi extends StatelessWidget {
                                                       "",
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .displaySmall,
+                                                      .bodyMedium,
                                                 ),
                                                 Text(
                                                   data[index].region ?? "",
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .displaySmall,
+                                                      .labelLarge,
                                                 ),
                                               ],
                                             ),
@@ -390,23 +390,24 @@ class CartUi extends StatelessWidget {
                         ),
                       )
                     : SizedBox(
-                      height: Constant.screenHeight(context) * 0.7,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.shopping_cart,
-                                size: 40,),
-                            Text(
-                              'Currently no products in the cart',
-                              style:
-                                  Theme.of(context).textTheme.titleLarge,
-                            ),
-                          ],
+                        height: Constant.screenHeight(context) * 0.7,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.shopping_cart,
+                                size: 40,
+                              ),
+                              Text(
+                                'Currently no products in the cart',
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
+                      );
               } else {
                 return const SizedBox();
               }
@@ -427,7 +428,7 @@ class CartUi extends StatelessWidget {
           ),
           child: SizedBox(
             // color: Colors.greenAccent,
-            height: 120,
+            height: 125,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
@@ -443,7 +444,7 @@ class CartUi extends StatelessWidget {
                         (dialogType == "download")
                             ? "Download Images"
                             : "Logout",
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ],
                   ),
@@ -453,7 +454,7 @@ class CartUi extends StatelessWidget {
                         (dialogType == "download")
                             ? "Do you want to download the images?"
                             : "Are you sure you want to logout?",
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       )
                     ],
                   ),

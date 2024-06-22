@@ -52,7 +52,7 @@ class SplashUi extends StatelessWidget {
             },
             builder: (context, state) {
               return  Center(
-                child: Text(Constant.appName, style: Theme.of(context).textTheme.displayLarge,),
+                child: Text(Constant.appName, style: Theme.of(context).textTheme.displaySmall,),
               );
             },
           ),

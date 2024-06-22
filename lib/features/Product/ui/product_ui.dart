@@ -59,7 +59,7 @@ class ProductUi extends StatelessWidget {
             ),
             Badge(
               // alignment: Alignment.topLeft,
-               alignment: Alignment.topCenter,
+              alignment: Alignment.topCenter,
               backgroundColor: CommonColors.planeWhite,
               label: BlocProvider.value(
                 value: _landBloc,
@@ -142,7 +142,7 @@ class ProductUi extends StatelessWidget {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
+            padding: const EdgeInsets.only(left: 6, right: 6),
             child: Column(
               children: [
                 Center(
@@ -315,7 +315,7 @@ class ProductUi extends StatelessWidget {
                   children: [
                     Text(
                       "Description",
-                      style: Theme.of(context).textTheme.headlineLarge,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ],
                 ),
@@ -326,7 +326,7 @@ class ProductUi extends StatelessWidget {
                       children: [
                         Text(
                           allData.description ?? "",
-                          style: Theme.of(context).textTheme.bodyLarge,
+                          style: Theme.of(context).textTheme.labelLarge,
                         ),
                       ],
                     ),
@@ -339,14 +339,18 @@ class ProductUi extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    productInfo("Product Name", allData.name.toString()),
-                    productInfo("Region", allData.region.toString()),
-                    productInfo("Category", allData.category.toString()),
-                    productInfo("Subcategory", allData.subcategory1.toString()),
                     productInfo(
-                        "Subcategory 2", allData.subcategory2.toString()),
-                    productInfo("Price", allData.price.toString()),
-                    productInfo("Poduct ID", allData.product_id.toString()),
+                        "Product Name", allData.name.toString(), context),
+                    productInfo("Region", allData.region.toString(), context),
+                    productInfo(
+                        "Category", allData.category.toString(), context),
+                    productInfo("Subcategory", allData.subcategory1.toString(),
+                        context),
+                    productInfo("Subcategory 2",
+                        allData.subcategory2.toString(), context),
+                    productInfo("Price", allData.price.toString(), context),
+                    productInfo(
+                        "Poduct ID", allData.product_id.toString(), context),
                   ],
                 )
               ],
@@ -357,7 +361,7 @@ class ProductUi extends StatelessWidget {
     );
   }
 
-  Widget productInfo(String title, String infoData) {
+  Widget productInfo(String title, String infoData, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 5, bottom: 5),
       child: Row(
@@ -367,19 +371,11 @@ class ProductUi extends StatelessWidget {
               children: [
                 TextSpan(
                   text: '$title :  ',
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.black, // Specify the color if needed
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 TextSpan(
                   text: infoData,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black, // Specify the color if needed
-                  ),
+                  style: Theme.of(context).textTheme.labelLarge,
                 ),
               ],
             ),
@@ -399,7 +395,7 @@ class ProductUi extends StatelessWidget {
           ),
           child: SizedBox(
             // color: Colors.greenAccent,
-            height: 120,
+            height: 125,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
@@ -415,7 +411,7 @@ class ProductUi extends StatelessWidget {
                         (dialogType == "download")
                             ? "Download Images"
                             : "Logout",
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ],
                   ),
@@ -425,7 +421,7 @@ class ProductUi extends StatelessWidget {
                         (dialogType == "download")
                             ? "Do you want to download the images?"
                             : "Are you sure you want to logout?",
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       )
                     ],
                   ),

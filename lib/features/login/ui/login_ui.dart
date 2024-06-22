@@ -37,7 +37,7 @@ class LoginUi extends StatelessWidget {
               ),
               Text(
                 Constant.appName,
-                style: Theme.of(context).textTheme.displayLarge,
+                style: Theme.of(context).textTheme.displaySmall,
               ),
             ],
           ),
@@ -70,7 +70,7 @@ class LoginUi extends StatelessWidget {
                           children: [
                             Text(
                               "Email/ Mobile number",
-                              style: Theme.of(context).textTheme.titleMedium,
+                              style: Theme.of(context).textTheme.labelLarge,
                             )
                           ],
                         ),
@@ -78,7 +78,7 @@ class LoginUi extends StatelessWidget {
                           height: 5,
                         ),
                         TextField(
-                          style: Theme.of(context).textTheme.titleSmall,
+                          style: Theme.of(context).textTheme.bodyMedium,
                           cursorColor: CommonColors.primary,
                           controller: emailOrMobileTxt,
                           decoration: const InputDecoration(
@@ -108,7 +108,7 @@ class LoginUi extends StatelessWidget {
                           children: [
                             Text(
                               "Password",
-                              style: Theme.of(context).textTheme.titleMedium,
+                              style: Theme.of(context).textTheme.labelLarge,
                             )
                           ],
                         ),
@@ -121,7 +121,7 @@ class LoginUi extends StatelessWidget {
                               current is LoginShowPasswordState,
                           builder: (context, state) {
                             return TextField(
-                              style: Theme.of(context).textTheme.titleSmall,
+                              style: Theme.of(context).textTheme.bodyMedium,
                               cursorColor: CommonColors.primary,
                               controller: passTxt,
                               obscureText: state is LoginShowPasswordState

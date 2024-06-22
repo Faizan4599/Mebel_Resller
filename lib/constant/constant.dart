@@ -39,29 +39,23 @@ class Constant {
       selectionHandleColor: Colors.transparent,
     ),
     textTheme: const TextTheme(
-      displayLarge: TextStyle(
-          fontSize: 30,
-          fontWeight: FontWeight.bold,
-          color: CommonColors.primary),
-      headlineLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-      titleLarge: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-      titleMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-      titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
-      displaySmall: TextStyle(fontSize: 15),
-      bodyLarge: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.normal,
-        color: CommonColors.planeWhite,
-      ),
-      bodyMedium: TextStyle(
-          fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-    ),
+        labelLarge: TextStyle(fontWeight: FontWeight.bold),
+        displayLarge:
+            TextStyle(fontWeight: FontWeight.bold, color: CommonColors.primary),
+        titleLarge: TextStyle(),
+        titleMedium: TextStyle(
+            fontWeight: FontWeight.bold, color: CommonColors.planeWhite),
+        bodyLarge: TextStyle(
+            fontWeight: FontWeight.bold, color: CommonColors.planeWhite),
+        bodySmall: TextStyle(color: CommonColors.planeWhite),
+        bodyMedium: TextStyle(),
+        titleSmall: TextStyle()),
     appBarTheme: const AppBarTheme(
       color: CommonColors.primary,
       titleTextStyle: TextStyle(
           color: CommonColors.planeWhite,
-          fontSize: 20,
-          fontWeight: FontWeight.bold),
+          fontWeight: FontWeight.bold,
+          fontSize: 18),
       iconTheme: IconThemeData(color: Colors.white),
     ),
     colorScheme: ColorScheme.fromSeed(seedColor: CommonColors.primary),
