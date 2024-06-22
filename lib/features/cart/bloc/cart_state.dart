@@ -22,13 +22,15 @@ class CartSuccessState extends CartState {
 }
 
 class CartAddCountState extends CartState {
-  int count;
-  CartAddCountState({required this.count});
+  List<GetCartDetailsDataModel>? data;
+  String? message;
+  CartAddCountState({this.data, this.message});
 }
 
 class CartRemoveCountState extends CartState {
-  int count;
-  CartRemoveCountState({required this.count});
+  List<GetCartDetailsDataModel>? data;
+  String? message;
+  CartRemoveCountState({this.data, this.message});
 }
 
 class CartNavigateToLandScreenState extends CartActionState {}
@@ -38,3 +40,5 @@ class CartDeleteSingleItemState extends CartState {
   String? description;
   CartDeleteSingleItemState({required this.message, this.description});
 }
+
+
