@@ -269,7 +269,7 @@ class CartUi extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Container(
-                                              width: 170,
+                                              width: 160,
                                               child: Text(
                                                 maxLines: 2,
                                                 data[index].name ?? "",

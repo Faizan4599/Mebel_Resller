@@ -48,7 +48,7 @@ class Constant {
         bodyLarge: TextStyle(
             fontWeight: FontWeight.bold, color: CommonColors.planeWhite),
         bodySmall: TextStyle(color: CommonColors.planeWhite),
-        bodyMedium: TextStyle(fontWeight: FontWeight.bold),
+        bodyMedium: TextStyle(),
         titleSmall: TextStyle()),
     appBarTheme: const AppBarTheme(
       color: CommonColors.primary,

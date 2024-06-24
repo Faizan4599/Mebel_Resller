@@ -17,6 +17,7 @@ import 'package:reseller_app/features/landscreen/model/get_sub_categories1.dart'
 import 'package:reseller_app/features/landscreen/model/get_sub_categories2.dart';
 import 'package:reseller_app/repo/api_urls.dart';
 import 'package:reseller_app/repo/response_handler.dart';
+import '../features/landscreen/model/get_styles_data_model.dart';
 import '../features/login/model/login_data_mode.dart';
 
 class APIRepository {
@@ -27,7 +28,8 @@ class APIRepository {
     try {
       final String url = Constant.testMainBaseUrl + endpoint;
       Map<String, String> header = {
-        HttpHeaders.contentTypeHeader: "application/json"
+        // HttpHeaders.contentTypeHeader: "application/json",
+        // HttpHeaders.acceptHeader:"application/json"
       };
       Uri uri = Uri.parse(url);
       final finalUri = uri.replace(queryParameters: parameters);
@@ -208,6 +210,20 @@ class APIRepository {
                     .toList();
               } else if (outerResponse.data is Map) {
                 responseData = GetCartCountDataModel.fromJson(
+                    outerResponse.data as Map<String, dynamic>);
+              }
+              return Success(code: APICode.SUCCESS, response: responseData);
+            // =====
+            case APIUrls.getStyles:
+              if (outerResponse.data is List) {
+                responseData = (outerResponse.data as List<dynamic>)
+                    .map(
+                      (e) => GetStylesDataModel.fromJson(
+                          e as Map<String, dynamic>),
+                    )
+                    .toList();
+              } else if (outerResponse.data is Map) {
+                responseData = GetStylesDataModel.fromJson(
                     outerResponse.data as Map<String, dynamic>);
               }
               return Success(code: APICode.SUCCESS, response: responseData);

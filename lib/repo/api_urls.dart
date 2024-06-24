@@ -11,4 +11,5 @@ class APIUrls {
   static const String getUpdateCart = "updateCart";
   static const String getRemoveFromCart = "removeFromCart";
   static const String getCartCount = "getCartCount";
+  static const String getStyles = "getStyles";
 }
