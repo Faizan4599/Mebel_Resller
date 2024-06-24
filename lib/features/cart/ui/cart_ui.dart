@@ -196,7 +196,7 @@ class CartUi extends StatelessWidget {
                                                           .toString(),
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .displaySmall,
+                                                          .titleLarge,
                                                     )),
                                                   ),
                                                   InkWell(
@@ -269,8 +269,9 @@ class CartUi extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Container(
-                                              width: 130,
+                                              width: 170,
                                               child: Text(
+                                                maxLines: 2,
                                                 data[index].name ?? "",
                                                 overflow: TextOverflow.ellipsis,
                                                 style: Theme.of(context)
@@ -285,7 +286,7 @@ class CartUi extends StatelessWidget {
                                                       text: '\u{20B9} ',
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .displaySmall),
+                                                          .bodyMedium),
                                                   TextSpan(
                                                       text: data[index].price,
                                                       style: Theme.of(context)
@@ -297,34 +298,17 @@ class CartUi extends StatelessWidget {
                                             const SizedBox(
                                               height: 15,
                                             ),
-                                            Container(
-                                              width: 130,
-                                              child: Text(
-                                                data[index].description ?? "",
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .displaySmall,
-                                              ),
-                                            ),
-                                            Text(
-                                              data[index].category ?? "",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displaySmall,
-                                            ),
-                                            Text(
-                                              data[index].subcategory1 ?? "",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displaySmall,
-                                            ),
                                             Text(
                                               data[index].subcategory2 ?? "",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .displaySmall,
+                                                  .bodyMedium,
+                                            ),
+                                            Text(
+                                              data[index].region ?? "",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium,
                                             ),
                                           ],
                                         ),
