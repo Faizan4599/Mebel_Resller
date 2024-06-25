@@ -94,7 +94,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         emit(CartSuccessState(
             data: getCartDetailsList,
             message: cartCommonDataList.first.message));
-        
+
         emit(CartAddCountState(
             data: getCartDetailsList,
             message: cartCommonDataList.first.message));

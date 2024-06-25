@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reseller_app/constant/constant.dart';
@@ -35,9 +36,13 @@ class LoginUi extends StatelessWidget {
               const SizedBox(
                 width: 5,
               ),
-              Text(
-                Constant.appName,
-                style: Theme.of(context).textTheme.displaySmall,
+              Flexible(
+                child: Text(
+                  Constant.appName,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
               ),
             ],
           ),
@@ -51,9 +56,9 @@ class LoginUi extends StatelessWidget {
                 Radius.circular(15),
               ),
             ),
-            width: MediaQuery.of(context).size.width * 0.9,
+            width:kIsWeb?MediaQuery.of(context).size.width * 0.6: MediaQuery.of(context).size.width * 0.9,
             child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.center,
+               // crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(
@@ -68,9 +73,12 @@ class LoginUi extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Text(
-                              "Email/ Mobile number",
-                              style: Theme.of(context).textTheme.labelLarge,
+                            Flexible(
+                              child: Text(
+                                "Email/ Mobile number",
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.labelLarge,
+                              ),
                             )
                           ],
                         ),
@@ -106,9 +114,12 @@ class LoginUi extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Text(
-                              "Password",
-                              style: Theme.of(context).textTheme.labelLarge,
+                            Flexible(
+                              child: Text(
+                                "Password",
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.labelLarge,
+                              ),
                             )
                           ],
                         ),
@@ -187,7 +198,7 @@ class LoginUi extends StatelessWidget {
                         elevation: 3,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5.0)),
-                        minimumSize: const Size(220, 40), //////// HERE
+                        minimumSize: const Size(180, 40), //////// HERE
                       ),
                       onPressed: () {
                         // if (emailOrMobileTxt.text == "asc" &&
