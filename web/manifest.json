@@ -1,11 +1,11 @@
 {
-    "name": "reseller_app",
-    "short_name": "reseller_app",
+    "name": "Luxury Furniture",
+    "short_name": "Luxury Furniture",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "This is my website for buying furniture",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

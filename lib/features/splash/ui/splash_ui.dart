@@ -15,9 +15,9 @@ class SplashUi extends StatelessWidget {
   Widget build(BuildContext context) {
     _bloc.add(SplashInitNavigateEvent());
     return MaterialApp(
+      title: "Luxury Furniture",
       debugShowCheckedModeBanner: false,
-      theme: 
-      Constant.lightTheme,
+      theme: Constant.lightTheme,
       home: Scaffold(
         body: SafeArea(
           child: BlocConsumer<SplashBloc, SplashState>(
@@ -51,8 +51,11 @@ class SplashUi extends StatelessWidget {
               }
             },
             builder: (context, state) {
-              return  Center(
-                child: Text(Constant.appName, style: Theme.of(context).textTheme.displaySmall,),
+              return Center(
+                child: Text(
+                  Constant.appName,
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
               );
             },
           ),
