@@ -16,6 +16,8 @@ class GetProductsDataModel {
   String? updated_at;
   String? created_at;
   String? product_url;
+  String? style_id;
+  String? style_name;
 
   GetProductsDataModel(
       {this.product_id,
@@ -34,26 +36,31 @@ class GetProductsDataModel {
       this.cart_qty,
       this.updated_at,
       this.created_at,
-      this.product_url});
+      this.product_url,
+      this.style_id,
+      this.style_name});
 
   factory GetProductsDataModel.fromJson(Map<String, dynamic> json) {
     return GetProductsDataModel(
-        product_id: json['product_id'],
-        name: json['name'],
-        price: json['price'],
-        description: json['description'],
-        folder_name: json['folder_name'],
-        subcategory2_id: json['subcategory2_id'],
-        subcategory2: json['subcategory2'],
-        subcategory1_id: json['subcategory1_id'],
-        subcategory1: json['subcategory1'],
-        category_id: json['category_id'],
-        category: json['category'],
-        region_id: json['region_id'],
-        region: json['region'],
-        cart_qty: json['cart_qty'],
-        updated_at: json['updated_at'],
-        created_at: json['created_at'],
-        product_url: json['product_url']);
+      product_id: json['product_id'],
+      name: json['name'],
+      price: json['price'],
+      description: json['description'],
+      folder_name: json['folder_name'],
+      subcategory2_id: json['subcategory2_id'],
+      subcategory2: json['subcategory2'],
+      subcategory1_id: json['subcategory1_id'],
+      subcategory1: json['subcategory1'],
+      category_id: json['category_id'],
+      category: json['category'],
+      region_id: json['region_id'],
+      region: json['region'],
+      cart_qty: json['cart_qty'],
+      updated_at: json['updated_at'],
+      created_at: json['created_at'],
+      product_url: json['product_url'],
+      style_id: json['style_id'],
+      style_name: json['style_name'],
+    );
   }
 }

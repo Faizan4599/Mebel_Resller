@@ -55,6 +55,12 @@ class LandCategoryDropdownState extends LandState {
   LandCategoryDropdownState({required this.categoryValue, required this.items});
 }
 
+class LandStyleDropdownState extends LandState {
+  String? style;
+  List<GetStylesDataModel>? items;
+  LandStyleDropdownState({this.style, this.items});
+}
+
 class LandPriceRangeSliderState extends LandState {
   int start;
   int end;

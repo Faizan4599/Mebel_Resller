@@ -15,6 +15,7 @@ part 'cart_event.dart';
 part 'cart_state.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
+  DateTime? lastToastTime;
   List<FailedCommonDataModel> failedList = <FailedCommonDataModel>[];
   List<GetCartDetailsDataModel> getCartDetailsList =
       <GetCartDetailsDataModel>[];

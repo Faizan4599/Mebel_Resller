@@ -42,6 +42,12 @@ class LandCategoryDropDownEvent extends LandEvent {
       {required this.categoryDropDownValue, required this.items});
 }
 
+class LandStyleDropDownEvent extends LandEvent{
+  String? styleValue;
+  List<GetStylesDataModel>? items;
+  LandStyleDropDownEvent({this.styleValue, this.items});
+}
+
 class LandPriceRangeSliderEvent extends LandEvent {
   int start;
   int end;
@@ -81,6 +87,8 @@ class LandSearchDataEvent extends LandEvent {
   final String? subCategoryId;
   final String? subCategory2Id;
   final String? productId;
+  final String? styleId;
+
 
   LandSearchDataEvent(
       {required this.startRange,
@@ -89,7 +97,8 @@ class LandSearchDataEvent extends LandEvent {
       this.categoryId,
       this.subCategoryId,
       this.subCategory2Id,
-      this.productId});
+      this.productId,
+      this.styleId});
 }
 
 class LandNavigateToQuoteEvent extends LandEvent {

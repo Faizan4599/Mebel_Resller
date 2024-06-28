@@ -11,6 +11,7 @@ import 'package:reseller_app/features/landscreen/model/get_categories_data_model
 import 'package:reseller_app/features/landscreen/model/get_product_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_products_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_regions_data_model.dart';
+import 'package:reseller_app/features/landscreen/model/get_styles_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_sub_categories1.dart';
 import 'package:reseller_app/features/landscreen/model/get_sub_categories2.dart';
 import 'package:reseller_app/features/login/model/login_data_mode.dart';
@@ -33,6 +34,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
   List<FailedCommonDataModel> failedList = <FailedCommonDataModel>[];
   List<GetProductsDataModel> productsList = <GetProductsDataModel>[];
   List<GetCartCountDataModel> countList = <GetCartCountDataModel>[];
+  List<GetStylesDataModel> styleList = <GetStylesDataModel>[];
   bool show = false;
   List<String> selectedData = [];
   List<SampleDataModel> perticularData = [];
@@ -45,6 +47,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     on<LandSubcategory2DropDownEvent>(landSubcategory2DropDownEvent);
     on<LandRegionDropDownEvent>(landRegionDropDownEvent);
     on<LandCategoryDropDownEvent>(landCategoryDropDownEvent);
+    on<LandStyleDropDownEvent>(landStyleDropDownEvent);
     on<LandPriceRangeSliderEvent>(landPriceRangeSliderEvent);
     on<LoadDataEvent>(loadDataEvent);
     on<LandCheckboxEvent>(landCheckboxEvent);
@@ -75,6 +78,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
   String subCategoryVal = '';
   String subCategory2Val = '';
   String regionVal = '';
+  String styleVal = '';
   int start = 1000;
   int end = 100000;
   bool isChecked = false;
@@ -414,6 +418,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
     List<GetProductsDataModel> filteredData = allData.where(
       (item) {
+        print("&&&&&&&&${event.styleId} OOOOOOO${item.style_id}");
         int? itemPrice = item.price != null ? int.tryParse(item.price!) : null;
         bool matechesRange = itemPrice != null &&
             itemPrice >= event.startRange &&
@@ -428,6 +433,8 @@ class LandBloc extends Bloc<LandEvent, LandState> {
             item.subcategory2_id == event.subCategory2Id;
         bool matchesProduct =
             event.productId == null || item.product_id == event.productId;
+        bool matchStyle =
+            event.styleId == null || item.style_id == event.styleId;
         print("event.startRange ${event.startRange}");
         print("event.endRange ${event.endRange}");
         print("match matechesRange $matechesRange");
@@ -436,7 +443,8 @@ class LandBloc extends Bloc<LandEvent, LandState> {
             matechesCategory &&
             matchSubCategory &&
             matchSubCategory2 &&
-            matchesProduct;
+            matchesProduct &&
+            matchStyle;
       },
     ).toList();
     print(">>>Filter>>> ${filteredData.map(
@@ -483,6 +491,41 @@ class LandBloc extends Bloc<LandEvent, LandState> {
         event.data?.addAll(countList);
 
         emit(LandCartCountState(data: event.data));
+      } else if (response is Failed) {
+        failedList = response.response as List<FailedCommonDataModel>;
+        emit(LandErrorState(message: failedList.first.message.toString()));
+      } else if (response is Failure) {
+        emit(LandErrorState(message: response.errorResponse.toString()));
+      } else {
+        emit(LandErrorState(message: "An error occurred"));
+      }
+    } catch (e) {
+      emit(LandErrorState(message: "Error occurred ${e.toString()}"));
+    }
+  }
+
+  FutureOr<void> landStyleDropDownEvent(
+      LandStyleDropDownEvent event, Emitter<LandState> emit) async {
+    try {
+      Map<String, String> styleParameter = {
+        "access_token1": Constant.access_token1,
+        "access_token2": Constant.access_token2,
+        "access_token3": Constant.access_token3,
+        "user_id": PreferenceUtils.getString(UserData.id.name)
+      };
+      var response = await APIRepository()
+          .getCommonMethodAPI(styleParameter, APIUrls.getStyles);
+      if (response is Success) {
+        styleList.clear();
+        if (response.response is List<GetStylesDataModel>) {
+          styleList = response.response as List<GetStylesDataModel>;
+        } else if (response.response is GetStylesDataModel) {
+          styleList.add(response.response as GetStylesDataModel);
+        }
+        // emit(LandCategoryDropdownState(
+        //     categoryValue: event.categoryDropDownValue, items: event.items));
+        emit(LandStyleDropdownState(
+            style: event.styleValue, items: event.items));
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(LandErrorState(message: failedList.first.message.toString()));

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -21,6 +22,7 @@ class LandUi extends StatelessWidget {
         _landBloc
             .add(LandRegionDropDownEvent(regionDropDownValue: '', items: []));
         _landBloc.add(LandCartCountEvent(data: []));
+        _landBloc.add(LandStyleDropDownEvent());
         // _landBloc.add(LandSubcategoryDropDownEvent(
         //     subCategoryDropDownValue: '', items: [], category_id: ''));
         // _landBloc.add(LandSubcategory2DropDownEvent(
@@ -147,7 +149,7 @@ class LandUi extends StatelessWidget {
                 ),
                 Center(
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 6,right: 6),
+                    padding: const EdgeInsets.only(left: 6, right: 6),
                     child: Container(
                       decoration: BoxDecoration(
                         color: CommonColors.primary,
@@ -165,7 +167,8 @@ class LandUi extends StatelessWidget {
                               children: [
                                 Text(
                                   "Filters",
-                                  style: Theme.of(context).textTheme.titleMedium,
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
                                 ),
                                 InkWell(
                                   onTap: () {
@@ -199,8 +202,8 @@ class LandUi extends StatelessWidget {
                   builder: (context, state) {
                     return (_landBloc.show)
                         ? Padding(
-                          padding: const EdgeInsets.only(left: 6,right: 6),
-                          child: Container(
+                            padding: const EdgeInsets.only(left: 6, right: 6),
+                            child: Container(
                               color: CommonColors.secondary,
                               child: Padding(
                                 padding:
@@ -238,8 +241,8 @@ class LandUi extends StatelessWidget {
                                             _landBloc.regionVal = value!;
                                             _landBloc.add(
                                               LandRegionDropDownEvent(
-                                                  regionDropDownValue:
-                                                      _landBloc.sortDropdownValue,
+                                                  regionDropDownValue: _landBloc
+                                                      .sortDropdownValue,
                                                   items: _landBloc.regionList),
                                             );
                                           },
@@ -270,10 +273,11 @@ class LandUi extends StatelessWidget {
                                             //     categoryDropDownValue:
                                             //         _landBloc.categoryVal,
                                             //     items: _landBloc.categoryList));
-                          
+
                                             _landBloc.add(
                                                 LandSubcategoryDropDownEvent(
-                                                    subCategoryDropDownValue: '',
+                                                    subCategoryDropDownValue:
+                                                        '',
                                                     items: [],
                                                     category_id: value));
                                           },
@@ -310,18 +314,21 @@ class LandUi extends StatelessWidget {
                                               )
                                               .toList(),
                                           onChanged: (value) async {
-                                            print("VALUE of subcategory $value");
+                                            print(
+                                                "VALUE of subcategory $value");
                                             print(
                                                 "+++++ ${_landBloc.subCategoryVal}");
                                             _landBloc.subCategoryVal = value!;
                                             _landBloc.add(
                                                 LandSubcategory2DropDownEvent(
-                                                    subcategory2DropDownValue: '',
+                                                    subcategory2DropDownValue:
+                                                        '',
                                                     subCategoryId: value,
                                                     items: []));
                                             _landBloc.add(
                                                 LandSubcategoryDropDownEvent(
-                                                    subCategoryDropDownValue: '',
+                                                    subCategoryDropDownValue:
+                                                        '',
                                                     items: [],
                                                     category_id: ''));
                                           },
@@ -363,7 +370,35 @@ class LandUi extends StatelessWidget {
                                       height: 10,
                                     ),
                                     Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
+                                        customDropDownButton(
+                                          title: "STYLE",
+                                          context: context,
+                                          isExpanded: true,
+                                          hint: "Select Style",
+                                          value: _landBloc.styleVal == ''
+                                              ? null
+                                              : _landBloc.styleVal,
+                                          items: _landBloc.styleList
+                                              .map((item) =>
+                                                  DropdownMenuItem<String>(
+                                                    value: item.style_id,
+                                                    child: Text(
+                                                      item.style_name ?? "",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyMedium,
+                                                    ),
+                                                  ))
+                                              .toList(),
+                                          onChanged: (value) {
+                                            _landBloc.styleVal = value!;
+                                            _landBloc
+                                                .add(LandStyleDropDownEvent());
+                                          },
+                                        ),
                                         Column(
                                           // mainAxisAlignment: MainAxisAlignment.start,
                                           crossAxisAlignment:
@@ -377,8 +412,12 @@ class LandUi extends StatelessWidget {
                                             ),
                                             SizedBox(
                                               height: 45,
-                                              width:
-                                                  Constant.screenWidth(context) *
+                                              width: (kIsWeb)
+                                                  ? Constant.screenWidth(
+                                                          context) *
+                                                      0.1
+                                                  : Constant.screenWidth(
+                                                          context) *
                                                       0.4,
                                               child: TextField(
                                                 style: Theme.of(context)
@@ -390,26 +429,32 @@ class LandUi extends StatelessWidget {
                                                   FilteringTextInputFormatter
                                                       .digitsOnly
                                                 ],
-                                                cursorColor: CommonColors.primary,
+                                                cursorColor:
+                                                    CommonColors.primary,
                                                 controller: productId,
-                                                decoration: const InputDecoration(
-                                                    // isDense: true,
-                                                    contentPadding:
-                                                        EdgeInsets.all(10),
-                                                    // contentPadding: edgein,
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: CommonColors
-                                                              .primary,
-                                                          width: 2),
-                                                    ),
-                                                    hintText: "Enter product id",
-                                                    hintStyle:
-                                                        TextStyle(fontSize: 13),
-                                                    border: OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius.zero)),
+                                                decoration:
+                                                    const InputDecoration(
+                                                        // isDense: true,
+                                                        contentPadding:
+                                                            EdgeInsets.all(10),
+                                                        // contentPadding: edgein,
+                                                        focusedBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color:
+                                                                  CommonColors
+                                                                      .primary,
+                                                              width: 2),
+                                                        ),
+                                                        hintText:
+                                                            "Enter product id",
+                                                        hintStyle: TextStyle(
+                                                            fontSize: 13),
+                                                        border:
+                                                            OutlineInputBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .zero)),
                                               ),
                                             ),
                                           ],
@@ -458,22 +503,24 @@ class LandUi extends StatelessWidget {
                                                 onChanged: (value) {
                                                   _landBloc.add(
                                                       LandPriceRangeSliderEvent(
-                                                          start: _landBloc.start,
+                                                          start:
+                                                              _landBloc.start,
                                                           end: _landBloc.end));
                                                 },
                                                 onChangeStart: (value) {
                                                   _landBloc.add(
                                                       LandPriceRangeSliderEvent(
-                                                          start: _landBloc.start,
+                                                          start:
+                                                              _landBloc.start,
                                                           end: _landBloc.end));
                                                 },
                                                 onChangeEnd: (value) {
                                                   _landBloc.add(
                                                       LandPriceRangeSliderEvent(
-                                                          start:
-                                                              value.start.toInt(),
-                                                          end:
-                                                              value.end.toInt()));
+                                                          start: value.start
+                                                              .toInt(),
+                                                          end: value.end
+                                                              .toInt()));
                                                 },
                                                 min: 1000.0,
                                                 max: 500000.0,
@@ -484,7 +531,8 @@ class LandUi extends StatelessWidget {
                                       ],
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         ButtonTheme(
                                           minWidth: 200,
@@ -500,38 +548,45 @@ class LandUi extends StatelessWidget {
                                               //     _landBloc
                                               //         .subCategory2Val.isNotEmpty ||
                                               //     productId.text.isNotEmpty;
-                          
+
                                               // if (isFilterSelected) {
-                          
+
                                               // } else {
                                               //   Constant.showLongToast(
                                               //       'Please select at least one filter.');
                                               // }
                                               _landBloc.add(
                                                 LandSearchDataEvent(
-                                                  startRange: _landBloc.start,
-                                                  endRange: _landBloc.end,
-                                                  regionId:
-                                                      _landBloc.regionVal.isEmpty
-                                                          ? null
-                                                          : _landBloc.regionVal,
-                                                  categoryId: _landBloc
-                                                          .categoryVal.isEmpty
-                                                      ? null
-                                                      : _landBloc.categoryVal,
-                                                  subCategoryId: _landBloc
-                                                          .subCategoryVal.isEmpty
-                                                      ? null
-                                                      : _landBloc.subCategoryVal,
-                                                  subCategory2Id: _landBloc
-                                                          .subCategory2Val.isEmpty
-                                                      ? null
-                                                      : _landBloc.subCategory2Val,
-                                                  productId:
-                                                      productId.text.isEmpty
-                                                          ? null
-                                                          : productId.text,
-                                                ),
+                                                    startRange: _landBloc.start,
+                                                    endRange: _landBloc.end,
+                                                    regionId: _landBloc
+                                                            .regionVal.isEmpty
+                                                        ? null
+                                                        : _landBloc.regionVal,
+                                                    categoryId: _landBloc
+                                                            .categoryVal.isEmpty
+                                                        ? null
+                                                        : _landBloc.categoryVal,
+                                                    subCategoryId: _landBloc
+                                                            .subCategoryVal
+                                                            .isEmpty
+                                                        ? null
+                                                        : _landBloc
+                                                            .subCategoryVal,
+                                                    subCategory2Id: _landBloc
+                                                            .subCategory2Val
+                                                            .isEmpty
+                                                        ? null
+                                                        : _landBloc
+                                                            .subCategory2Val,
+                                                    productId:
+                                                        productId.text.isEmpty
+                                                            ? null
+                                                            : productId.text,
+                                                    styleId: _landBloc
+                                                            .styleVal.isEmpty
+                                                        ? null
+                                                        : _landBloc.styleVal),
                                               );
                                               // _landBloc.add(LandClearDataEvent(
                                               //     value: _landBloc.regionVal,
@@ -546,7 +601,7 @@ class LandUi extends StatelessWidget {
                                               //     value: _landBloc.subCategory2Val,
                                               //     list: _landBloc.subCategory2List));
                                               // productId.text = '';
-                          
+
                                               // _landBloc.add(LandCategoryDropDownEvent(
                                               //     categoryDropDownValue: '',
                                               //     items: []));
@@ -557,14 +612,16 @@ class LandUi extends StatelessWidget {
                                             style: ElevatedButton.styleFrom(
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(5.0)),
+                                                      BorderRadius.circular(
+                                                          5.0)),
                                               backgroundColor:
                                                   CommonColors.primary,
                                             ),
                                             child: const Text(
                                               "SEARCH",
                                               style: TextStyle(
-                                                  color: CommonColors.planeWhite),
+                                                  color:
+                                                      CommonColors.planeWhite),
                                             ),
                                           ),
                                         ),
@@ -581,18 +638,24 @@ class LandUi extends StatelessWidget {
                                                   list: _landBloc.regionList));
                                               _landBloc.add(LandClearDataEvent(
                                                   value: _landBloc.categoryVal,
-                                                  list: _landBloc.categoryList));
-                                              _landBloc.add(LandClearDataEvent(
-                                                  value: _landBloc.subCategoryVal,
                                                   list:
-                                                      _landBloc.subCategoryList));
+                                                      _landBloc.categoryList));
+                                              _landBloc.add(LandClearDataEvent(
+                                                  value:
+                                                      _landBloc.subCategoryVal,
+                                                  list: _landBloc
+                                                      .subCategoryList));
                                               _landBloc.add(LandClearDataEvent(
                                                   value:
                                                       _landBloc.subCategory2Val,
                                                   list: _landBloc
                                                       .subCategory2List));
+
+                                              _landBloc.add(LandClearDataEvent(
+                                                  value: _landBloc.styleVal,
+                                                  list: _landBloc.styleList));
                                               productId.text = '';
-                          
+
                                               _landBloc.add(
                                                   LandCategoryDropDownEvent(
                                                       categoryDropDownValue: '',
@@ -601,21 +664,28 @@ class LandUi extends StatelessWidget {
                                                   LandRegionDropDownEvent(
                                                       regionDropDownValue: '',
                                                       items: []));
+
+                                              _landBloc.add(
+                                                  LandStyleDropDownEvent());
+
                                               _landBloc.regionVal = '';
+                                              _landBloc.styleVal = '';
                                               _landBloc.start = 1000;
                                               _landBloc.end = 100000;
                                             },
                                             style: ElevatedButton.styleFrom(
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(5.0)),
+                                                      BorderRadius.circular(
+                                                          5.0)),
                                               backgroundColor:
                                                   CommonColors.primary,
                                             ),
                                             child: const Text(
                                               "RESET",
                                               style: TextStyle(
-                                                  color: CommonColors.planeWhite),
+                                                  color:
+                                                      CommonColors.planeWhite),
                                             ),
                                           ),
                                         ),
@@ -628,7 +698,7 @@ class LandUi extends StatelessWidget {
                                 ),
                               ),
                             ),
-                        )
+                          )
                         : const SizedBox();
                   },
                 ),
@@ -766,7 +836,7 @@ class LandUi extends StatelessWidget {
                                               Row(
                                                 children: [
                                                   Container(
-                                                    width: Constant.screenWidth(
+                                                    width:(kIsWeb)?200: Constant.screenWidth(
                                                             context) *
                                                         0.6,
                                                     child: Text(
@@ -884,7 +954,9 @@ class LandUi extends StatelessWidget {
                 children: [
                   DropdownButtonHideUnderline(
                     child: Container(
-                      width: Constant.screenWidth(context) * 0.4,
+                      width: (kIsWeb)
+                          ? Constant.screenWidth(context) * 0.1
+                          : Constant.screenWidth(context) * 0.4,
                       height: 40,
                       decoration: BoxDecoration(
                           border: Border.all(width: 1), color: containerColor),

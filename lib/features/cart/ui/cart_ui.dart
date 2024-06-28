@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reseller_app/constant/constant.dart';
@@ -130,7 +131,9 @@ class CartUi extends StatelessWidget {
                                           child: Column(
                                             children: [
                                               SizedBox(
-                                                width: Constant.screenWidth(
+                                                width:(kIsWeb)? Constant.screenWidth(
+                                                        context) *
+                                                    0.3:Constant.screenWidth(
                                                         context) *
                                                     0.5,
                                                 height: Constant.screenHeight(
@@ -181,9 +184,24 @@ class CartUi extends StatelessWidget {
                                                               (context, state) {
                                                             if (state
                                                                 is CartAddCountState) {
-                                                              Constant.showShortToast(
-                                                                  state.message ??
-                                                                      "");
+                                                              final currentTime =
+                                                                  DateTime
+                                                                      .now();
+                                                              if (_cartBloc
+                                                                          .lastToastTime ==
+                                                                      null ||
+                                                                  currentTime
+                                                                          .difference(
+                                                                              _cartBloc.lastToastTime!)
+                                                                          .inMilliseconds >
+                                                                      500) {
+                                                                Constant.showShortToast(
+                                                                    state.message ??
+                                                                        "");
+                                                                _cartBloc
+                                                                        .lastToastTime =
+                                                                    currentTime;
+                                                              }
                                                             }
                                                           },
                                                           child: InkWell(
@@ -232,9 +250,24 @@ class CartUi extends StatelessWidget {
                                                               (context, state) {
                                                             if (state
                                                                 is CartRemoveCountState) {
-                                                              Constant.showShortToast(
-                                                                  state.message ??
-                                                                      "");
+                                                              final currentTime =
+                                                                  DateTime
+                                                                      .now();
+                                                              if (_cartBloc
+                                                                          .lastToastTime ==
+                                                                      null ||
+                                                                  currentTime
+                                                                          .difference(
+                                                                              _cartBloc.lastToastTime!)
+                                                                          .inMilliseconds >
+                                                                      500) {
+                                                                Constant.showShortToast(
+                                                                    state.message ??
+                                                                        "");
+                                                                _cartBloc
+                                                                        .lastToastTime =
+                                                                    currentTime;
+                                                              }
                                                             }
                                                           },
                                                           child: InkWell(
@@ -268,8 +301,24 @@ class CartUi extends StatelessWidget {
                                                     listener: (context, state) {
                                                       if (state
                                                           is CartDeleteSingleItemState) {
-                                                        Constant.showShortToast(
+                                                             final currentTime =
+                                                                  DateTime
+                                                                      .now();
+                                                              if (_cartBloc
+                                                                          .lastToastTime ==
+                                                                      null ||
+                                                                  currentTime
+                                                                          .difference(
+                                                                              _cartBloc.lastToastTime!)
+                                                                          .inMilliseconds >
+                                                                      500) {
+                                                               Constant.showShortToast(
                                                             state.message);
+                                                                _cartBloc
+                                                                        .lastToastTime =
+                                                                    currentTime;
+                                                              }
+                                                       
                                                       }
                                                     },
                                                     child: IconButton(

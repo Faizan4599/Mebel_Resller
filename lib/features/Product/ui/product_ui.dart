@@ -351,6 +351,8 @@ class ProductUi extends StatelessWidget {
                     productInfo("Price", allData.price.toString(), context),
                     productInfo(
                         "Poduct ID", allData.product_id.toString(), context),
+                    productInfo(
+                        "Style", allData.style_name.toString(), context),
                   ],
                 )
               ],

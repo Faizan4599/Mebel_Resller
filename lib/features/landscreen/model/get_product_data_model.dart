@@ -15,6 +15,8 @@ class GetProductDataModel {
   String? cart_qty;
   String? updated_at;
   String? created_at;
+  String? style_id;
+  String? style_name;
   List<String>? product_urls;
 
   GetProductDataModel({
@@ -34,6 +36,8 @@ class GetProductDataModel {
     this.cart_qty,
     this.updated_at,
     this.created_at,
+    this.style_id,
+    this.style_name,
     this.product_urls,
   });
   factory GetProductDataModel.fromJson(Map<String, dynamic> json) {
@@ -41,10 +45,10 @@ class GetProductDataModel {
       product_id: json['product_id'] ?? "",
       price: json['price'] ?? "",
       description: json['description'] ?? "",
-      name: json['name']  ?? "",
-      folder_name: json['folder_name']  ?? "",
-      subcategory2_id: json['subcategory2_id']  ?? "",
-      subcategory2: json['subcategory2']  ?? "",
+      name: json['name'] ?? "",
+      folder_name: json['folder_name'] ?? "",
+      subcategory2_id: json['subcategory2_id'] ?? "",
+      subcategory2: json['subcategory2'] ?? "",
       subcategory1_id: json['subcategory1_id'] ?? "",
       subcategory1: json['subcategory1'] ?? "",
       category_id: json['category_id'] ?? "",
@@ -54,10 +58,12 @@ class GetProductDataModel {
       cart_qty: json['cart_qty'] ?? "",
       updated_at: json['updated_at'] ?? "",
       created_at: json['created_at'] ?? "",
-      product_urls:  List<String>.from(json["product_urls"] ?? [].map((x) => x)),
+      style_name: json['style_name'] ?? "",
+      style_id: json['style_id'] ?? "",
+      product_urls: List<String>.from(json["product_urls"] ?? [].map((x) => x)),
     );
   }
-      Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "product_id": product_id,
         "name": name,
         "price": price,
@@ -74,6 +80,8 @@ class GetProductDataModel {
         "cart_qty": cart_qty,
         "updated_at": updated_at,
         "created_at": created_at,
+        "style_id": style_id,
+        "style_name": style_name,
         "product_urls": List<dynamic>.from(product_urls ?? [].map((x) => x)),
-    };
+      };
 }
