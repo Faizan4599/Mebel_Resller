@@ -17,6 +17,7 @@ class SplashUi extends StatelessWidget {
     return MaterialApp(
       title: "Luxury Furniture",
       debugShowCheckedModeBanner: false,
+      
       theme: Constant.lightTheme,
       home: Scaffold(
         body: SafeArea(

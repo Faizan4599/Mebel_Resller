@@ -131,11 +131,11 @@ class CartUi extends StatelessWidget {
                                           child: Column(
                                             children: [
                                               SizedBox(
-                                                width:(kIsWeb)? Constant.screenWidth(
-                                                        context) *
-                                                    0.3:Constant.screenWidth(
-                                                        context) *
-                                                    0.5,
+                                                width: (kIsWeb)
+                                                    ? 170
+                                                    : Constant.screenWidth(
+                                                            context) *
+                                                        0.5,
                                                 height: Constant.screenHeight(
                                                         context) *
                                                     0.2,
@@ -147,7 +147,7 @@ class CartUi extends StatelessWidget {
                                                         BorderRadius.circular(
                                                             8.0),
                                                     child: Image.network(
-                                                      data![index]
+                                                      data[index]
                                                           .product_url
                                                           .toString(),
                                                       fit: BoxFit.cover,
@@ -301,24 +301,25 @@ class CartUi extends StatelessWidget {
                                                     listener: (context, state) {
                                                       if (state
                                                           is CartDeleteSingleItemState) {
-                                                             final currentTime =
-                                                                  DateTime
-                                                                      .now();
-                                                              if (_cartBloc
-                                                                          .lastToastTime ==
-                                                                      null ||
-                                                                  currentTime
-                                                                          .difference(
-                                                                              _cartBloc.lastToastTime!)
-                                                                          .inMilliseconds >
-                                                                      500) {
-                                                               Constant.showShortToast(
-                                                            state.message);
-                                                                _cartBloc
-                                                                        .lastToastTime =
-                                                                    currentTime;
-                                                              }
-                                                       
+                                                        final currentTime =
+                                                            DateTime.now();
+                                                        if (_cartBloc
+                                                                    .lastToastTime ==
+                                                                null ||
+                                                            currentTime
+                                                                    .difference(
+                                                                        _cartBloc
+                                                                            .lastToastTime!)
+                                                                    .inMilliseconds >
+                                                                500) {
+                                                          Constant
+                                                              .showShortToast(
+                                                                  state
+                                                                      .message);
+                                                          _cartBloc
+                                                                  .lastToastTime =
+                                                              currentTime;
+                                                        }
                                                       }
                                                     },
                                                     child: IconButton(

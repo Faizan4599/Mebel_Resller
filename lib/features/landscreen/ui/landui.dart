@@ -413,9 +413,7 @@ class LandUi extends StatelessWidget {
                                             SizedBox(
                                               height: 45,
                                               width: (kIsWeb)
-                                                  ? Constant.screenWidth(
-                                                          context) *
-                                                      0.1
+                                                  ? 150
                                                   : Constant.screenWidth(
                                                           context) *
                                                       0.4,
@@ -836,9 +834,11 @@ class LandUi extends StatelessWidget {
                                               Row(
                                                 children: [
                                                   Container(
-                                                    width:(kIsWeb)?200: Constant.screenWidth(
-                                                            context) *
-                                                        0.6,
+                                                    width: (kIsWeb)
+                                                        ? 200
+                                                        : Constant.screenWidth(
+                                                                context) *
+                                                            0.6,
                                                     child: Text(
                                                       data[index]
                                                           .name
@@ -857,16 +857,31 @@ class LandUi extends StatelessWidget {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  Column(
+                                                  Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.start,
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
-                                                            .start,
+                                                            .center,
                                                     children: [
                                                       Text(
                                                         data[index]
                                                             .region
+                                                            .toString(),
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodySmall,
+                                                      ),
+                                                      const Icon(
+                                                        Icons.arrow_right_outlined,
+                                                        size: 20,
+                                                        color: CommonColors
+                                                            .planeWhite,
+                                                      ),
+                                                     const SizedBox(width: 5,),
+                                                      Text(
+                                                        data[index]
+                                                            .style_name
                                                             .toString(),
                                                         style: Theme.of(context)
                                                             .textTheme
@@ -954,9 +969,8 @@ class LandUi extends StatelessWidget {
                 children: [
                   DropdownButtonHideUnderline(
                     child: Container(
-                      width: (kIsWeb)
-                          ? Constant.screenWidth(context) * 0.1
-                          : Constant.screenWidth(context) * 0.4,
+                      width:
+                          (kIsWeb) ? 150 : Constant.screenWidth(context) * 0.4,
                       height: 40,
                       decoration: BoxDecoration(
                           border: Border.all(width: 1), color: containerColor),

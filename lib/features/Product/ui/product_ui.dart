@@ -8,6 +8,7 @@ import 'package:reseller_app/features/landscreen/ui/landui.dart';
 import 'package:reseller_app/features/login/ui/login_ui.dart';
 import 'package:reseller_app/helper/preference_utils.dart';
 import 'package:reseller_app/utils/common_colors.dart';
+import '../../../constant/custom_scroll_behavior.dart';
 import '../bloc/product_bloc.dart';
 
 class ProductUi extends StatelessWidget {
@@ -163,6 +164,7 @@ class ProductUi extends StatelessWidget {
                                 BlocProvider.of<ProductBloc>(context);
                             return PageView.builder(
                               controller: _pageController,
+                              scrollBehavior: CustomScrollBehavior(),
                               onPageChanged: (index) {
                                 productBloc.add(
                                   ProductSlideImageEvent(currentPage: index),
@@ -314,21 +316,8 @@ class ProductUi extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "Description",
+                      allData.name ?? "",
                       style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          allData.description ?? "",
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
-                      ],
                     ),
                   ],
                 ),
@@ -339,20 +328,20 @@ class ProductUi extends StatelessWidget {
                 ),
                 Column(
                   children: [
+                    productInfo("Price", allData.price.toString(), context),
                     productInfo(
-                        "Product Name", allData.name.toString(), context),
+                        "Product ID", allData.product_id.toString(), context),
                     productInfo("Region", allData.region.toString(), context),
+                    productInfo(
+                        "Style", allData.style_name.toString(), context),
                     productInfo(
                         "Category", allData.category.toString(), context),
                     productInfo("Subcategory", allData.subcategory1.toString(),
                         context),
                     productInfo("Subcategory 2",
                         allData.subcategory2.toString(), context),
-                    productInfo("Price", allData.price.toString(), context),
-                    productInfo(
-                        "Poduct ID", allData.product_id.toString(), context),
-                    productInfo(
-                        "Style", allData.style_name.toString(), context),
+                    productInfo("Description", allData.description.toString(),
+                        context),
                   ],
                 )
               ],
