@@ -30,6 +30,25 @@ class CartUi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: Container(
+        padding: EdgeInsets.all(10),
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: FloatingActionButton.extended(
+            backgroundColor: CommonColors.primary,
+            onPressed: () {},
+            icon: Icon(
+              Icons.book_online_outlined,
+              color: CommonColors.planeWhite,
+            ),
+            label: Text(
+              "Get Quote",
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       appBar: AppBar(
         title: const Text('Cart'),
         actions: [
