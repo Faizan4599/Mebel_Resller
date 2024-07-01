@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reseller_app/common/widgets/text_field.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/cart/ui/cart_ui.dart';
 import 'package:reseller_app/features/landscreen/bloc/land_bloc.dart';
@@ -399,64 +400,95 @@ class LandUi extends StatelessWidget {
                                                 .add(LandStyleDropDownEvent());
                                           },
                                         ),
-                                        Column(
-                                          // mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "PRODUCT ID",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelLarge,
+                                        customTextfield(
+                                            title: "PRODUCT ID",
+                                            titleStyle: Theme.of(context)
+                                                .textTheme
+                                                .labelLarge,
+                                            txtHeight: 45,
+                                            txtWidth: (kIsWeb)
+                                                ? 150
+                                                : Constant.screenWidth(
+                                                        context) *
+                                                    0.4,
+                                            txtStyle: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium,
+                                            keyboardType: TextInputType.number,
+                                            inputFormatters: <TextInputFormatter>[
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly
+                                            ],
+                                            cursorColor: CommonColors.primary,
+                                            controller: productId,
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: CommonColors.primary,
+                                                  width: 2),
                                             ),
-                                            SizedBox(
-                                              height: 45,
-                                              width: (kIsWeb)
-                                                  ? 150
-                                                  : Constant.screenWidth(
-                                                          context) *
-                                                      0.4,
-                                              child: TextField(
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                inputFormatters: <TextInputFormatter>[
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly
-                                                ],
-                                                cursorColor:
-                                                    CommonColors.primary,
-                                                controller: productId,
-                                                decoration:
-                                                    const InputDecoration(
-                                                        // isDense: true,
-                                                        contentPadding:
-                                                            EdgeInsets.all(10),
-                                                        // contentPadding: edgein,
-                                                        focusedBorder:
-                                                            OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color:
-                                                                  CommonColors
-                                                                      .primary,
-                                                              width: 2),
-                                                        ),
-                                                        hintText:
-                                                            "Enter product id",
-                                                        hintStyle: TextStyle(
-                                                            fontSize: 13),
-                                                        border:
-                                                            OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .zero)),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                            hintText: "Enter product id",
+                                            hintStyle: TextStyle(fontSize: 13),
+                                            border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.zero)),
+                                        // Column(
+                                        //   // mainAxisAlignment: MainAxisAlignment.start,
+                                        //   crossAxisAlignment:
+                                        //       CrossAxisAlignment.start,
+                                        //   children: [
+                                        //     Text(
+                                        //       "PRODUCT ID",
+                                        //       style: Theme.of(context)
+                                        //           .textTheme
+                                        //           .labelLarge,
+                                        //     ),
+                                        //     SizedBox(
+                                        //       height: 45,
+                                        //       width: (kIsWeb)
+                                        //           ? 150
+                                        //           : Constant.screenWidth(
+                                        //                   context) *
+                                        //               0.4,
+                                        //       child: TextField(
+                                        //         style: Theme.of(context)
+                                        //             .textTheme
+                                        //             .bodyMedium,
+                                        //         keyboardType:
+                                        //             TextInputType.number,
+                                        //         inputFormatters: <TextInputFormatter>[
+                                        //           FilteringTextInputFormatter
+                                        //               .digitsOnly
+                                        //         ],
+                                        //         cursorColor:
+                                        //             CommonColors.primary,
+                                        //         controller: productId,
+                                        //         decoration:
+                                        //             const InputDecoration(
+                                        //                 // isDense: true,
+                                        //                 contentPadding:
+                                        //                     EdgeInsets.all(10),
+                                        //                 // contentPadding: edgein,
+                                        //                 focusedBorder:
+                                        //                     OutlineInputBorder(
+                                        //                   borderSide: BorderSide(
+                                        //                       color:
+                                        //                           CommonColors
+                                        //                               .primary,
+                                        //                       width: 2),
+                                        //                 ),
+                                        //                 hintText:
+                                        //                     "Enter product id",
+                                        //                 hintStyle: TextStyle(
+                                        //                     fontSize: 13),
+                                        //                 border:
+                                        //                     OutlineInputBorder(
+                                        //                         borderRadius:
+                                        //                             BorderRadius
+                                        //                                 .zero)),
+                                        //       ),
+                                        //     ),
+                                        //   ],
+                                        // ),
                                       ],
                                     ),
                                     const SizedBox(
@@ -873,12 +905,15 @@ class LandUi extends StatelessWidget {
                                                             .bodySmall,
                                                       ),
                                                       const Icon(
-                                                        Icons.arrow_right_outlined,
+                                                        Icons
+                                                            .arrow_right_outlined,
                                                         size: 20,
                                                         color: CommonColors
                                                             .planeWhite,
                                                       ),
-                                                     const SizedBox(width: 5,),
+                                                      const SizedBox(
+                                                        width: 5,
+                                                      ),
                                                       Text(
                                                         data[index]
                                                             .style_name

@@ -40,6 +40,8 @@ class CartRemoveCountState extends CartState {
 
 class CartNavigateToLandScreenState extends CartActionState {}
 
+class CartNavigateToGetQuoteScreenState extends CartActionState {}
+
 class CartDeleteSingleItemState extends CartState {
   String message;
   String? description;

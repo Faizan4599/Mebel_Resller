@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/cart/bloc/cart_bloc.dart';
+import 'package:reseller_app/features/getQuote/ui/get_quote_ui.dart';
 import 'package:reseller_app/features/landscreen/bloc/land_bloc.dart';
 
 import 'package:reseller_app/features/landscreen/model/get_product_data_model.dart';
@@ -34,16 +35,32 @@ class CartUi extends StatelessWidget {
         padding: EdgeInsets.all(10),
         child: Align(
           alignment: Alignment.bottomRight,
-          child: FloatingActionButton.extended(
-            backgroundColor: CommonColors.primary,
-            onPressed: () {},
-            icon: Icon(
-              Icons.book_online_outlined,
-              color: CommonColors.planeWhite,
-            ),
-            label: Text(
-              "Get Quote",
-              style: Theme.of(context).textTheme.bodySmall,
+          child: BlocListener<CartBloc, CartState>(
+            bloc: _cartBloc,
+            listenWhen: (previous, current) =>
+                current is CartNavigateToGetQuoteScreenState,
+            listener: (context, state) {
+              if (state is CartNavigateToGetQuoteScreenState) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GetQuoteUI(),
+                    ));
+              }
+            },
+            child: FloatingActionButton.extended(
+              backgroundColor: CommonColors.primary,
+              onPressed: () {
+                _cartBloc.add(CartNavigateToGetQuoteScreenEvent());
+              },
+              icon: Icon(
+                Icons.book_online_outlined,
+                color: CommonColors.planeWhite,
+              ),
+              label: Text(
+                "Get Quote",
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
             ),
           ),
         ),

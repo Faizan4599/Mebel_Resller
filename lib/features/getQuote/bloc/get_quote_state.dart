@@ -1,14 +1,25 @@
 part of 'get_quote_bloc.dart';
 
 @immutable
-sealed class GetQuoteState {}
+abstract class GetQuoteState {}
 
-sealed class GetQuoteActionState extends GetQuoteState {}
+abstract class GetQuoteActionState extends GetQuoteState {}
 
 final class GetQuoteInitial extends GetQuoteState {}
 
-class GetQuoteErrorState extends GetQuoteState {}
+class GetQuoteErrorState extends GetQuoteState {
+  String? message;
+  GetQuoteErrorState({required this.message});
+}
 
-class GetQuoteSuccessState extends GetQuoteState {}
+class GetQuoteTNCSuccessState extends GetQuoteState {
+  String? tnc;
+  GetQuoteTNCSuccessState({this.tnc});
+}
 
 class GetQuoteNavigateTo extends GetQuoteActionState {}
+
+class GetQuoteCheckBoxState extends GetQuoteState {
+  bool checkboxVal;
+  GetQuoteCheckBoxState({required this.checkboxVal});
+}

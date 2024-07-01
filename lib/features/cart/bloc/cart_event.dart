@@ -21,3 +21,5 @@ class CartDeleteSingleItem extends CartEvent {
 }
 
 class CartNavigateToLandScreenEvent extends CartEvent {}
+
+class CartNavigateToGetQuoteScreenEvent extends CartEvent {}

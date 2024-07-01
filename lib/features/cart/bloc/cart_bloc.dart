@@ -26,6 +26,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<CartRemoveCountEvent>(cartRemoveEvent);
     on<CartDeleteSingleItem>(cartDeleteSingleItem);
     on<CartNavigateToLandScreenEvent>(cartNavigateToLandScreenEvent);
+    on<CartNavigateToGetQuoteScreenEvent>(cartNavigateToGetQuoteScreenEvent);
   }
 
   FutureOr<void> getDataEvent(
@@ -207,5 +208,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   FutureOr<void> cartNavigateToLandScreenEvent(
       CartNavigateToLandScreenEvent event, Emitter<CartState> emit) {
     emit(CartNavigateToLandScreenState());
+  }
+
+  FutureOr<void> cartNavigateToGetQuoteScreenEvent(
+      CartNavigateToGetQuoteScreenEvent event, Emitter<CartState> emit) {
+    emit(CartNavigateToGetQuoteScreenState());
   }
 }
