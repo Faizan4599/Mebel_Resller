@@ -31,6 +31,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   FutureOr<void> getDataEvent(
       GetDataEvent event, Emitter<CartState> emit) async {
+    emit(CartLoadingState());
     try {
       Map<String, String> getCartDataParameter = {
         "access_token1": Constant.access_token1,

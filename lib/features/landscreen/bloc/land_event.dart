@@ -42,7 +42,7 @@ class LandCategoryDropDownEvent extends LandEvent {
       {required this.categoryDropDownValue, required this.items});
 }
 
-class LandStyleDropDownEvent extends LandEvent{
+class LandStyleDropDownEvent extends LandEvent {
   String? styleValue;
   List<GetStylesDataModel>? items;
   LandStyleDropDownEvent({this.styleValue, this.items});
@@ -89,7 +89,6 @@ class LandSearchDataEvent extends LandEvent {
   final String? productId;
   final String? styleId;
 
-
   LandSearchDataEvent(
       {required this.startRange,
       required this.endRange,
@@ -117,4 +116,14 @@ class LandClearDataEvent extends LandEvent {
   String value;
   List<dynamic> list;
   LandClearDataEvent({required this.value, required this.list});
+}
+
+class LandExitAppEvent extends LandEvent {
+  DateTime? currentBackPressTime;
+  bool canPopNow;
+  int requiredSeconds;
+  LandExitAppEvent(
+      {this.currentBackPressTime,
+      required this.canPopNow,
+      required this.requiredSeconds});
 }

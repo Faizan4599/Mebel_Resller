@@ -12,12 +12,21 @@ class GetQuoteErrorState extends GetQuoteState {
   GetQuoteErrorState({required this.message});
 }
 
+class GetQuoteValidationErrorState extends GetQuoteState {
+  String message;
+  GetQuoteValidationErrorState({required this.message});
+}
+
 class GetQuoteTNCSuccessState extends GetQuoteState {
   String? tnc;
   GetQuoteTNCSuccessState({this.tnc});
 }
 
-class GetQuoteNavigateTo extends GetQuoteActionState {}
+class GetQuoteInsertQuotState extends GetQuoteState {
+  String message;
+  String? description;
+  GetQuoteInsertQuotState({required this.message, this.description});
+}
 
 class GetQuoteCheckBoxState extends GetQuoteState {
   bool checkboxVal;

@@ -128,3 +128,4 @@ class LandSearchDataNotFoundState extends LandState {
   String msg;
   LandSearchDataNotFoundState({required this.msg});
 }
+

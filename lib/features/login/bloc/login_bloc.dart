@@ -34,7 +34,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       LoginOnTapEvent event, Emitter<LoginState> emit) async {
     List<LoginCommonDataModel> empDataList = <LoginCommonDataModel>[];
     List<FailedCommonDataModel> failedList = <FailedCommonDataModel>[];
-
+    emit(LoginLoadingState());
     try {
       Map<String, String> empParameter = {
         "access_token1": Constant.access_token1,

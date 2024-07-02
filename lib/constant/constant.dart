@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reseller_app/utils/common_colors.dart';
 
@@ -29,6 +30,15 @@ class Constant {
     Fluttertoast.showToast(
       msg: msg,
       toastLength: Toast.LENGTH_SHORT,
+    );
+  }
+
+  static spinKitLoader(BuildContext context, Color color) {
+    return Center(
+      child: SpinKitWave(
+        color: color,
+        size: 25.0,
+      ),
     );
   }
 

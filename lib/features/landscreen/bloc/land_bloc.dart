@@ -253,6 +253,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
   Future<FutureOr<void>> loadDataEvent(
       LoadDataEvent event, Emitter<LandState> emit) async {
+        emit(LandLoadingState());
     // final String response =
     //     await rootBundle.loadString('lib/localdatabase/data.json');
     // var data = await json.decode(response);
@@ -339,6 +340,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
   FutureOr<void> landLoadNextPageEvent(
       LandLoadNextPageEvent event, Emitter<LandState> emit) async {
+        emit(LandLoadingState());
     if (hasMoreData) {
       currentPage++;
       await _fetchData(emit, isLoadMore: true);
@@ -347,6 +349,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
   FutureOr<void> landRefreshDataEvent(
       LandRefreshDataEvent event, Emitter<LandState> emit) async {
+        emit(LandLoadingState());
     productsList.clear();
     currentPage = 1;
     hasMoreData = true;
@@ -355,6 +358,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
   Future<List<GetProductsDataModel>> _fetchData(Emitter<LandState> emit,
       {bool isLoadMore = false}) async {
+     emit(LandLoadingState());
     try {
       Map<String, String> productsParameter = {
         "access_token1": Constant.access_token1,
@@ -365,6 +369,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
       var response2 = await APIRepository()
           .getCommonMethodAPI(productsParameter, APIUrls.getProducts);
       print(";;;;;;${response2}");
+       
       if (response2 is Success) {
         productsList.clear();
         if (response2.response is List<GetProductsDataModel>) {
@@ -451,7 +456,6 @@ class LandBloc extends Bloc<LandEvent, LandState> {
       (e) => e.product_id,
     )}");
     if (filteredData.isEmpty || filteredData == null) {
-      print("<<<<<<<<<<<");
       emit(LandSearchDataNotFoundState(msg: "No Product Found"));
     } else {
       emit(LandSearchDataState(filteredData: filteredData));

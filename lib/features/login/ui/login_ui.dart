@@ -56,9 +56,11 @@ class LoginUi extends StatelessWidget {
                 Radius.circular(15),
               ),
             ),
-            width:kIsWeb?MediaQuery.of(context).size.width * 0.6: MediaQuery.of(context).size.width * 0.9,
+            width: kIsWeb
+                ? MediaQuery.of(context).size.width * 0.6
+                : MediaQuery.of(context).size.width * 0.9,
             child: Column(
-               // crossAxisAlignment: CrossAxisAlignment.center,
+              // crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(
@@ -198,7 +200,8 @@ class LoginUi extends StatelessWidget {
                         elevation: 3,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5.0)),
-                        minimumSize: const Size(180, 40), //////// HERE
+                        minimumSize: const Size(180, 40),
+                        maximumSize: const Size(180, 40),
                       ),
                       onPressed: () {
                         // if (emailOrMobileTxt.text == "asc" &&
@@ -221,9 +224,21 @@ class LoginUi extends StatelessWidget {
                           //     ));
                         }
                       },
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(color: CommonColors.planeWhite),
+                      child: BlocBuilder<LoginBloc, LoginState>(
+                        bloc: _loginBloc,
+                        buildWhen: (previous, current) =>
+                            current is LoginLoadingState,
+                        builder: (context, state) {
+                          if (state is LoginLoadingState) {
+                            return Constant.spinKitLoader(
+                                context, CommonColors.planeWhite);
+                          } else {
+                            return const Text(
+                              'Login',
+                              style: TextStyle(color: CommonColors.planeWhite),
+                            );
+                          }
+                        },
                       ),
                     ),
                   ),

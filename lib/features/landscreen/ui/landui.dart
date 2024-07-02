@@ -738,7 +738,8 @@ class LandUi extends StatelessWidget {
                         current is LoadDataState ||
                         current is LandLoadMoreDataState ||
                         current is LandSearchDataState ||
-                        current is LandSearchDataNotFoundState,
+                        current is LandSearchDataNotFoundState ||
+                        current is LandLoadingState,
                     bloc: _landBloc,
                     builder: (context, state) {
                       print("STATE CHECK FOR PRODUCTS>>>> $state");
@@ -943,19 +944,28 @@ class LandUi extends StatelessWidget {
                             },
                           ),
                         );
+                      } else if (state is LandLoadingState) {
+                        return Center(
+                          child: Constant.spinKitLoader(
+                              context, CommonColors.primary),
+                        );
                       } else if (state is LandSearchDataNotFoundState) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.search_off,
-                              size: 40,
+                        return Center(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.search_off,
+                                  size: 40,
+                                ),
+                                Text(
+                                  state.msg,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ],
                             ),
-                            Text(
-                              state.msg,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ],
+                          ),
                         );
                       } else {
                         // return const Center(child: CircularProgressIndicator());

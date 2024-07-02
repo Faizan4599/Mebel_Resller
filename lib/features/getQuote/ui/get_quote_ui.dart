@@ -14,7 +14,7 @@ class GetQuoteUI extends StatelessWidget {
   final TextEditingController customerAddressTxt = TextEditingController();
   final TextEditingController customerPhoneTxt = TextEditingController();
   final TextEditingController customerTNCTxt = TextEditingController();
-
+  bool checkboxValue = false;
   @override
   Widget build(BuildContext context) {
     _getQuoteBloc.add(GetQuoteInitEvent());
@@ -45,17 +45,17 @@ class GetQuoteUI extends StatelessWidget {
   Widget userForm(BuildContext context) {
     final List<TextFieldConfig> textfields = [
       TextFieldConfig(
-        title: "CUSTOMER NAME",
-        controller: customerNameTxt,
-        hintText: "Enter name",
-        height: 50,
-      ),
+          title: "CUSTOMER NAME",
+          controller: customerNameTxt,
+          hintText: "Enter name",
+          height: 50,
+          maxline: 1),
       TextFieldConfig(
-        title: "CUSTOMER ADDRESS",
-        controller: customerAddressTxt,
-        hintText: "Enter address",
-        height: 50,
-      ),
+          title: "CUSTOMER ADDRESS",
+          controller: customerAddressTxt,
+          hintText: "Enter address",
+          height: 50,
+          maxline: 1),
       TextFieldConfig(
           title: "CUSTOMER PHONE",
           controller: customerPhoneTxt,
@@ -64,7 +64,8 @@ class GetQuoteUI extends StatelessWidget {
           inputFormatters: [
             LengthLimitingTextInputFormatter(10),
           ],
-          height: 50),
+          height: 50,
+          maxline: 1),
       TextFieldConfig(
         title: "TEARMS AND CONDITIONS",
         controller: customerTNCTxt,
@@ -97,12 +98,11 @@ class GetQuoteUI extends StatelessWidget {
                 buildWhen: (previous, current) =>
                     current is GetQuoteCheckBoxState,
                 builder: (context, state) {
-                  bool CheckboxValue = false;
                   if (state is GetQuoteCheckBoxState) {
-                    CheckboxValue = state.checkboxVal;
+                    checkboxValue = state.checkboxVal;
                   }
                   return Checkbox(
-                    value: CheckboxValue,
+                    value: checkboxValue,
                     onChanged: (value) {
                       _getQuoteBloc
                           .add(GetQuoteCheckBoxEvent(checkboxVal: value!));
@@ -116,17 +116,42 @@ class GetQuoteUI extends StatelessWidget {
             // crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: () async {},
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
+              BlocListener<GetQuoteBloc, GetQuoteState>(
+                bloc: _getQuoteBloc,
+                listenWhen: (previous, current) =>
+                    current is GetQuoteInsertQuotState ||
+                    current is GetQuoteValidationErrorState ||
+                    current is GetQuoteErrorState,
+                listener: (context, state) {
+                  if (state is GetQuoteInsertQuotState) {
+                    Constant.showShortToast(state.message);
+                  } else if (state is GetQuoteValidationErrorState) {
+                    Constant.showShortToast(state.message);
+                  } else if (state is GetQuoteErrorState) {
+                    Constant.showShortToast(state.message.toString());
+                  }
+                },
+                child: ElevatedButton(
+                  onPressed: () async {
+                    _getQuoteBloc.add(
+                      GetQuoteGenrateQuoteEvent(
+                          custName: customerNameTxt.text,
+                          custAddress: customerAddressTxt.text,
+                          custPhone: customerPhoneTxt.text,
+                          tnc: customerTNCTxt.text,
+                          is_gst_quote: checkboxValue),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    backgroundColor: CommonColors.primary,
                   ),
-                  backgroundColor: CommonColors.primary,
-                ),
-                child: const Text(
-                  "Generate quote",
-                  style: TextStyle(color: CommonColors.planeWhite),
+                  child: const Text(
+                    "Generate quote",
+                    style: TextStyle(color: CommonColors.planeWhite),
+                  ),
                 ),
               ),
             ],
