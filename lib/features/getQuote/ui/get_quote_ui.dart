@@ -19,6 +19,26 @@ class GetQuoteUI extends StatelessWidget {
   Widget build(BuildContext context) {
     _getQuoteBloc.add(GetQuoteInitEvent());
     return Scaffold(
+      floatingActionButton: Container(
+        padding: EdgeInsets.all(10.0),
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: FloatingActionButton.extended(
+            backgroundColor: CommonColors.primary,
+            onPressed: () {
+              // _cartBloc.add(CartNavigateToGetQuoteScreenEvent());
+            },
+            icon: const Icon(
+              Icons.download_outlined,
+              color: CommonColors.planeWhite,
+            ),
+            label: Text(
+              "Download Quote",
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+        ),
+      ),
       appBar: AppBar(
         title: Text('Quote'),
       ),

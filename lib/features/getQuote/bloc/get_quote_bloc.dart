@@ -105,7 +105,7 @@ class GetQuoteBloc extends Bloc<GetQuoteEvent, GetQuoteState> {
         "user_id": PreferenceUtils.getString(UserData.id.name),
         "cust_name": event.custName,
         "cust_address": event.custAddress,
-        "cust_phone":event.custPhone,
+        "cust_phone": event.custPhone,
         "tnc": event.tnc,
         "is_gst_quote": (event.is_gst_quote == true) ? "1" : "0"
       };
@@ -120,6 +120,7 @@ class GetQuoteBloc extends Bloc<GetQuoteEvent, GetQuoteState> {
           insertQuoteList.add(response.response as GetInsertQuoteDataModel);
         }
         // emit(GetQuoteTNCSuccessState(tnc: tncDataList.first.tnc));
+        print("CHECK QUOTE ID????????????????????${insertQuoteList.first.quote_id}");
         emit(GetQuoteInsertQuotState(
             message: insertQuoteList.first.message.toString()));
       } else if (response is Failed) {
