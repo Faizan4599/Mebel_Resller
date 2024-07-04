@@ -17,6 +17,7 @@ import 'package:reseller_app/features/landscreen/model/get_sub_categories1.dart'
 import 'package:reseller_app/features/landscreen/model/get_sub_categories2.dart';
 import 'package:reseller_app/repo/api_urls.dart';
 import 'package:reseller_app/repo/response_handler.dart';
+import '../features/getQuote/model/get_download_quote_data_model.dart';
 import '../features/getQuote/model/get_insert_quote_data_model.dart';
 import '../features/getQuote/model/get_tnc_data_model.dart';
 import '../features/landscreen/model/get_styles_data_model.dart';
@@ -254,6 +255,20 @@ class APIRepository {
                     .toList();
               } else if (outerResponse.data is Map) {
                 responseData = GetInsertQuoteDataModel.fromJson(
+                    outerResponse.data as Map<String, dynamic>);
+              }
+              return Success(code: APICode.SUCCESS, response: responseData);
+            // =====
+            case APIUrls.getQuote:
+              if (outerResponse.data is List) {
+                responseData = (outerResponse.data as List<dynamic>)
+                    .map(
+                      (e) => GetDownloadQuoteDataModel.fromJson(
+                          e as Map<String, dynamic>),
+                    )
+                    .toList();
+              } else if (outerResponse.data is Map) {
+                responseData = GetDownloadQuoteDataModel.fromJson(
                     outerResponse.data as Map<String, dynamic>);
               }
               return Success(code: APICode.SUCCESS, response: responseData);

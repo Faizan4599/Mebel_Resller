@@ -19,28 +19,39 @@ class GetQuoteUI extends StatelessWidget {
   Widget build(BuildContext context) {
     _getQuoteBloc.add(GetQuoteInitEvent());
     return Scaffold(
-      floatingActionButton: Container(
-        padding: EdgeInsets.all(10.0),
-        child: Align(
-          alignment: Alignment.bottomRight,
-          child: FloatingActionButton.extended(
-            backgroundColor: CommonColors.primary,
-            onPressed: () {
-              // _cartBloc.add(CartNavigateToGetQuoteScreenEvent());
-            },
-            icon: const Icon(
-              Icons.download_outlined,
-              color: CommonColors.planeWhite,
-            ),
-            label: Text(
-              "Download Quote",
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
-        ),
+      floatingActionButton: BlocBuilder<GetQuoteBloc, GetQuoteState>(
+        bloc: _getQuoteBloc,
+        buildWhen: (previous, current) => current is GetQuoteInsertQuotState,
+        builder: (context, state) {
+          if (state is GetQuoteInsertQuotState) {
+            return Container(
+              padding: EdgeInsets.all(10.0),
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: FloatingActionButton.extended(
+                  backgroundColor: CommonColors.primary,
+                  onPressed: () {
+                    // _cartBloc.add(CartNavigateToGetQuoteScreenEvent());
+                    _getQuoteBloc.add(GetDownloadQuoteEvent());
+                  },
+                  icon: const Icon(
+                    Icons.download_outlined,
+                    color: CommonColors.planeWhite,
+                  ),
+                  label: Text(
+                    "Download Quote",
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+              ),
+            );
+          } else {
+            return const SizedBox();
+          }
+        },
       ),
       appBar: AppBar(
-        title: Text('Quote'),
+        title: const Text('Generate Quote'),
       ),
       body: SingleChildScrollView(
         child: Column(

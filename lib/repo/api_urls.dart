@@ -14,4 +14,5 @@ class APIUrls {
   static const String getStyles = "getStyles";
   static const String getTnc = "getTnc";
   static const String insertQuoteData = "insertQuoteData";
+  static const String getQuote = "getQuote";
 }

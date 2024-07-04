@@ -32,3 +32,5 @@ class GetQuoteCheckBoxState extends GetQuoteState {
   bool checkboxVal;
   GetQuoteCheckBoxState({required this.checkboxVal});
 }
+
+class GetQuoteDownloadState extends GetQuoteState {}

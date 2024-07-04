@@ -23,3 +23,7 @@ class GetQuoteGenrateQuoteEvent extends GetQuoteEvent {
       required this.tnc,
       required this.is_gst_quote});
 }
+
+class GetDownloadQuoteEvent extends GetQuoteEvent {}
+
+

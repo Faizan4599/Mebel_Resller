@@ -7,6 +7,7 @@ import '../../../helper/preference_utils.dart';
 import '../../../repo/api_repository.dart';
 import '../../../repo/api_urls.dart';
 import '../../../repo/response_handler.dart';
+import '../model/get_download_quote_data_model.dart';
 import '../model/get_insert_quote_data_model.dart';
 import '../model/get_tnc_data_model.dart';
 part 'get_quote_event.dart';
@@ -15,11 +16,15 @@ part 'get_quote_state.dart';
 class GetQuoteBloc extends Bloc<GetQuoteEvent, GetQuoteState> {
   List<GetTNCDataModel> tncDataList = <GetTNCDataModel>[];
   List<GetInsertQuoteDataModel> insertQuoteList = <GetInsertQuoteDataModel>[];
+  List<GetDownloadQuoteDataModel> getQuoteList = <GetDownloadQuoteDataModel>[];
   List<FailedCommonDataModel> failedList = <FailedCommonDataModel>[];
+  
+  int? quote_id;
   GetQuoteBloc() : super(GetQuoteInitial()) {
     on<GetQuoteInitEvent>(getQuoteInitEvent);
     on<GetQuoteCheckBoxEvent>(getQuoteCheckBoxEvent);
     on<GetQuoteGenrateQuoteEvent>(getQuoteGenrateQuoteEvent);
+    on<GetDownloadQuoteEvent>(getDownloadQuoteEvent);
   }
   // bool validateCredentials(String custName, String custAddress,
   //     String custPhone, String tnc, bool isGst) {
@@ -120,9 +125,54 @@ class GetQuoteBloc extends Bloc<GetQuoteEvent, GetQuoteState> {
           insertQuoteList.add(response.response as GetInsertQuoteDataModel);
         }
         // emit(GetQuoteTNCSuccessState(tnc: tncDataList.first.tnc));
-        print("CHECK QUOTE ID????????????????????${insertQuoteList.first.quote_id}");
+        print(
+            "CHECK QUOTE ID????????????????????${insertQuoteList.first.quote_id}");
+
+        //quote_id variable use for download quote api as parameter.
+        quote_id = insertQuoteList.first.quote_id ?? 0;
         emit(GetQuoteInsertQuotState(
             message: insertQuoteList.first.message.toString()));
+      } else if (response is Failed) {
+        failedList = response.response as List<FailedCommonDataModel>;
+        emit(GetQuoteErrorState(message: failedList.first.message));
+      } else if (response is Failure) {
+        emit(GetQuoteErrorState(message: response.errorResponse.toString()));
+      } else {
+        emit(GetQuoteErrorState(message: "An error  occurred"));
+      }
+    } catch (e) {
+      emit(GetQuoteErrorState(message: "Error occurred ${e.toString()}"));
+      print("Catch Err ${e.toString()}");
+    }
+  }
+
+  FutureOr<void> getDownloadQuoteEvent(
+      GetDownloadQuoteEvent event, Emitter<GetQuoteState> emit) async {
+    try {
+      Map<String, String> getQuoteParameter = {
+        "access_token1": Constant.access_token1,
+        "access_token2": Constant.access_token2,
+        "access_token3": Constant.access_token3,
+        "user_id": PreferenceUtils.getString(UserData.id.name),
+        "quote_id": quote_id.toString(),
+      };
+
+      var response = await APIRepository()
+          .getCommonMethodAPI(getQuoteParameter, APIUrls.getQuote);
+      if (response is Success) {
+        getQuoteList.clear();
+        if (response.response is List<GetDownloadQuoteDataModel>) {
+          getQuoteList = response.response as List<GetDownloadQuoteDataModel>;
+        } else if (response.response is GetDownloadQuoteDataModel) {
+          getQuoteList.add(response.response as GetDownloadQuoteDataModel);
+        }
+        // emit(GetQuoteTNCSuccessState(tnc: tncDataList.first.tnc));
+        print(
+            "CHECK QUOTE ID????????????????????${insertQuoteList.first.quote_id}");
+        // emit(GetQuoteInsertQuotState(
+        //     message: insertQuoteList.first.message.toString()));
+
+        emit(GetQuoteDownloadState());
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(GetQuoteErrorState(message: failedList.first.message));

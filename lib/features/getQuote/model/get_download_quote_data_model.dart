@@ -33,7 +33,8 @@ class GetDownloadQuoteDataModel {
         cust_address: json["cust_address"],
         tnc: json["tnc"],
         is_gst_quote: json["is_gst_quote"],
-        quoteItems: json["quoteItems"],
+        quoteItems: List<QuoteItem>.from(
+            json["quoteItems"].map((x) => QuoteItem.fromJson(x))),
       );
   Map<String, dynamic> toJson() => {
         "quote_id": quote_id,
@@ -45,7 +46,10 @@ class GetDownloadQuoteDataModel {
         "cust_address": cust_address,
         "tnc": tnc,
         "is_gst_quote": is_gst_quote,
-        "quoteItems": quoteItems,
+        "quoteItems": List<dynamic>.from(quoteItems ??
+            [].map(
+              (x) => x.toJson(),
+            )),
       };
 }
 
