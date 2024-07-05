@@ -18,7 +18,7 @@ class GetQuoteBloc extends Bloc<GetQuoteEvent, GetQuoteState> {
   List<GetInsertQuoteDataModel> insertQuoteList = <GetInsertQuoteDataModel>[];
   List<GetDownloadQuoteDataModel> getQuoteList = <GetDownloadQuoteDataModel>[];
   List<FailedCommonDataModel> failedList = <FailedCommonDataModel>[];
-  
+
   int? quote_id;
   GetQuoteBloc() : super(GetQuoteInitial()) {
     on<GetQuoteInitEvent>(getQuoteInitEvent);
@@ -132,6 +132,7 @@ class GetQuoteBloc extends Bloc<GetQuoteEvent, GetQuoteState> {
         quote_id = insertQuoteList.first.quote_id ?? 0;
         emit(GetQuoteInsertQuotState(
             message: insertQuoteList.first.message.toString()));
+        add(GetDownloadQuoteEvent());
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(GetQuoteErrorState(message: failedList.first.message));
@@ -172,7 +173,7 @@ class GetQuoteBloc extends Bloc<GetQuoteEvent, GetQuoteState> {
         // emit(GetQuoteInsertQuotState(
         //     message: insertQuoteList.first.message.toString()));
 
-        emit(GetQuoteDownloadState());
+        emit(GetQuoteDownloadState(pdfData: getQuoteList));
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(GetQuoteErrorState(message: failedList.first.message));

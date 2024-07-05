@@ -33,4 +33,7 @@ class GetQuoteCheckBoxState extends GetQuoteState {
   GetQuoteCheckBoxState({required this.checkboxVal});
 }
 
-class GetQuoteDownloadState extends GetQuoteState {}
+class GetQuoteDownloadState extends GetQuoteState {
+  List<GetDownloadQuoteDataModel> pdfData;
+  GetQuoteDownloadState({required this.pdfData});
+}

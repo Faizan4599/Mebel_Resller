@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reseller_app/features/downloadQuote/ui/download_quote_ui.dart';
 
 import '../../../common/widgets/text_field.dart';
 import '../../../constant/constant.dart';
@@ -19,37 +20,6 @@ class GetQuoteUI extends StatelessWidget {
   Widget build(BuildContext context) {
     _getQuoteBloc.add(GetQuoteInitEvent());
     return Scaffold(
-      floatingActionButton: BlocBuilder<GetQuoteBloc, GetQuoteState>(
-        bloc: _getQuoteBloc,
-        buildWhen: (previous, current) => current is GetQuoteInsertQuotState,
-        builder: (context, state) {
-          if (state is GetQuoteInsertQuotState) {
-            return Container(
-              padding: EdgeInsets.all(10.0),
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: FloatingActionButton.extended(
-                  backgroundColor: CommonColors.primary,
-                  onPressed: () {
-                    // _cartBloc.add(CartNavigateToGetQuoteScreenEvent());
-                    _getQuoteBloc.add(GetDownloadQuoteEvent());
-                  },
-                  icon: const Icon(
-                    Icons.download_outlined,
-                    color: CommonColors.planeWhite,
-                  ),
-                  label: Text(
-                    "Download Quote",
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ),
-              ),
-            );
-          } else {
-            return const SizedBox();
-          }
-        },
-      ),
       appBar: AppBar(
         title: const Text('Generate Quote'),
       ),
@@ -152,14 +122,24 @@ class GetQuoteUI extends StatelessWidget {
                 listenWhen: (previous, current) =>
                     current is GetQuoteInsertQuotState ||
                     current is GetQuoteValidationErrorState ||
-                    current is GetQuoteErrorState,
+                    current is GetQuoteErrorState ||
+                    current is GetQuoteDownloadState,
                 listener: (context, state) {
+                  print("HAAAAAAAAAAAAAAAAA ${state}");
                   if (state is GetQuoteInsertQuotState) {
                     Constant.showShortToast(state.message);
                   } else if (state is GetQuoteValidationErrorState) {
                     Constant.showShortToast(state.message);
                   } else if (state is GetQuoteErrorState) {
                     Constant.showShortToast(state.message.toString());
+                  } else if (state is GetQuoteDownloadState) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DownloadQuoteUI(
+                            data: state.pdfData,
+                          ),
+                        ));
                   }
                 },
                 child: ElevatedButton(
@@ -172,6 +152,7 @@ class GetQuoteUI extends StatelessWidget {
                           tnc: customerTNCTxt.text,
                           is_gst_quote: checkboxValue),
                     );
+                    // _getQuoteBloc.add(GetDownloadQuoteEvent());
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
