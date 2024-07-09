@@ -14,4 +14,9 @@ class DownloadQuoteErrorState extends DownloadQuoteState {
   DownloadQuoteErrorState({required this.message});
 }
 
-class DownloadQuoteSuccessState extends DownloadQuoteState {}
+class DownloadQuoteSuccessState extends DownloadQuoteState {
+  String filePath;
+  DownloadQuoteSuccessState({required this.filePath});
+}
+
+class DownloadPdfState extends DownloadQuoteState {}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reseller_app/common/widgets/common_dialog.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/cart/ui/cart_ui.dart';
 import 'package:reseller_app/features/landscreen/bloc/land_bloc.dart';
@@ -122,7 +123,7 @@ class ProductUi extends StatelessWidget {
                 if (state is LandLogoutState) {
                   Navigator.pop(context); // Close the dialog if it's open
                   await PreferenceUtils.clearData();
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => LoginUi(),
@@ -132,7 +133,19 @@ class ProductUi extends StatelessWidget {
               },
               child: IconButton(
                 onPressed: () {
-                  _showDownloadDialog(context, "logout");
+                  showCommonDialog(
+                    dialogTitle: "Logout",
+                    dialogMessage: "Are you sure you want to logout?",
+                    buttonTitle: "Logout",
+                    context: context,
+                    onCancel: () {
+                      Navigator.pop(context);
+                    },
+                    onEvent: () {
+                      _landBloc.add(LandLogoutEvent());
+                      Navigator.pop(context);
+                    },
+                  );
                 },
                 icon: const Icon(Icons.logout_outlined),
                 iconSize: 27,
@@ -208,7 +221,6 @@ class ProductUi extends StatelessWidget {
                           final currentPage = state is ProductSlideImageState
                               ? state.currentPage
                               : 0;
-
                           return Container(
                             height: 30,
                             width: 140,
@@ -281,7 +293,7 @@ class ProductUi extends StatelessWidget {
                         } else if (state is ProductErrorState) {
                           Constant.showShortToast(state.message);
                         } else if (state is ProductNavigateToAddToCartState) {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) => CartUi(
@@ -340,8 +352,8 @@ class ProductUi extends StatelessWidget {
                         context),
                     productInfo("Subcategory 2",
                         allData.subcategory2.toString(), context),
-                    productInfo("Description", allData.description.toString(),
-                        context),
+                    productInfo(
+                        "Description", allData.description.toString(), context),
                   ],
                 )
               ],
@@ -373,89 +385,6 @@ class ProductUi extends StatelessWidget {
           )
         ],
       ),
-    );
-  }
-
-  void _showDownloadDialog(BuildContext context, String dialogType) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: SizedBox(
-            // color: Colors.greenAccent,
-            height: 125,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                // mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        (dialogType == "download")
-                            ? "Download Images"
-                            : "Logout",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        (dialogType == "download")
-                            ? "Do you want to download the images?"
-                            : "Are you sure you want to logout?",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      )
-                    ],
-                  ),
-                  Row(
-                    // crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: CommonColors.primary,
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text("Cancel")),
-                      TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: CommonColors.primary,
-                          ),
-                          onPressed: () async {
-                            // _landBloc.add(LandDownloadImageEvent(
-                            //     data: _landBloc.selectedData));
-                            // Navigator.pop(context);
-                            if (dialogType == "download") {
-                              // _landBloc.add(LandDownloadImageEvent(
-                              //     data: _landBloc.selectedData));
-                            } else if (dialogType == "logout") {
-                              //  Navigator.pop(context);
-                              _landBloc.add(LandLogoutEvent());
-                            }
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            (dialogType == "download") ? "Download" : "Logout",
-                          ))
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

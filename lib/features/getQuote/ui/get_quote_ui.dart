@@ -133,13 +133,14 @@ class GetQuoteUI extends StatelessWidget {
                   } else if (state is GetQuoteErrorState) {
                     Constant.showShortToast(state.message.toString());
                   } else if (state is GetQuoteDownloadState) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DownloadQuoteUI(
-                            data: state.pdfData,
-                          ),
-                        ));
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DownloadQuoteUI(
+                          data: state.pdfData ?? [],
+                        ),
+                      ),
+                    );
                   }
                 },
                 child: ElevatedButton(

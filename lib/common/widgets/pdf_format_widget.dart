@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/getQuote/model/get_download_quote_data_model.dart';
@@ -7,16 +8,6 @@ import 'package:reseller_app/utils/common_colors.dart';
 Widget pdfData({BuildContext? context, List<GetDownloadQuoteDataModel>? data}) {
   return Column(
     children: [
-      const SizedBox(
-        height: 5,
-      ),
-      (data?.first.is_gst_quote == "0")
-          ? Text(
-              "GST is not included in this quote.",
-              style: TextStyle(
-                  color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),
-            )
-          : const SizedBox(),
       const SizedBox(
         height: 5,
       ),
@@ -46,7 +37,7 @@ Widget pdfData({BuildContext? context, List<GetDownloadQuoteDataModel>? data}) {
       ),
       Container(
         width: Constant.screenWidth(context),
-        decoration: BoxDecoration(color: CommonColors.primary),
+        decoration: const BoxDecoration(color: CommonColors.primary),
         child: Row(
           children: [
             Padding(
@@ -55,7 +46,7 @@ Widget pdfData({BuildContext? context, List<GetDownloadQuoteDataModel>? data}) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: Constant.screenWidth(context) * 0.6,
+                    width: (kIsWeb) ? 170 : Constant.screenWidth(context) * 0.6,
                     child: Text(
                       data?.first.cust_name?.toUpperCase() ?? "",
                       style: Theme.of(context).textTheme.titleMedium,
@@ -117,7 +108,7 @@ Widget pdfData({BuildContext? context, List<GetDownloadQuoteDataModel>? data}) {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(
-                  height: 5,
+                  height: 6,
                 ),
                 Text(
                   "QUOTE ID",
@@ -126,6 +117,9 @@ Widget pdfData({BuildContext? context, List<GetDownloadQuoteDataModel>? data}) {
                 Text(
                   data?.first.quote_id ?? "",
                   style: Theme.of(context).textTheme.bodySmall,
+                ),
+                const SizedBox(
+                  height: 6,
                 ),
                 Text(
                   "AMOUNT DUE",
@@ -192,6 +186,12 @@ Widget pdfData({BuildContext? context, List<GetDownloadQuoteDataModel>? data}) {
                           style: TextStyle(color: CommonColors.planeWhite),
                         ),
                       ),
+                      Center(
+                        child: Text(
+                          'PRICE',
+                          style: TextStyle(color: CommonColors.planeWhite),
+                        ),
+                      ),
                     ]),
                 ...data!.first.quoteItems!.map(
                   (index) {
@@ -230,6 +230,9 @@ Widget pdfData({BuildContext? context, List<GetDownloadQuoteDataModel>? data}) {
                       ),
                       Center(child: Text("x ${index.qty ?? ""}")),
                       Center(child: Text("\u{20B9}${index.price ?? ""}")),
+                      Center(
+                          child: Text(
+                              "${int.parse(index.price ?? "0") * int.parse(index.qty ?? "0")}")),
                     ]);
                   },
                 ),
@@ -242,14 +245,40 @@ Widget pdfData({BuildContext? context, List<GetDownloadQuoteDataModel>? data}) {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "TERM'S & CONDITION'S",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      (data.first.is_gst_quote == "0")
+                          ? const Text(
+                              "Price is exclusive of GST.",
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          : const Text(
+                              "Price is inclusive of GST.",
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "TERM'S & CONDITION'S",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(left: 8.0),
                     child: Text(
-                      data?.first.tnc ?? "",
+                      data.first.tnc ?? "",
                     ),
                   ),
                 ],
