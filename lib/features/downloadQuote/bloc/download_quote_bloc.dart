@@ -1,19 +1,24 @@
 import 'dart:async';
-import 'package:bloc/bloc.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'dart:ui' show PlatformDispatcher;
+import 'dart:html' as html;
+import 'dart:convert';
+import 'package:bloc/bloc.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:reseller_app/constant/constant.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+
 part 'download_quote_event.dart';
 part 'download_quote_state.dart';
 
@@ -21,6 +26,7 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
   DownloadQuoteBloc() : super(DownloadQuoteInitial()) {
     on<DownloadPdfEvent>(downloadPdfEvent);
   }
+
   Future<bool> storagePermission() async {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
@@ -33,7 +39,6 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
         Permission.videos,
         Permission.photos,
       ].request();
-
       havePermission =
           request.values.every((status) => status == PermissionStatus.granted);
     } else {
@@ -44,40 +49,68 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
     if (!havePermission) {
       await openAppSettings();
     }
-
     return havePermission;
   }
 
-  Future<ui.Image> widgetToImage(GlobalKey key) async {
-    RenderRepaintBoundary boundary =
-        key.currentContext!.findRenderObject() as RenderRepaintBoundary;
-    ui.Image image = await boundary.toImage(pixelRatio: 4.0);
-    return image;
+Future<Uint8List> widgetToImageBytes(GlobalKey key) async {
+  RenderRepaintBoundary boundary =
+      key.currentContext?.findRenderObject() as RenderRepaintBoundary;
+
+  double devicePixelRatio = PlatformDispatcher.instance.views.first.devicePixelRatio;
+
+  if (kIsWeb) {
+    // On web, adjust pixel ratio to a higher value for better resolution
+    devicePixelRatio = 3.0; // Increase to improve resolution
+  } else {
+    // For mobile platforms, you can also set a higher pixel ratio if needed
+    devicePixelRatio = 3.0; // Increase to improve resolution
+  }
+var transform = boundary.getTransformTo(null);
+  print("matrix4[0]: ${transform.storage[0]}");
+  print("matrix4[5]: ${transform.storage[5]}");
+  print("Expected devicePixelRatio: $devicePixelRatio");
+
+  if (transform.storage[0] != devicePixelRatio || transform.storage[5] != devicePixelRatio) {
+    throw Exception('Matrix4 values do not match the expected devicePixelRatio');
   }
 
-  Future<Uint8List> imageToBytes(ui.Image image) async {
-    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    return byteData!.buffer.asUint8List();
-  }
+  // Ensure we use the correct pixel ratio when converting to image
+  ui.Image image = await boundary.toImage(pixelRatio: devicePixelRatio);
+  final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+  return byteData!.buffer.asUint8List();
+}
 
-  Future<String> generatePdfFromWidget(
-    Uint8List imageBytes,
-    String fileName,
-  ) async {
-    final pdf = pw.Document();
 
-    final image = pw.MemoryImage(imageBytes);
+Future<String> generatePdfFromWidget(
+  Uint8List imageBytes,
+  String fileName,
+) async {
+  final pdf = pw.Document();
 
-    pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) {
-          return pw.Center(
-            child: pw.Image(image),
-          );
-        },
-      ),
-    );
-    // final downloadsDirectory = await getExternalStorageDirectory();
+  final image = pw.MemoryImage(imageBytes);
+
+  pdf.addPage(
+    pw.Page(
+      pageFormat: PdfPageFormat.a4, // You can adjust this to your needs
+      build: (pw.Context context) {
+        return pw.Center(
+          child: pw.Image(image, fit: pw.BoxFit.contain),
+        );
+      },
+    ),
+  );
+
+  if (kIsWeb) {
+    // Web specific code to create a downloadable link
+    final bytes = await pdf.save();
+    final blob = html.Blob([bytes], 'application/pdf');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.AnchorElement(href: url)
+      ..setAttribute("download", "$fileName.pdf")
+      ..click();
+    html.Url.revokeObjectUrl(url);
+    return url; // returning URL for success state
+  } else {
     final appFolder = Platform.isIOS
         ? await getApplicationDocumentsDirectory()
         : Directory('/storage/emulated/0/Download/${Constant.appName}');
@@ -88,29 +121,48 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
     await file.writeAsBytes(await pdf.save());
     return file.path;
   }
+}
 
-  FutureOr<void> downloadPdfEvent(
+
+  Future<void> downloadPdfEvent(
       DownloadPdfEvent event, Emitter<DownloadQuoteState> emit) async {
     try {
-      final filename = "${event.custname?.replaceAll(" ", "")}" +
-          "${event.quoteid?.replaceAll(" ", "")}";
-      // print("FILE NAME>>>>>>>${filename}");
+      final String custName =
+          event.custname.isNotEmpty ? event.custname : "UnknownCustomer";
+      final String quoteId =
+          event.quoteid.isNotEmpty ? event.quoteid : "UnknownQuote";
+      final String filename =
+          "${custName.replaceAll(" ", "")}${quoteId.replaceAll(" ", "")}";
+
       emit(DownloadQuoteLoadingState());
-      if (await storagePermission()) {
-        GlobalKey globalKey = event.pdfkey;
-        ui.Image image = await widgetToImage(globalKey);
-        Uint8List imageBytes = await imageToBytes(image);
+      try {
+        if (!kIsWeb) {
+          if (await storagePermission()) {
+            GlobalKey globalKey = event.pdfkey;
+            Uint8List imageBytes = await widgetToImageBytes(globalKey);
 
-        final filePath = await generatePdfFromWidget(imageBytes, filename);
+            final String filePath =
+                await generatePdfFromWidget(imageBytes, filename);
+            emit(DownloadQuoteSuccessState(filePath: filePath));
+          } else {
+            emit(DownloadQuoteErrorState(
+                message: "Storage permission not granted"));
+          }
+        } else {
+          GlobalKey globalKey = event.pdfkey;
+          Uint8List imageBytes = await widgetToImageBytes(globalKey);
 
-        emit(DownloadQuoteSuccessState(filePath: filePath));
-      } else {
-        emit(
-            DownloadQuoteErrorState(message: "Storage permission not granted"));
+          final String filePath =
+              await generatePdfFromWidget(imageBytes, filename);
+          emit(DownloadQuoteSuccessState(filePath: filePath));
+        }
+      } catch (e) {
+        print("Error during PDF generation: ${e.toString()}");
+        emit(DownloadQuoteErrorState(message: "Error: ${e.toString()}"));
       }
     } catch (e) {
-      print("Error ${e.toString()}");
-      emit(DownloadQuoteErrorState(message: "Error!!! ${e.toString()}"));
+      print("Error in downloadPdfEvent: ${e.toString()}");
+      emit(DownloadQuoteErrorState(message: "Error: ${e.toString()}"));
     }
   }
 }

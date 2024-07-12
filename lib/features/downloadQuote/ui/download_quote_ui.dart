@@ -12,7 +12,7 @@ class DownloadQuoteUI extends StatelessWidget {
   final List<GetDownloadQuoteDataModel>? data;
   final GlobalKey globalKey = GlobalKey();
   final _downloadBloc = DownloadQuoteBloc();
-  DownloadQuoteUI({Key? key, this.data}) : super(key: key);
+  DownloadQuoteUI({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +24,16 @@ class DownloadQuoteUI extends StatelessWidget {
           size: 27,
           color: CommonColors.planeWhite,
         ),
-        onPressed: () {
-          _downloadBloc.add(DownloadPdfEvent(
-              pdfkey: globalKey,
-              context: context,
-              custname: data?.first.cust_name ?? "Unknown Customer",
-              quoteid: data?.first.quote_id ?? "Unknown Quote"));
+        onPressed: () async {
+          final String custName = data?.first.cust_name ?? "";
+          final String quoteId = data?.first.quote_id ?? "";
+          _downloadBloc.add(
+            DownloadPdfEvent(
+                pdfkey: globalKey,
+                context: context,
+                custname: custName,
+                quoteid: quoteId),
+          );
         },
       ),
       appBar: AppBar(
@@ -64,7 +68,7 @@ class DownloadQuoteUI extends StatelessWidget {
             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
             child: RepaintBoundary(
               key: globalKey,
-              child: pdfData(context: context, data: data ?? []),
+              child: pdfData(context: context, data: data) ?? const SizedBox(),
             ),
           ),
         ),

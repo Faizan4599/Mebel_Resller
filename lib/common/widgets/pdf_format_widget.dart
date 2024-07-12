@@ -5,7 +5,12 @@ import 'package:reseller_app/features/getQuote/model/get_download_quote_data_mod
 import 'package:reseller_app/helper/preference_utils.dart';
 import 'package:reseller_app/utils/common_colors.dart';
 
-Widget pdfData({BuildContext? context, List<GetDownloadQuoteDataModel>? data}) {
+Widget? pdfData(
+    {required BuildContext? context,
+    required List<GetDownloadQuoteDataModel>? data}) {
+  if (data == null) {
+    return const SizedBox();
+  }
   return Column(
     children: [
       const SizedBox(
@@ -193,49 +198,57 @@ Widget pdfData({BuildContext? context, List<GetDownloadQuoteDataModel>? data}) {
                         ),
                       ),
                     ]),
-                ...data!.first.quoteItems!.map(
-                  (index) {
-                    return TableRow(children: [
-                      TableCell(
-                          verticalAlignment: TableCellVerticalAlignment.middle,
-                          child: Center(child: Text(index.quote_id ?? ""))),
-                      TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                          child: SizedBox(
-                            height: 100,
-                            width: 100,
-                            child: Image.network(
-                              index.product_url ?? "",
-                              fit: BoxFit.fill,
-                              loadingBuilder: (BuildContext context,
-                                  Widget child,
-                                  ImageChunkEvent? loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                        : null,
-                                  ),
-                                );
-                              },
+                ...data?.first.quoteItems?.map(
+                      (index) {
+                        return TableRow(children: [
+                          TableCell(
+                              verticalAlignment:
+                                  TableCellVerticalAlignment.middle,
+                              child: Center(child: Text(index.quote_id ?? ""))),
+                          TableCell(
+                            verticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                              child: SizedBox(
+                                height: 100,
+                                width: 100,
+                                child: Image.network(
+                                  index.product_url ?? "",
+                                  fit: BoxFit.fill,
+                                  loadingBuilder: (BuildContext context,
+                                      Widget child,
+                                      ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                loadingProgress
+                                                    .expectedTotalBytes!
+                                            : null,
+                                      ),
+                                    );
+                                  },
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Text('Image not available'),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      Center(child: Text("x ${index.qty ?? ""}")),
-                      Center(child: Text("\u{20B9}${index.price ?? ""}")),
-                      Center(
-                          child: Text(
-                              "${int.parse(index.price ?? "0") * int.parse(index.qty ?? "0")}")),
-                    ]);
-                  },
-                ),
+                          Center(child: Text("x ${index.qty ?? ""}")),
+                          Center(child: Text("\u{20B9}${index.price ?? ""}")),
+                          Center(
+                              child: Text(
+                                  "${int.parse(index.price ?? "0") * int.parse(index.qty ?? "0")}")),
+                        ]);
+                      },
+                    ) ??
+                    {},
               ],
             ),
             const SizedBox(
@@ -248,7 +261,7 @@ Widget pdfData({BuildContext? context, List<GetDownloadQuoteDataModel>? data}) {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      (data.first.is_gst_quote == "0")
+                      (data?.first.is_gst_quote == "0")
                           ? const Text(
                               "Price is exclusive of GST.",
                               style: TextStyle(
@@ -278,7 +291,7 @@ Widget pdfData({BuildContext? context, List<GetDownloadQuoteDataModel>? data}) {
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text(
-                      data.first.tnc ?? "",
+                      data?.first.tnc ?? "",
                     ),
                   ),
                 ],

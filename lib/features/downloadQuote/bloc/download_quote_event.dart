@@ -5,8 +5,14 @@ abstract class DownloadQuoteEvent {}
 
 class DownloadPdfEvent extends DownloadQuoteEvent {
   final GlobalKey pdfkey;
- BuildContext? context;
- String? custname;
- String? quoteid;
-  DownloadPdfEvent({required this.pdfkey, this.context, this.custname, this.quoteid});
+  final BuildContext context;
+  final String custname;
+  final String quoteid;
+
+  DownloadPdfEvent({
+    required this.pdfkey,
+    required this.context,
+    required this.custname,
+    required this.quoteid,
+  });
 }

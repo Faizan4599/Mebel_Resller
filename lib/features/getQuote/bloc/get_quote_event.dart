@@ -25,5 +25,3 @@ class GetQuoteGenrateQuoteEvent extends GetQuoteEvent {
 }
 
 class GetDownloadQuoteEvent extends GetQuoteEvent {}
-
-
