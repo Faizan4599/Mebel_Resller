@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:reseller_app/features/splash/ui/splash_ui.dart';
 import 'helper/preference_utils.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  PreferenceUtils.init();
+ await PreferenceUtils.init();
 
   final runableApp =
       _buildRunnableApp(isWeb: kIsWeb, webAppWidth: 480.0, app: SplashUi());

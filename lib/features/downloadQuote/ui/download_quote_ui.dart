@@ -32,7 +32,8 @@ class DownloadQuoteUI extends StatelessWidget {
                 pdfkey: globalKey,
                 context: context,
                 custname: custName,
-                quoteid: quoteId),
+                quoteid: quoteId,
+                data: data ?? []),
           );
         },
       ),
