@@ -82,14 +82,12 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
   ) async {
     try {
       final pdf = pw.Document();
-
       for (var quoteData in data) {
         pdf.addPage(
           pw.MultiPage(
             pageFormat: PdfPageFormat.a4,
             build: (pw.Context context) {
               List<pw.Widget> pageWidgets = [];
-
               // Add header part
               pageWidgets.addAll([
                 pw.SizedBox(height: 5),
@@ -214,7 +212,7 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
               double fixedContentHeight = 120; // Adjust this value as needed
               double availableHeight =
                   PdfPageFormat.a4.availableHeight - fixedContentHeight;
-              double rowHeight = 30; // Adjust the height of each row as needed
+              double rowHeight = 40; // Adjust the height of each row as needed
 
               // Calculate how many rows fit into the available height
               int rowsPerPage = (availableHeight / rowHeight).floor();
@@ -237,44 +235,54 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
                           color: CommonColors.pdfPrimaryColor,
                         ),
                         children: [
-                          pw.Center(
+                          pw.Expanded(
                             child: pw.Text(
                               'ID',
                               style: pw.TextStyle(
                                 color: CommonColors.pdfplaneWhiteColor,
+                                fontWeight: pw.FontWeight.bold,
                               ),
+                              textAlign: pw.TextAlign.center,
                             ),
                           ),
-                          pw.Center(
+                          pw.Expanded(
                             child: pw.Text(
                               'IMAGE',
                               style: pw.TextStyle(
                                 color: CommonColors.pdfplaneWhiteColor,
+                                fontWeight: pw.FontWeight.bold,
                               ),
+                              textAlign: pw.TextAlign.center,
                             ),
                           ),
-                          pw.Center(
+                          pw.Expanded(
                             child: pw.Text(
                               'QTY',
                               style: pw.TextStyle(
                                 color: CommonColors.pdfplaneWhiteColor,
+                                fontWeight: pw.FontWeight.bold,
                               ),
+                              textAlign: pw.TextAlign.center,
                             ),
                           ),
-                          pw.Center(
+                          pw.Expanded(
                             child: pw.Text(
                               'RATE',
                               style: pw.TextStyle(
                                 color: CommonColors.pdfplaneWhiteColor,
+                                fontWeight: pw.FontWeight.bold,
                               ),
+                              textAlign: pw.TextAlign.center,
                             ),
                           ),
-                          pw.Center(
+                          pw.Expanded(
                             child: pw.Text(
                               'PRICE',
                               style: pw.TextStyle(
                                 color: CommonColors.pdfplaneWhiteColor,
+                                fontWeight: pw.FontWeight.bold,
                               ),
+                              textAlign: pw.TextAlign.center,
                             ),
                           ),
                         ],
@@ -288,27 +296,51 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
               final tableRows = quoteData.quoteItems?.map(
                     (index) {
                       final imageBytes = imageBytesMap[index.product_url];
-                      return pw.TableRow(children: [
-                        pw.Center(child: pw.Text(index.quote_id ?? "")),
-                        pw.Container(
-                          width: 100,
-                          height: 100,
-                          child: imageBytes != null
-                              ? pw.Align(
-                                  alignment: pw.Alignment.center,
-                                  child: pw.Image(pw.MemoryImage(imageBytes)),
-                                )
-                              : pw.Center(child: pw.Text('No image')),
+                      return pw.TableRow(
+                        decoration: pw.BoxDecoration(
+                          color: CommonColors.pdfSecondaryColor,
                         ),
-                        pw.Center(child: pw.Text("x ${index.qty ?? ""}")),
-                        pw.Center(
-                            child: pw.Text("\u{20B9}${index.price ?? ""}")),
-                        pw.Center(
+                        children: [
+                          pw.Expanded(
                             child: pw.Text(
-                                "${int.parse(index.price ?? "0") * int.parse(index.qty ?? "0")}")),
-                      ]);
+                              index.quote_id ?? "",
+                              textAlign: pw.TextAlign.center,
+                            ),
+                          ),
+                          pw.Expanded(
+                            child: imageBytes != null
+                                ? pw.Padding(
+                                    padding: const pw.EdgeInsets.all(8.0),
+                                    child: pw.Image(
+                                      pw.MemoryImage(imageBytes),
+                                      height: 100,
+                                      width: 100,
+                                      fit: pw.BoxFit.contain,
+                                    ))
+                                : pw.SizedBox(),
+                          ),
+                          pw.Expanded(
+                            child: pw.Text(
+                              "x ${index.qty ?? ""}",
+                              textAlign: pw.TextAlign.center,
+                            ),
+                          ),
+                          pw.Expanded(
+                            child: pw.Text(
+                              index.price ?? "",
+                              textAlign: pw.TextAlign.center,
+                            ),
+                          ),
+                          pw.Expanded(
+                            child: pw.Text(
+                              "${int.parse(index.price ?? "0") * int.parse(index.qty ?? "0")}",
+                              textAlign: pw.TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      );
                     },
-                  )?.toList() ??
+                  ).toList() ??
                   [];
 
               // Split the table rows into chunks that fit on a page dynamically
@@ -316,11 +348,12 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
                 final chunk = tableRows.skip(i).take(rowsPerPage).toList();
                 pageWidgets.add(pw.Table(
                   border: const pw.TableBorder(
-                      bottom: pw.BorderSide(),
-                      horizontalInside: pw.BorderSide(),
-                      top: pw.BorderSide(),
-                      right: pw.BorderSide(),
-                      left: pw.BorderSide()),
+                    bottom: pw.BorderSide(),
+                    horizontalInside: pw.BorderSide(),
+                    top: pw.BorderSide(),
+                    right: pw.BorderSide(),
+                    left: pw.BorderSide(),
+                  ),
                   defaultVerticalAlignment:
                       pw.TableCellVerticalAlignment.middle,
                   children: chunk,
