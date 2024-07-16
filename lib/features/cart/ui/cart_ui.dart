@@ -26,14 +26,14 @@ class CartUi extends StatelessWidget {
     );
   }
   List<GetProductDataModel> cartItems;
-  CartBloc _cartBloc = CartBloc();
+  final CartBloc _cartBloc = CartBloc();
   LandBloc _landBloc = LandBloc();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: Container(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Align(
           alignment: Alignment.bottomRight,
           child: BlocListener<CartBloc, CartState>(
@@ -58,7 +58,7 @@ class CartUi extends StatelessWidget {
               onPressed: () {
                 _cartBloc.add(CartNavigateToGetQuoteScreenEvent());
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.book_online_outlined,
                 color: CommonColors.planeWhite,
               ),

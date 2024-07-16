@@ -4,6 +4,7 @@ import 'package:open_filex/open_filex.dart';
 import 'package:reseller_app/common/widgets/pdf_format_widget.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/utils/common_colors.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../common/widgets/common_dialog.dart';
 import '../../getQuote/model/get_download_quote_data_model.dart';
 import '../bloc/download_quote_bloc.dart';
@@ -17,26 +18,65 @@ class DownloadQuoteUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: CommonColors.primary,
-        child: const Icon(
-          Icons.download_outlined,
-          size: 27,
-          color: CommonColors.planeWhite,
-        ),
-        onPressed: () async {
-          final String custName = data?.first.cust_name ?? "";
-          final String quoteId = data?.first.quote_id ?? "";
-          _downloadBloc.add(
-            DownloadPdfEvent(
-                pdfkey: globalKey,
-                context: context,
-                custname: custName,
-                quoteid: quoteId,
-                data: data ?? []),
-          );
-        },
+      floatingActionButton: Stack(
+        children: [
+          Align(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
+              backgroundColor: CommonColors.primary,
+              child: const Icon(
+                Icons.download_outlined,
+                size: 27,
+                color: CommonColors.planeWhite,
+              ),
+              onPressed: () async {
+                final String custName = data?.first.cust_name ?? "";
+                final String quoteId = data?.first.quote_id ?? "";
+                _downloadBloc.add(
+                  DownloadPdfEvent(
+                      pdfkey: globalKey,
+                      context: context,
+                      custname: custName,
+                      quoteid: quoteId,
+                      data: data ?? []),
+                );
+              },
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: BlocListener<DownloadQuoteBloc, DownloadQuoteState>(
+              bloc: _downloadBloc,
+              listenWhen: (previous, current) =>
+                  current is DownloadQuoteShareState,
+              listener: (context, state) {
+                if (state is DownloadQuoteShareState) {
+                  Share.shareXFiles([XFile(state.filePath)],
+                      text: "Here is genrated quote file");
+                }
+              },
+              child: FloatingActionButton(
+                backgroundColor: CommonColors.primary,
+                child: const Icon(
+                  Icons.share_outlined,
+                  size: 27,
+                  color: CommonColors.planeWhite,
+                ),
+                onPressed: () async {
+                  _downloadBloc.add(
+                    DownloadShareEvent(
+                      custname: data?.first.cust_name ?? "",
+                      quoteid: data?.first.quote_id ?? "",
+                      data: data ?? [],
+                    ),
+                  );
+                },
+              ),
+            ),
+          )
+        ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       appBar: AppBar(
         title: const Text("Download Quote"),
       ),

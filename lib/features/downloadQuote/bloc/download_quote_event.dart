@@ -10,11 +10,18 @@ class DownloadPdfEvent extends DownloadQuoteEvent {
   final String quoteid;
   final List<GetDownloadQuoteDataModel> data;
 
-  DownloadPdfEvent({
-    required this.pdfkey,
-    required this.context,
-    required this.custname,
-    required this.quoteid,
-    required this.data
-  });
+  DownloadPdfEvent(
+      {required this.pdfkey,
+      required this.context,
+      required this.custname,
+      required this.quoteid,
+      required this.data});
+}
+
+class DownloadShareEvent extends DownloadQuoteEvent {
+  final String custname;
+  final String quoteid;
+  final List<GetDownloadQuoteDataModel> data;
+  DownloadShareEvent(
+      {required this.custname, required this.quoteid, required this.data});
 }
