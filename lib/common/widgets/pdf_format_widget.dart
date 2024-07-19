@@ -349,93 +349,98 @@ genratePDFPrintWidget(
             pw.Container(
               width: double.infinity,
               decoration: pw.BoxDecoration(color: CommonColors.pdfPrimaryColor),
-              child: pw.Row(
-                children: [
-                  pw.Padding(
-                    padding: const pw.EdgeInsets.only(left: 5, right: 5),
-                    child: pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
-                        pw.SizedBox(
-                          child: pw.Text(
-                            data.first.cust_name?.toUpperCase() ?? "",
-                            style: pw.TextStyle(
-                                fontWeight: pw.FontWeight.bold,
-                                color: CommonColors.pdfplaneWhiteColor),
-                            maxLines: 2,
-                          ),
-                        ),
-                        pw.SizedBox(height: 5),
-                        pw.SizedBox(
-                          width: 100 * 0.6,
-                          child: pw.Text(
-                            data.first.cust_address?.toUpperCase() ?? "",
-                            style: pw.TextStyle(
-                                color: CommonColors.pdfplaneWhiteColor),
-                            maxLines: 2,
-                          ),
-                        ),
-                        pw.SizedBox(height: 5),
-                        pw.SizedBox(
-                          width: 100 * 0.6,
-                          child: pw.Row(
-                            children: [
-                              pw.SizedBox(width: 5),
-                              pw.Text(
-                                data.first.cust_phone ?? "",
-                                style: pw.TextStyle(
-                                    color: CommonColors.pdfplaneWhiteColor),
-                                maxLines: 2,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  pw.SizedBox(width: 20),
-                  pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      pw.Text(
-                        "DATE",
-                        style: pw.TextStyle(
-                            color: CommonColors.pdfplaneWhiteColor),
-                      ),
-                      pw.Text(
-                        data.first.quote_date ?? "",
-                        style: pw.TextStyle(
-                            color: CommonColors.pdfplaneWhiteColor),
-                      ),
-                      pw.SizedBox(height: 6),
-                      pw.Text(
-                        "QUOTE ID",
-                        style: pw.TextStyle(
-                            color: CommonColors.pdfplaneWhiteColor),
-                      ),
-                      pw.Text(
-                        data.first.quote_id ?? "",
-                        style: pw.TextStyle(
-                            color: CommonColors.pdfplaneWhiteColor),
-                      ),
-                      pw.SizedBox(height: 6),
-                      pw.Text(
-                        "AMOUNT DUE",
-                        style: pw.TextStyle(
-                            color: CommonColors.pdfplaneWhiteColor),
-                      ),
-                      pw.Row(
+              child: pw.Padding(
+                padding: pw.EdgeInsets.only(left: 10, right: 10),
+                child: pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.only(left: 5, right: 5),
+                      child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
-                          pw.Text(
-                            data.first.quote_price ?? "",
-                            style: pw.TextStyle(
-                                color: CommonColors.pdfplaneWhiteColor),
+                          pw.SizedBox(
+                            width: 170,
+                            child: pw.Text(
+                              data.first.cust_name?.toUpperCase() ?? "",
+                              style: pw.TextStyle(
+                                  fontWeight: pw.FontWeight.bold,
+                                  color: CommonColors.pdfplaneWhiteColor),
+                              maxLines: 2,
+                            ),
+                          ),
+                          pw.SizedBox(height: 5),
+                          pw.SizedBox(
+                            width: 100 * 0.6,
+                            child: pw.Text(
+                              data.first.cust_address?.toUpperCase() ?? "",
+                              style: pw.TextStyle(
+                                  color: CommonColors.pdfplaneWhiteColor),
+                              maxLines: 2,
+                            ),
+                          ),
+                          pw.SizedBox(height: 5),
+                          pw.SizedBox(
+                            width: 100 * 0.6,
+                            child: pw.Row(
+                              children: [
+                                pw.SizedBox(width: 5),
+                                pw.Text(
+                                  data.first.cust_phone ?? "",
+                                  style: pw.TextStyle(
+                                      color: CommonColors.pdfplaneWhiteColor),
+                                  maxLines: 2,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ],
-                  )
-                ],
+                    ),
+                    pw.SizedBox(width: 20),
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          "DATE",
+                          style: pw.TextStyle(
+                              color: CommonColors.pdfplaneWhiteColor),
+                        ),
+                        pw.Text(
+                          data.first.quote_date ?? "",
+                          style: pw.TextStyle(
+                              color: CommonColors.pdfplaneWhiteColor),
+                        ),
+                        pw.SizedBox(height: 6),
+                        pw.Text(
+                          "QUOTE ID",
+                          style: pw.TextStyle(
+                              color: CommonColors.pdfplaneWhiteColor),
+                        ),
+                        pw.Text(
+                          data.first.quote_id ?? "",
+                          style: pw.TextStyle(
+                              color: CommonColors.pdfplaneWhiteColor),
+                        ),
+                        pw.SizedBox(height: 6),
+                        pw.Text(
+                          "AMOUNT DUE",
+                          style: pw.TextStyle(
+                              color: CommonColors.pdfplaneWhiteColor),
+                        ),
+                        pw.Row(
+                          children: [
+                            pw.Text(
+                              data.first.quote_price ?? "",
+                              style: pw.TextStyle(
+                                  color: CommonColors.pdfplaneWhiteColor),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
             pw.SizedBox(height: 5),

@@ -20,57 +20,64 @@ class DownloadQuoteUI extends StatelessWidget {
     return Scaffold(
       floatingActionButton: Stack(
         children: [
-          Align(
-            alignment: Alignment.bottomRight,
-            child: FloatingActionButton(
-              backgroundColor: CommonColors.primary,
-              child: const Icon(
-                Icons.download_outlined,
-                size: 27,
-                color: CommonColors.planeWhite,
-              ),
-              onPressed: () async {
-                final String custName = data?.first.cust_name ?? "";
-                final String quoteId = data?.first.quote_id ?? "";
-                _downloadBloc.add(
-                  DownloadPdfEvent(
-                      pdfkey: globalKey,
-                      context: context,
-                      custname: custName,
-                      quoteid: quoteId,
-                      data: data ?? []),
-                );
-              },
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: BlocListener<DownloadQuoteBloc, DownloadQuoteState>(
-              bloc: _downloadBloc,
-              listenWhen: (previous, current) =>
-                  current is DownloadQuoteShareState,
-              listener: (context, state) {
-                if (state is DownloadQuoteShareState) {
-                  Share.shareXFiles([XFile(state.filePath)],
-                      text: "Here is genrated quote file");
-                }
-              },
+          Padding(
+            padding: const EdgeInsets.only(right: 10,bottom: 10),
+            child: Align(
+              alignment: Alignment.bottomRight,
               child: FloatingActionButton(
                 backgroundColor: CommonColors.primary,
                 child: const Icon(
-                  Icons.share_outlined,
+                  Icons.download_outlined,
                   size: 27,
                   color: CommonColors.planeWhite,
                 ),
                 onPressed: () async {
+                  final String custName = data?.first.cust_name ?? "";
+                  final String quoteId = data?.first.quote_id ?? "";
                   _downloadBloc.add(
-                    DownloadShareEvent(
-                      custname: data?.first.cust_name ?? "",
-                      quoteid: data?.first.quote_id ?? "",
-                      data: data ?? [],
-                    ),
+                    DownloadPdfEvent(
+                        pdfkey: globalKey,
+                        context: context,
+                        custname: custName,
+                        quoteid: quoteId,
+                        data: data ?? []),
                   );
                 },
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10,bottom: 10),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: BlocListener<DownloadQuoteBloc, DownloadQuoteState>(
+                bloc: _downloadBloc,
+                listenWhen: (previous, current) =>
+                    current is DownloadQuoteShareState,
+                listener: (context, state) {
+                  if (state is DownloadQuoteShareState) {
+                    Share.shareXFiles([XFile(state.filePath)],
+                        text: "Here is genrated quote file",
+                        subject: "Quote file",);
+                  }
+                },
+                child: FloatingActionButton(
+                  backgroundColor: CommonColors.primary,
+                  child: const Icon(
+                    Icons.share_outlined,
+                    size: 27,
+                    color: CommonColors.planeWhite,
+                  ),
+                  onPressed: () async {
+                    _downloadBloc.add(
+                      DownloadShareEvent(
+                        custname: data?.first.cust_name ?? "",
+                        quoteid: data?.first.quote_id ?? "",
+                        data: data ?? [],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           )

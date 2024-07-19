@@ -13,8 +13,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:reseller_app/common/widgets/pdf_format_widget.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:open_filex/open_filex.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-import 'dart:html' as html;
+// import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+// import 'dart:html' as html;
 import 'package:reseller_app/features/getQuote/model/get_download_quote_data_model.dart';
 import 'package:reseller_app/helper/preference_utils.dart';
 import 'package:reseller_app/utils/common_colors.dart';
@@ -90,15 +90,20 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
           data: data, imageBytesMap: imageBytesMap, pdf: pdf);
       if (kIsWeb) {
         try {
-          final bytes = await pdf.save();
-          final blob = html.Blob([bytes], 'application/pdf');
-          final url = html.Url.createObjectUrlFromBlob(blob);
-          final anchor = html.AnchorElement(href: url)
-            ..setAttribute("download", "$fileName.pdf")
-            ..click();
-          return "Success";
+          // final bytes = await pdf.save();
+          // final blob = html.Blob([bytes], 'application/pdf');
+          // final url = html.Url.createObjectUrlFromBlob(blob);
+          // final anchor = html.AnchorElement(href: url)
+          //   ..setAttribute("download", "$fileName.pdf")
+          //   ..click();
+           final dir =  await getExternalStorageDirectory();
+          final file = File("${dir!.path}/$fileName.pdf");
+          await file.writeAsBytes(await pdf.save());
+          print("OOOOOOOOOO${file.path}");
+          return file.path;
+          // return "Success";
         } catch (e) {
-          print("ERROR AT PDF ${e.toString()}");
+          // print("ERROR AT PDF ${e.toString()}");
           return "";
         }
       } else {
@@ -106,7 +111,7 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
           final dir = (isShare)
               ? await getTemporaryDirectory()
               : await getExternalStorageDirectory();
-          final file = File("${dir!.path}/$fileName");
+          final file = File("${dir!.path}/$fileName.pdf");
           await file.writeAsBytes(await pdf.save());
           return file.path;
         } catch (e) {
