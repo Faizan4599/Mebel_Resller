@@ -126,7 +126,7 @@ Widget? pdfData(
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   Text(
-                    data?.first.quote_id ?? "",
+                    "#${data?.first.quote_id ?? ""}",
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const SizedBox(
@@ -418,7 +418,7 @@ genratePDFPrintWidget(
                               color: CommonColors.pdfplaneWhiteColor),
                         ),
                         pw.Text(
-                          data.first.quote_id ?? "",
+                          "#${data.first.quote_id ?? ""}",
                           style: pw.TextStyle(
                               color: CommonColors.pdfplaneWhiteColor),
                         ),
@@ -541,7 +541,7 @@ genratePDFPrintWidget(
                     children: [
                       pw.Expanded(
                         child: pw.Text(
-                          index.quote_id ?? "",
+                          "#${index.quote_id ?? ""}",
                           textAlign: pw.TextAlign.center,
                         ),
                       ),

@@ -21,7 +21,8 @@ class DownloadQuoteSuccessState extends DownloadQuoteState {
 
 class DownloadQuoteShareState extends DownloadQuoteState {
   String filePath;
-  DownloadQuoteShareState({required this.filePath});
+  String fileName;
+  DownloadQuoteShareState({required this.filePath, required this.fileName});
 }
 
 class DownloadPdfState extends DownloadQuoteState {}

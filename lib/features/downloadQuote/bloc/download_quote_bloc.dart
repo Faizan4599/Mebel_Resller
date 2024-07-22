@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-// import 'dart:typed8List';
 import 'package:bloc/bloc.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
@@ -13,13 +12,14 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:reseller_app/common/widgets/pdf_format_widget.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:open_filex/open_filex.dart';
-// import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-// import 'dart:html' as html;
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'dart:html' as html;
 import 'package:reseller_app/features/getQuote/model/get_download_quote_data_model.dart';
 import 'package:reseller_app/helper/preference_utils.dart';
 import 'package:reseller_app/utils/common_colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
+
 part 'download_quote_event.dart';
 part 'download_quote_state.dart';
 
@@ -90,27 +90,19 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
           data: data, imageBytesMap: imageBytesMap, pdf: pdf);
       if (kIsWeb) {
         try {
-          // final bytes = await pdf.save();
-          // final blob = html.Blob([bytes], 'application/pdf');
-          // final url = html.Url.createObjectUrlFromBlob(blob);
-          // final anchor = html.AnchorElement(href: url)
-          //   ..setAttribute("download", "$fileName.pdf")
-          //   ..click();
-           final dir =  await getExternalStorageDirectory();
-          final file = File("${dir!.path}/$fileName.pdf");
-          await file.writeAsBytes(await pdf.save());
-          print("OOOOOOOOOO${file.path}");
-          return file.path;
-          // return "Success";
+          final bytes = await pdf.save();
+          final blob = html.Blob([bytes], 'application/pdf');
+          final url = html.Url.createObjectUrlFromBlob(blob);
+
+          // Save the URL to the state for sharing
+          return url;
         } catch (e) {
-          // print("ERROR AT PDF ${e.toString()}");
+          print("ERROR IN DOWNLOADING FILE ${e.toString()}");
           return "";
         }
       } else {
         try {
-          final dir = (isShare)
-              ? await getTemporaryDirectory()
-              : await getExternalStorageDirectory();
+          final dir = await getExternalStorageDirectory();
           final file = File("${dir!.path}/$fileName.pdf");
           await file.writeAsBytes(await pdf.save());
           return file.path;
@@ -125,46 +117,59 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
     }
   }
 
-  Future<void> downloadPdfEvent(
-      DownloadPdfEvent event, Emitter<DownloadQuoteState> emit) async {
-    try {
-      final String custName =
-          event.custname.isNotEmpty ? event.custname : "UnknownCustomer";
-      final String quoteId =
-          event.quoteid.isNotEmpty ? event.quoteid : "UnknownQuote";
-      final String filename =
-          "${custName.replaceAll(" ", "")}${quoteId.replaceAll(" ", "")}";
+Future<void> downloadPdfEvent(
+    DownloadPdfEvent event, Emitter<DownloadQuoteState> emit) async {
+  try {
+    final String custName =
+        event.custname.isNotEmpty ? event.custname : "UnknownCustomer";
+    final String quoteId =
+        event.quoteid.isNotEmpty ? event.quoteid : "UnknownQuote";
+    final String filename =
+        "Quote_${custName.replaceAll(" ", "")}_${quoteId.replaceAll(" ", "")}";
 
-      emit(DownloadQuoteLoadingState());
+    emit(DownloadQuoteLoadingState());
 
-      if (!kIsWeb && await storagePermission() || kIsWeb) {
-        final imageBytesMap = await fetchImageBytes(event.data);
-        final String filePath =
-            await generatePdf(event.data, filename, imageBytesMap);
-        print("FilePath ${filePath}");
-        emit(DownloadQuoteSuccessState(filePath: filePath));
-      } else {
-        emit(
-            DownloadQuoteErrorState(message: "Storage permission not granted"));
+    if (!kIsWeb && await storagePermission() || kIsWeb) {
+      final imageBytesMap = await fetchImageBytes(event.data);
+      final String filePath = await generatePdf(event.data, filename, imageBytesMap);
+      print("FilePath $filePath");
+
+      if (kIsWeb) {
+        try {
+          final response = await http.get(Uri.parse(filePath));
+          final blob = html.Blob([response.bodyBytes], 'application/pdf');
+          final url = html.Url.createObjectUrlFromBlob(blob);
+          final anchor = html.AnchorElement(href: url)
+            ..setAttribute("download", "$filename.pdf")
+            ..click();
+          html.Url.revokeObjectUrl(url);
+        } catch (e) {
+          print("ERROR IN DOWNLOADING FILE ${e.toString()}");
+        }
       }
-    } catch (e) {
-      emit(DownloadQuoteErrorState(message: "Error: ${e.toString()}"));
+
+      emit(DownloadQuoteSuccessState(filePath: filePath));
+    } else {
+      emit(DownloadQuoteErrorState(message: "Storage permission not granted"));
     }
+  } catch (e) {
+    emit(DownloadQuoteErrorState(message: "Error: ${e.toString()}"));
   }
+}
+
 
   FutureOr<void> downloadShareEvent(
       DownloadShareEvent event, Emitter<DownloadQuoteState> emit) async {
     try {
       isShare = true;
       final filename =
-          "${event.custname.replaceAll(" ", "")}${event.quoteid.replaceAll(" ", "")}";
+          "Quote_${event.custname.replaceAll(" ", "")}_${event.quoteid.replaceAll(" ", "")}";
       if (!kIsWeb && await storagePermission() || kIsWeb) {
         final imageBytesMap = await fetchImageBytes(event.data);
         final String filePath =
             await generatePdf(event.data, filename, imageBytesMap);
         if (filePath.isNotEmpty) {
-          // Share.shareXFiles([XFile(filePath)], text: "Here quote pdf");
-          emit(DownloadQuoteShareState(filePath: filePath));
+          emit(DownloadQuoteShareState(filePath: filePath, fileName: filename));
         }
       } else {
         emit(
