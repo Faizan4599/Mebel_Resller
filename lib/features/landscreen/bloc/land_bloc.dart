@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:reseller_app/common/failed_data_model.dart';
 import 'package:reseller_app/constant/constant.dart';
+import 'package:reseller_app/features/landscreen/model/get_all_quotes_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_cart_count_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_categories_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_product_data_model.dart';
@@ -35,6 +36,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
   List<GetProductsDataModel> productsList = <GetProductsDataModel>[];
   List<GetCartCountDataModel> countList = <GetCartCountDataModel>[];
   List<GetStylesDataModel> styleList = <GetStylesDataModel>[];
+  List<GetAllQuotesDataModel> allQuotesList = <GetAllQuotesDataModel>[];
   bool show = false;
   List<String> selectedData = [];
   List<SampleDataModel> perticularData = [];
@@ -60,6 +62,8 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     on<LandClearDataEvent>(landClearDataEvent);
     on<LandNavigateToCartEvent>(landNavigateToCartEvent);
     on<LandCartCountEvent>(landCartCountEvent);
+    on<LandNavigateToAllQuotesEvent>(landNavigateToAllQuotesEvent);
+    on<LandLoadtAllQuotesEvent>(landLoadtAllQuotesEvent);
   }
 
   String sortDropdownValue = '';
@@ -253,7 +257,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
   Future<FutureOr<void>> loadDataEvent(
       LoadDataEvent event, Emitter<LandState> emit) async {
-        emit(LandLoadingState());
+    emit(LandLoadingState());
     // final String response =
     //     await rootBundle.loadString('lib/localdatabase/data.json');
     // var data = await json.decode(response);
@@ -340,7 +344,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
   FutureOr<void> landLoadNextPageEvent(
       LandLoadNextPageEvent event, Emitter<LandState> emit) async {
-        emit(LandLoadingState());
+    emit(LandLoadingState());
     if (hasMoreData) {
       currentPage++;
       await _fetchData(emit, isLoadMore: true);
@@ -349,7 +353,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
   FutureOr<void> landRefreshDataEvent(
       LandRefreshDataEvent event, Emitter<LandState> emit) async {
-        emit(LandLoadingState());
+    emit(LandLoadingState());
     productsList.clear();
     currentPage = 1;
     hasMoreData = true;
@@ -358,7 +362,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
 
   Future<List<GetProductsDataModel>> _fetchData(Emitter<LandState> emit,
       {bool isLoadMore = false}) async {
-     emit(LandLoadingState());
+    emit(LandLoadingState());
     try {
       Map<String, String> productsParameter = {
         "access_token1": Constant.access_token1,
@@ -369,7 +373,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
       var response2 = await APIRepository()
           .getCommonMethodAPI(productsParameter, APIUrls.getProducts);
       print(";;;;;;${response2}");
-       
+
       if (response2 is Success) {
         productsList.clear();
         if (response2.response is List<GetProductsDataModel>) {
@@ -530,6 +534,46 @@ class LandBloc extends Bloc<LandEvent, LandState> {
         //     categoryValue: event.categoryDropDownValue, items: event.items));
         emit(LandStyleDropdownState(
             style: event.styleValue, items: event.items));
+      } else if (response is Failed) {
+        failedList = response.response as List<FailedCommonDataModel>;
+        emit(LandErrorState(message: failedList.first.message.toString()));
+      } else if (response is Failure) {
+        emit(LandErrorState(message: response.errorResponse.toString()));
+      } else {
+        emit(LandErrorState(message: "An error occurred"));
+      }
+    } catch (e) {
+      emit(LandErrorState(message: "Error occurred ${e.toString()}"));
+    }
+  }
+
+  FutureOr<void> landNavigateToAllQuotesEvent(
+      LandNavigateToAllQuotesEvent event, Emitter<LandState> emit) {
+    emit(LandNavigateToAllQuotesState(quotesList: allQuotesList));
+  }
+
+  FutureOr<void> landLoadtAllQuotesEvent(
+      LandLoadtAllQuotesEvent event, Emitter<LandState> emit) async {
+    try {
+      Map<String, String> allQuotesParameter = {
+        "access_token1": Constant.access_token1,
+        "access_token2": Constant.access_token2,
+        "access_token3": Constant.access_token3,
+        "user_id": PreferenceUtils.getString(UserData.id.name)
+      };
+      var response = await APIRepository()
+          .getCommonMethodAPI(allQuotesParameter, APIUrls.getQuotes);
+      if (response is Success) {
+        allQuotesList.clear();
+        if (response.response is List<GetAllQuotesDataModel>) {
+          allQuotesList = response.response as List<GetAllQuotesDataModel>;
+        } else if (response.response is GetAllQuotesDataModel) {
+          allQuotesList.add(response.response as GetAllQuotesDataModel);
+        }
+        // emit(LandCategoryDropdownState(
+        //     categoryValue: event.categoryDropDownValue, items: event.items));
+
+        // emit(LandNavigateToAllQuotesState(quotesList: allQuotesList));
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(LandErrorState(message: failedList.first.message.toString()));

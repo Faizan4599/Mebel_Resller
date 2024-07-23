@@ -105,8 +105,6 @@ class LandNavigateToQuoteEvent extends LandEvent {
   LandNavigateToQuoteEvent({required this.productId});
 }
 
-class LandNavigateToCartEvent extends LandEvent {}
-
 class LandCartCountEvent extends LandEvent {
   List<GetCartCountDataModel>? data;
   LandCartCountEvent({required this.data});
@@ -127,3 +125,9 @@ class LandExitAppEvent extends LandEvent {
       required this.canPopNow,
       required this.requiredSeconds});
 }
+
+class LandNavigateToCartEvent extends LandEvent {}
+
+class LandLoadtAllQuotesEvent extends LandEvent {}
+
+class LandNavigateToAllQuotesEvent extends LandEvent {}

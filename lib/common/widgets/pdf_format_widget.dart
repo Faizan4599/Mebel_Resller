@@ -211,7 +211,7 @@ Widget? pdfData(
                           TableCell(
                               verticalAlignment:
                                   TableCellVerticalAlignment.middle,
-                              child: Center(child: Text(index.quote_id ?? ""))),
+                              child: Center(child: Text("#${index.quote_id ?? ""}"))),
                           TableCell(
                             verticalAlignment:
                                 TableCellVerticalAlignment.middle,

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reseller_app/common/widgets/common_dialog.dart';
 import 'package:reseller_app/common/widgets/text_field.dart';
 import 'package:reseller_app/constant/constant.dart';
+import 'package:reseller_app/features/allQuotes/ui/all_quotes_ui.dart';
 import 'package:reseller_app/features/cart/ui/cart_ui.dart';
 import 'package:reseller_app/features/landscreen/bloc/land_bloc.dart';
 import 'package:reseller_app/features/login/ui/login_ui.dart';
@@ -26,10 +27,7 @@ class LandUi extends StatelessWidget {
         _landBloc.add(LandCartCountEvent(data: []));
         _landBloc.add(LandStyleDropDownEvent());
         _landBloc.add(LandCartCountEvent(data: []));
-        // _landBloc.add(LandSubcategoryDropDownEvent(
-        //     subCategoryDropDownValue: '', items: [], category_id: ''));
-        // _landBloc.add(LandSubcategory2DropDownEvent(
-        //     subcategory2DropDownValue: '', subCategoryId: '', items: []));
+        _landBloc.add(LandLoadtAllQuotesEvent());
       },
     );
   }
@@ -48,6 +46,32 @@ class LandUi extends StatelessWidget {
         ),
         // backgroundColor: CommonColors.primary,
         actions: [
+          BlocListener<LandBloc, LandState>(
+            bloc: _landBloc,
+            listenWhen: (previous, current) =>
+                current is LandNavigateToAllQuotesState,
+            listener: (context, state) {
+              if (state is LandNavigateToAllQuotesState) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AllQuotesUI(
+                        quotesList: state.quotesList,
+                      ),
+                    ));
+              }
+              // TODO: implement listener
+            },
+            child: IconButton(
+              onPressed: () {
+                _landBloc.add(LandNavigateToAllQuotesEvent());
+              },
+              icon: const Icon(
+                Icons.book_online_outlined,
+                color: CommonColors.planeWhite,
+              ),
+            ),
+          ),
           Badge(
             // alignment: Alignment.topLeft,
             alignment: Alignment.topCenter,
@@ -101,7 +125,7 @@ class LandUi extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           BlocListener<LandBloc, LandState>(

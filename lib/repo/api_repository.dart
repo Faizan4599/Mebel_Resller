@@ -8,6 +8,7 @@ import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/Product/model/product_data_model.dart';
 import 'package:reseller_app/features/cart/model/cart_common_data_model.dart';
 import 'package:reseller_app/features/cart/model/get_cart_details_model.dart';
+import 'package:reseller_app/features/landscreen/model/get_all_quotes_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_cart_count_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_categories_data_model.dart';
 import 'package:reseller_app/features/landscreen/model/get_product_data_model.dart';
@@ -269,6 +270,20 @@ class APIRepository {
                     .toList();
               } else if (outerResponse.data is Map) {
                 responseData = GetDownloadQuoteDataModel.fromJson(
+                    outerResponse.data as Map<String, dynamic>);
+              }
+              return Success(code: APICode.SUCCESS, response: responseData);
+            // =====
+            case APIUrls.getQuotes:
+              if (outerResponse.data is List) {
+                responseData = (outerResponse.data as List<dynamic>)
+                    .map(
+                      (e) => GetAllQuotesDataModel.fromJson(
+                          e as Map<String, dynamic>),
+                    )
+                    .toList();
+              } else if (outerResponse.data is Map) {
+                responseData = GetAllQuotesDataModel.fromJson(
                     outerResponse.data as Map<String, dynamic>);
               }
               return Success(code: APICode.SUCCESS, response: responseData);
