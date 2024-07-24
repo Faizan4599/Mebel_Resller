@@ -13,4 +13,12 @@ class AllQuotesErrorState extends AllQuotesState {}
 
 class AllQuotesSuccessState extends AllQuotesState {}
 
-class AllQuotesNavigateToState extends AllQuotesActionState {}
+class AllQuotesNavigateToDownloadState extends AllQuotesActionState {
+  bool? isAllQuotes;
+  String? isAllQuoteId;
+  List<GetDownloadQuoteDataModel>? dataList;
+  AllQuotesNavigateToDownloadState(
+      {required this.isAllQuotes,
+      required this.isAllQuoteId,
+      required this.dataList});
+}

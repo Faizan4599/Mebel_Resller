@@ -132,7 +132,7 @@ class GetQuoteBloc extends Bloc<GetQuoteEvent, GetQuoteState> {
         quote_id = insertQuoteList.first.quote_id ?? 0;
         emit(GetQuoteInsertQuotState(
             message: insertQuoteList.first.message.toString()));
-        add(GetDownloadQuoteEvent());
+        add(GetDownloadQuoteEvent(isAllQuotes: false));
       } else if (response is Failed) {
         failedList = response.response as List<FailedCommonDataModel>;
         emit(GetQuoteErrorState(message: failedList.first.message));
@@ -150,12 +150,16 @@ class GetQuoteBloc extends Bloc<GetQuoteEvent, GetQuoteState> {
   FutureOr<void> getDownloadQuoteEvent(
       GetDownloadQuoteEvent event, Emitter<GetQuoteState> emit) async {
     try {
+      print("CHECK ALL QUOTE ID > > > >> > > > ${event.isAllQuotes}");
+      print("CHECK ALL QUOTE ID > > > >> > > > ${event.allQuotes}");
       Map<String, String> getQuoteParameter = {
         "access_token1": Constant.access_token1,
         "access_token2": Constant.access_token2,
         "access_token3": Constant.access_token3,
         "user_id": PreferenceUtils.getString(UserData.id.name),
-        "quote_id": quote_id.toString(),
+        "quote_id": (event.isAllQuotes)
+            ? event.allQuotes.toString()
+            : quote_id.toString(),
       };
 
       var response = await APIRepository()

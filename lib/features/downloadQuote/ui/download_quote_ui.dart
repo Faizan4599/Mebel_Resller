@@ -15,9 +15,13 @@ import '../bloc/download_quote_bloc.dart';
 
 class DownloadQuoteUI extends StatelessWidget {
   final List<GetDownloadQuoteDataModel>? data;
+  bool? isAllQuotes;
+  String? isAllQuoteId;
   final GlobalKey globalKey = GlobalKey();
   final _downloadBloc = DownloadQuoteBloc();
-  DownloadQuoteUI({Key? key, required this.data}) : super(key: key);
+  DownloadQuoteUI(
+      {Key? key, required this.data, this.isAllQuotes, this.isAllQuoteId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +47,18 @@ class DownloadQuoteUI extends StatelessWidget {
                     color: CommonColors.planeWhite,
                   ),
                   onPressed: () async {
-                    final String custName = data?.first.cust_name ?? "";
-                    final String quoteId = data?.first.quote_id ?? "";
-                    _downloadBloc.add(
-                      DownloadPdfEvent(
-                          pdfkey: globalKey,
-                          context: context,
-                          custname: custName,
-                          quoteid: quoteId,
-                          data: data ?? []),
-                    );
+                    if (data!.isNotEmpty && data != null) {
+                      final String custName = data?.first.cust_name ?? "";
+                      final String quoteId = data?.first.quote_id ?? "";
+                      _downloadBloc.add(
+                        DownloadPdfEvent(
+                            pdfkey: globalKey,
+                            context: context,
+                            custname: custName,
+                            quoteid: quoteId,
+                            data: data ?? []),
+                      );
+                    }
                   },
                 ),
               ),
@@ -132,13 +138,15 @@ class DownloadQuoteUI extends StatelessWidget {
                     },
                   ),
                   onPressed: () async {
-                    _downloadBloc.add(
-                      DownloadShareEvent(
-                        custname: data?.first.cust_name ?? "",
-                        quoteid: data?.first.quote_id ?? "",
-                        data: data ?? [],
-                      ),
-                    );
+                    if (data!.isNotEmpty && data != null) {
+                      _downloadBloc.add(
+                        DownloadShareEvent(
+                          custname: data?.first.cust_name ?? "",
+                          quoteid: data?.first.quote_id ?? "",
+                          data: data ?? [],
+                        ),
+                      );
+                    }
                   },
                 ),
               ),
@@ -181,7 +189,11 @@ class DownloadQuoteUI extends StatelessWidget {
             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
             child: RepaintBoundary(
               key: globalKey,
-              child: pdfData(context: context, data: data) ?? const SizedBox(),
+              child: (data!.isNotEmpty && data != null)
+                  ? pdfData(context: context, data: data)
+                  : const Center(
+                      child: Text("Data not available"),
+                    ),
             ),
           ),
         ),
