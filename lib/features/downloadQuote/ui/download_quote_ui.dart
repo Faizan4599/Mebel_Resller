@@ -6,8 +6,8 @@ import 'package:reseller_app/common/widgets/pdf_format_widget.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/utils/common_colors.dart';
 import 'package:share_plus/share_plus.dart';
-// import 'package:share_plus/share_plus.dart';
-// import 'dart:html' as html;
+import 'package:share_plus/share_plus.dart';
+import 'dart:html' as html;
 import '../../../common/widgets/common_dialog.dart';
 import '../../../helper/preference_utils.dart';
 import '../../getQuote/model/get_download_quote_data_model.dart';
@@ -15,13 +15,13 @@ import '../bloc/download_quote_bloc.dart';
 
 class DownloadQuoteUI extends StatelessWidget {
   final List<GetDownloadQuoteDataModel>? data;
-  bool? isAllQuotes;
-  String? isAllQuoteId;
+
   final GlobalKey globalKey = GlobalKey();
   final _downloadBloc = DownloadQuoteBloc();
-  DownloadQuoteUI(
-      {Key? key, required this.data, this.isAllQuotes, this.isAllQuoteId})
-      : super(key: key);
+  DownloadQuoteUI({
+    Key? key,
+    required this.data,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +41,24 @@ class DownloadQuoteUI extends StatelessWidget {
                 },
                 child: FloatingActionButton(
                   backgroundColor: CommonColors.primary,
-                  child: const Icon(
-                    Icons.download_outlined,
-                    size: 27,
-                    color: CommonColors.planeWhite,
+                  child: BlocBuilder<DownloadQuoteBloc, DownloadQuoteState>(
+                    bloc: _downloadBloc,
+                    buildWhen: (previous, current) =>
+                        current is DownloadQuoteLoadingState ||
+                        current is DownloadQuoteSuccessState ||
+                        current is DownloadQuoteErrorState,
+                    builder: (context, state) {
+                      if (state is DownloadQuoteLoadingState) {
+                        return Constant.spinKitLoader(
+                            context, CommonColors.planeWhite);
+                      } else {
+                        return const Icon(
+                          Icons.download_outlined,
+                          size: 27,
+                          color: CommonColors.planeWhite,
+                        );
+                      }
+                    },
                   ),
                   onPressed: () async {
                     if (data!.isNotEmpty && data != null) {
@@ -75,39 +89,39 @@ class DownloadQuoteUI extends StatelessWidget {
                 listener: (context, state) async {
                   if (state is DownloadQuoteShareState) {
                     if (kIsWeb) {
-                      // try {
-                      //   final response =
-                      //       await html.window.fetch(state.filePath);
-                      //   final blob = await response.blob();
-                      //   final file = html.File(
-                      //     [blob],
-                      //     "${state.fileName.trim()}.pdf",
-                      //     {"type": "application/pdf"},
-                      //   );
+                      try {
+                        final response =
+                            await html.window.fetch(state.filePath);
+                        final blob = await response.blob();
+                        final file = html.File(
+                          [blob],
+                          "${state.fileName.trim()}.pdf",
+                          {"type": "application/pdf"},
+                        );
 
-                      //   // Ensure the navigator.share() is supported
-                      //   if (html.window.navigator.share != null) {
-                      //     try {
-                      //       await html.window.navigator.share({
-                      //         'title':
-                      //             'Quote from ${PreferenceUtils.getString(UserData.name.name)}',
-                      //         'text': 'Here is the generated quote file',
-                      //         'files': [file],
-                      //       });
-                      //     } catch (error) {
-                      //       print('Error sharing file: $error');
-                      //     }
-                      //   } else {
-                      //     // Fallback for browsers that don't support Web Share API
-                      //     html.AnchorElement anchor =
-                      //         html.AnchorElement(href: state.filePath)
-                      //           ..setAttribute(
-                      //               "download", "${state.fileName.trim()}.pdf")
-                      //           ..click();
-                      //   }
-                      // } catch (e) {
-                      //   print("Error fetching file: $e");
-                      // }
+                        // Ensure the navigator.share() is supported
+                        if (html.window.navigator.share != null) {
+                          try {
+                            await html.window.navigator.share({
+                              'title':
+                                  'Quote from ${PreferenceUtils.getString(UserData.name.name)}',
+                              'text': 'Here is the generated quote file',
+                              'files': [file],
+                            });
+                          } catch (error) {
+                            print('Error sharing file: $error');
+                          }
+                        } else {
+                          // Fallback for browsers that don't support Web Share API
+                          html.AnchorElement anchor =
+                              html.AnchorElement(href: state.filePath)
+                                ..setAttribute(
+                                    "download", "${state.fileName.trim()}.pdf")
+                                ..click();
+                        }
+                      } catch (e) {
+                        print("Error fetching file: $e");
+                      }
                     } else {
                       // Share the file path on mobile
                       Share.shareXFiles(
@@ -123,9 +137,11 @@ class DownloadQuoteUI extends StatelessWidget {
                   child: BlocBuilder<DownloadQuoteBloc, DownloadQuoteState>(
                     bloc: _downloadBloc,
                     buildWhen: (previous, current) =>
-                        current is DownloadQuoteLoadingState,
+                        current is DownloadQuoteShareLoadingState ||
+                        current is DownloadQuoteShareState ||
+                        current is DownloadQuoteErrorState,
                     builder: (context, state) {
-                      if (state is DownloadQuoteLoadingState) {
+                      if (state is DownloadQuoteShareLoadingState) {
                         return Constant.spinKitLoader(
                             context, CommonColors.planeWhite);
                       } else {

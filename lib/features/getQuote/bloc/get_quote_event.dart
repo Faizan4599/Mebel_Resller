@@ -25,7 +25,7 @@ class GetQuoteGenrateQuoteEvent extends GetQuoteEvent {
 }
 
 class GetDownloadQuoteEvent extends GetQuoteEvent {
-  bool isAllQuotes;
+ 
   String? allQuotes;
-  GetDownloadQuoteEvent({required this.isAllQuotes, this.allQuotes});
+  GetDownloadQuoteEvent({ this.allQuotes});
 }

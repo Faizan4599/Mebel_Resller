@@ -4,11 +4,11 @@ part of 'all_quotes_bloc.dart';
 abstract class AllQuotesEvent {}
 
 class AllQuotesNavigateToDownloadEvent extends AllQuotesEvent {
-  bool? isAllQuotes;
-  String? isAllQuoteId;
-  List<GetDownloadQuoteDataModel>? dataList;
-  AllQuotesNavigateToDownloadEvent(
-      {required this.isAllQuotes,
-      required this.isAllQuoteId,
-      required this.dataList});
+  List<GetDownloadQuoteDataModel>? data;
+  AllQuotesNavigateToDownloadEvent({required this.data});
+}
+
+class AllQuotesFetchDataEvent extends AllQuotesEvent {
+  String qId;
+  AllQuotesFetchDataEvent({required this.qId});
 }

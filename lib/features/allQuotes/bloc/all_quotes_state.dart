@@ -7,18 +7,23 @@ abstract class AllQuotesActionState extends AllQuotesState {}
 
 final class AllQuotesInitial extends AllQuotesState {}
 
-class AllQuotesLoadingState extends AllQuotesState {}
+class AllQuotesLoadingState extends AllQuotesState {
+  final String quoteId;
+  AllQuotesLoadingState({required this.quoteId});
+}
 
-class AllQuotesErrorState extends AllQuotesState {}
+class AllQuotesErrorState extends AllQuotesState {
+  String? message;
+  AllQuotesErrorState({this.message});
+}
 
 class AllQuotesSuccessState extends AllQuotesState {}
 
 class AllQuotesNavigateToDownloadState extends AllQuotesActionState {
-  bool? isAllQuotes;
-  String? isAllQuoteId;
-  List<GetDownloadQuoteDataModel>? dataList;
-  AllQuotesNavigateToDownloadState(
-      {required this.isAllQuotes,
-      required this.isAllQuoteId,
-      required this.dataList});
+  AllQuotesNavigateToDownloadState();
+}
+
+class AllQuotesDataState extends AllQuotesState {
+  List<GetDownloadQuoteDataModel> dataList;
+  AllQuotesDataState({required this.dataList});
 }

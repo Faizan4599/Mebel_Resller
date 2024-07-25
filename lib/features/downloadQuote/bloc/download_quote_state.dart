@@ -9,6 +9,8 @@ class DownloadQuoteInitial extends DownloadQuoteState {}
 
 class DownloadQuoteLoadingState extends DownloadQuoteState {}
 
+class DownloadQuoteShareLoadingState extends DownloadQuoteState {}
+
 class DownloadQuoteErrorState extends DownloadQuoteState {
   String message;
   DownloadQuoteErrorState({required this.message});
