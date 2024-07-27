@@ -7,7 +7,7 @@ import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/utils/common_colors.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:share_plus/share_plus.dart';
-import 'dart:html' as html;
+// import 'dart:html' as html;
 import '../../../common/widgets/common_dialog.dart';
 import '../../../helper/preference_utils.dart';
 import '../../getQuote/model/get_download_quote_data_model.dart';
@@ -89,39 +89,39 @@ class DownloadQuoteUI extends StatelessWidget {
                 listener: (context, state) async {
                   if (state is DownloadQuoteShareState) {
                     if (kIsWeb) {
-                      try {
-                        final response =
-                            await html.window.fetch(state.filePath);
-                        final blob = await response.blob();
-                        final file = html.File(
-                          [blob],
-                          "${state.fileName.trim()}.pdf",
-                          {"type": "application/pdf"},
-                        );
+                      // try {
+                      //   final response =
+                      //       await html.window.fetch(state.filePath);
+                      //   final blob = await response.blob();
+                      //   final file = html.File(
+                      //     [blob],
+                      //     "${state.fileName.trim()}.pdf",
+                      //     {"type": "application/pdf"},
+                      //   );
 
-                        // Ensure the navigator.share() is supported
-                        if (html.window.navigator.share != null) {
-                          try {
-                            await html.window.navigator.share({
-                              'title':
-                                  'Quote from ${PreferenceUtils.getString(UserData.name.name)}',
-                              'text': 'Here is the generated quote file',
-                              'files': [file],
-                            });
-                          } catch (error) {
-                            print('Error sharing file: $error');
-                          }
-                        } else {
-                          // Fallback for browsers that don't support Web Share API
-                          html.AnchorElement anchor =
-                              html.AnchorElement(href: state.filePath)
-                                ..setAttribute(
-                                    "download", "${state.fileName.trim()}.pdf")
-                                ..click();
-                        }
-                      } catch (e) {
-                        print("Error fetching file: $e");
-                      }
+                      //   // Ensure the navigator.share() is supported
+                      //   if (html.window.navigator.share != null) {
+                      //     try {
+                      //       await html.window.navigator.share({
+                      //         'title':
+                      //             'Quote from ${PreferenceUtils.getString(UserData.name.name)}',
+                      //         'text': 'Here is the generated quote file',
+                      //         'files': [file],
+                      //       });
+                      //     } catch (error) {
+                      //       print('Error sharing file: $error');
+                      //     }
+                      //   } else {
+                      //     // Fallback for browsers that don't support Web Share API
+                      //     html.AnchorElement anchor =
+                      //         html.AnchorElement(href: state.filePath)
+                      //           ..setAttribute(
+                      //               "download", "${state.fileName.trim()}.pdf")
+                      //           ..click();
+                      //   }
+                      // } catch (e) {
+                      //   print("Error fetching file: $e");
+                      // }
                     } else {
                       // Share the file path on mobile
                       Share.shareXFiles(

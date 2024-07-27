@@ -12,8 +12,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:reseller_app/common/widgets/pdf_format_widget.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:open_filex/open_filex.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
-import 'dart:html' as html;
+// import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+// import 'dart:html' as html;
 import 'package:reseller_app/features/getQuote/model/get_download_quote_data_model.dart';
 import 'package:reseller_app/helper/preference_utils.dart';
 import 'package:reseller_app/utils/common_colors.dart';
@@ -90,13 +90,13 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
           data: data, imageBytesMap: imageBytesMap, pdf: pdf);
       if (kIsWeb) {
         try {
-          final bytes = await pdf.save();
-          final blob = html.Blob([bytes], 'application/pdf');
-          final url = html.Url.createObjectUrlFromBlob(blob);
+          // final bytes = await pdf.save();
+          // final blob = html.Blob([bytes], 'application/pdf');
+          // final url = html.Url.createObjectUrlFromBlob(blob);
 
           // Save the URL to the state for sharing
-          return url;
-          // return "";
+          // return url;
+          return "";
         } catch (e) {
           print("ERROR IN DOWNLOADING FILE ${e.toString()}");
           return "";
@@ -136,17 +136,17 @@ class DownloadQuoteBloc extends Bloc<DownloadQuoteEvent, DownloadQuoteState> {
         print("FilePath $filePath");
 
         if (kIsWeb) {
-          try {
-            final response = await http.get(Uri.parse(filePath));
-            final blob = html.Blob([response.bodyBytes], 'application/pdf');
-            final url = html.Url.createObjectUrlFromBlob(blob);
-            final anchor = html.AnchorElement(href: url)
-              ..setAttribute("download", "$filename.pdf")
-              ..click();
-            html.Url.revokeObjectUrl(url);
-          } catch (e) {
-            print("ERROR IN DOWNLOADING FILE ${e.toString()}");
-          }
+          // try {
+          //   final response = await http.get(Uri.parse(filePath));
+          //   final blob = html.Blob([response.bodyBytes], 'application/pdf');
+          //   final url = html.Url.createObjectUrlFromBlob(blob);
+          //   final anchor = html.AnchorElement(href: url)
+          //     ..setAttribute("download", "$filename.pdf")
+          //     ..click();
+          //   html.Url.revokeObjectUrl(url);
+          // } catch (e) {
+          //   print("ERROR IN DOWNLOADING FILE ${e.toString()}");
+          // }
         }
 
         emit(DownloadQuoteSuccessState(filePath: filePath));

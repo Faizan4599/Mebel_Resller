@@ -27,3 +27,8 @@ class AllQuotesDataState extends AllQuotesState {
   List<GetDownloadQuoteDataModel> dataList;
   AllQuotesDataState({required this.dataList});
 }
+
+class AllQuotesSearchState extends AllQuotesState {
+  List<GetAllQuotesDataModel>? quotesList;
+  AllQuotesSearchState({required this.quotesList});
+}
