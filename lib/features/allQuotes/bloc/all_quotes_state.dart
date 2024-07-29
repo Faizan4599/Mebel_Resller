@@ -32,3 +32,21 @@ class AllQuotesSearchState extends AllQuotesState {
   List<GetAllQuotesDataModel>? quotesList;
   AllQuotesSearchState({required this.quotesList});
 }
+
+class AllQuotesInitState extends AllQuotesState {
+  List<GetAllQuotesDataModel>? quotesList;
+  AllQuotesInitState({this.quotesList});
+}
+
+class AllQuotesResetTextState extends AllQuotesState {
+  String? id;
+  String? name;
+  String? startdate;
+  String? enddate;
+  AllQuotesResetTextState({this.id, this.name, this.startdate, this.enddate});
+}
+
+class AllQuotesDropDownState extends AllQuotesState {
+  bool value;
+  AllQuotesDropDownState({required this.value});
+}

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:reseller_app/common/failed_data_model.dart';
@@ -12,6 +13,7 @@ import 'package:reseller_app/helper/preference_utils.dart';
 import 'package:reseller_app/repo/api_repository.dart';
 import 'package:reseller_app/repo/api_urls.dart';
 import 'package:reseller_app/repo/response_handler.dart';
+import 'package:reseller_app/utils/common_colors.dart';
 
 part 'all_quotes_event.dart';
 part 'all_quotes_state.dart';
@@ -19,6 +21,7 @@ part 'all_quotes_state.dart';
 class AllQuotesBloc extends Bloc<AllQuotesEvent, AllQuotesState> {
   bool isAllQuotes = false;
   DateTime? _selectedDate;
+  bool isValue = false;
   List<GetDownloadQuoteDataModel> dataList = <GetDownloadQuoteDataModel>[];
   List<GetAllQuotesDataModel> filteredQuoteList = <GetAllQuotesDataModel>[];
   List<FailedCommonDataModel> failedList = <FailedCommonDataModel>[];
@@ -31,6 +34,9 @@ class AllQuotesBloc extends Bloc<AllQuotesEvent, AllQuotesState> {
     on<AllQuotesNavigateToDownloadEvent>(allQuotesNavigateToDownloadEvent);
     on<AllQuotesFetchDataEvent>(allQuotesFetchDataEvent);
     on<AllQuotesSearchEvent>(allQuotesSearchEvent);
+    on<AllQuotesInitEvent>(allQuotesInitEvent);
+    on<AllQuotesResetTextEvent>(allQuotesResetTextEvent);
+    on<AllQuotesDropDownEvent>(allQuotesDropDownEvent);
   }
 
   FutureOr<void> allQuotesNavigateToDownloadEvent(
@@ -76,27 +82,30 @@ class AllQuotesBloc extends Bloc<AllQuotesEvent, AllQuotesState> {
   FutureOr<void> allQuotesSearchEvent(
       AllQuotesSearchEvent event, Emitter<AllQuotesState> emit) {
     emit(AllQuotesLoadingState(quoteId: ""));
+    print("Data ${event.qId}");
+    print("Data ${event.cName}");
+    print("Data ${event.startDate}");
+    print("Data ${event.endDate}");
     try {
-      filteredQuoteList = event.quotesList!.where((quote) {
+      List<GetAllQuotesDataModel> filteredQuoteList =
+          event.quotesList!.where((quote) {
         final matchesQuoteId =
-            event.qId == null || quote.quote_id!.contains(event.qId!);
+            event.qId!.isEmpty || quote.quote_id!.contains(event.qId!);
         final matchesCustName =
-            event.cName == null || quote.cust_name!.contains(event.cName!);
+            event.cName!.isEmpty || quote.cust_name!.contains(event.cName!);
 
         DateTime? startDate;
         DateTime? endDate;
-        DateTime? quoteCreatedAt;
         DateTime? quoteDate;
 
         try {
-          if (event.startDate != null) {
+          if (event.startDate!.isNotEmpty) {
             startDate = DateFormat('dd/MM/yyyy').parse(event.startDate!);
           }
-          if (event.endDate != null) {
+          if (event.endDate!.isNotEmpty) {
             endDate = DateFormat('dd/MM/yyyy').parse(event.endDate!);
           }
-          quoteCreatedAt =
-              DateFormat('dd/MM/yyyy').parse(quote.created_at.toString());
+
           quoteDate =
               DateFormat('dd/MM/yyyy').parse(quote.quote_date.toString());
         } catch (e) {
@@ -104,17 +113,15 @@ class AllQuotesBloc extends Bloc<AllQuotesEvent, AllQuotesState> {
           return false;
         }
 
-        final matchesStartDate = startDate == null ||
-            (quoteCreatedAt != null && quoteCreatedAt.isAfter(startDate));
-        final matchesEndDate = endDate == null ||
-            (quoteDate != null && quoteDate.isBefore(endDate));
+        final matchesDateRange = (startDate == null ||
+                quoteDate.isAfter(startDate) ||
+                quoteDate.isAtSameMomentAs(startDate)) &&
+            (endDate == null ||
+                quoteDate.isBefore(endDate) ||
+                quoteDate.isAtSameMomentAs(endDate));
 
-        return matchesQuoteId &&
-            matchesCustName &&
-            matchesStartDate &&
-            matchesEndDate;
+        return matchesQuoteId && matchesCustName && matchesDateRange;
       }).toList();
-
       emit(AllQuotesSearchState(quotesList: filteredQuoteList));
     } catch (e) {
       emit(AllQuotesErrorState(message: "Error occurred ${e.toString()}"));
@@ -127,17 +134,17 @@ class AllQuotesBloc extends Bloc<AllQuotesEvent, AllQuotesState> {
         context: context,
         initialDate: _selectedDate ?? DateTime.now(),
         firstDate: DateTime(2000),
-        lastDate: DateTime(2040),
+        lastDate: DateTime.now(),
         builder: (BuildContext context, Widget? child) {
           return Theme(
-            data: ThemeData.dark().copyWith(
-              colorScheme: ColorScheme.dark(
-                primary: Colors.deepPurple,
+            data: ThemeData.light().copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: CommonColors.primary,
                 onPrimary: Colors.white,
-                surface: Colors.blueGrey,
-                onSurface: Colors.yellow,
+                surface: CommonColors.planeWhite,
+                onSurface: CommonColors.primary,
               ),
-              dialogBackgroundColor: Colors.blue[500],
+              dialogBackgroundColor: CommonColors.secondary,
             ),
             child: child!,
           );
@@ -157,17 +164,17 @@ class AllQuotesBloc extends Bloc<AllQuotesEvent, AllQuotesState> {
         context: context,
         initialDate: _selectedDate ?? DateTime.now(),
         firstDate: DateTime(2000),
-        lastDate: DateTime(2040),
+        lastDate: DateTime.now(),
         builder: (BuildContext context, Widget? child) {
           return Theme(
-            data: ThemeData.dark().copyWith(
-              colorScheme: ColorScheme.dark(
-                primary: Colors.deepPurple,
+            data: ThemeData.light().copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: CommonColors.primary,
                 onPrimary: Colors.white,
-                surface: Colors.blueGrey,
-                onSurface: Colors.yellow,
+                surface: CommonColors.planeWhite,
+                onSurface: CommonColors.primary,
               ),
-              dialogBackgroundColor: Colors.blue[500],
+              dialogBackgroundColor: CommonColors.secondary,
             ),
             child: child!,
           );
@@ -182,5 +189,30 @@ class AllQuotesBloc extends Bloc<AllQuotesEvent, AllQuotesState> {
               offset: endDateTXT.text.length, affinity: TextAffinity.upstream),
         );
     }
+  }
+
+  FutureOr<void> allQuotesInitEvent(
+      AllQuotesInitEvent event, Emitter<AllQuotesState> emit) {
+    emit(AllQuotesInitState(quotesList: event.quotesList));
+  }
+
+  FutureOr<void> allQuotesResetTextEvent(
+      AllQuotesResetTextEvent event, Emitter<AllQuotesState> emit) {
+    quoteTXT.text = '';
+    nameTXT.text = '';
+    startDateTXT.text = '';
+    endDateTXT.text = '';
+
+    emit(AllQuotesResetTextState(
+        id: quoteTXT.text,
+        name: nameTXT.text,
+        startdate: startDateTXT.text,
+        enddate: endDateTXT.text));
+  }
+
+  FutureOr<void> allQuotesDropDownEvent(
+      AllQuotesDropDownEvent event, Emitter<AllQuotesState> emit) {
+    isValue = !isValue;
+    emit(AllQuotesDropDownState(value: isValue));
   }
 }
