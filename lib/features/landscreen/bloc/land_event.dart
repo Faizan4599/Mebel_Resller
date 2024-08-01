@@ -131,3 +131,5 @@ class LandNavigateToCartEvent extends LandEvent {}
 class LandLoadtAllQuotesEvent extends LandEvent {}
 
 class LandNavigateToAllQuotesEvent extends LandEvent {}
+
+class LandNavigateToChangePasswordEvent extends LandEvent {}

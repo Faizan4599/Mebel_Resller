@@ -133,3 +133,5 @@ class LandNavigateToAllQuotesState extends LandActionState {
   List<GetAllQuotesDataModel> quotesList;
   LandNavigateToAllQuotesState({required this.quotesList});
 }
+
+class LandNavigateToChangePasswordState extends LandActionState {}

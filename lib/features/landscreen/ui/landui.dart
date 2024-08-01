@@ -8,6 +8,7 @@ import 'package:reseller_app/common/widgets/text_field.dart';
 import 'package:reseller_app/constant/constant.dart';
 import 'package:reseller_app/features/allQuotes/ui/all_quotes_ui.dart';
 import 'package:reseller_app/features/cart/ui/cart_ui.dart';
+import 'package:reseller_app/features/changePassword/ui/change_pass_ui.dart';
 import 'package:reseller_app/features/landscreen/bloc/land_bloc.dart';
 import 'package:reseller_app/features/login/ui/login_ui.dart';
 import 'package:reseller_app/features/Product/ui/product_ui.dart';
@@ -35,10 +36,130 @@ class LandUi extends StatelessWidget {
   final TextEditingController txt2 = TextEditingController();
   final TextEditingController productId = TextEditingController();
   final _landBloc = LandBloc();
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: SafeArea(
+        child: SizedBox(
+          width: Constant.screenWidth(context) * 0.50,
+          child: Drawer(
+            child: ListView(
+              children: [
+                SizedBox(
+                  height: 70,
+                  child: DrawerHeader(
+                    decoration:
+                        const BoxDecoration(color: CommonColors.primary),
+                    child: Text(
+                      PreferenceUtils.getString(UserData.name.name),
+                      style: const TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ),
+                ),
+                BlocListener<LandBloc, LandState>(
+                  bloc: _landBloc,
+                  listenWhen: (previous, current) =>
+                      current is LandNavigateToAllQuotesState,
+                  listener: (context, state) {
+                    if (state is LandNavigateToAllQuotesState) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AllQuotesUI(
+                            quotesList: state.quotesList,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: ListTile(
+                    leading: const Icon(
+                      Icons.book_online_outlined,
+                      size: 27,
+                    ),
+                    title: const Text(
+                      "Quotes",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    onTap: () {
+                      _landBloc.add(LandNavigateToAllQuotesEvent());
+                    },
+                  ),
+                ),
+                BlocListener<LandBloc, LandState>(
+                  bloc: _landBloc,
+                  listenWhen: (previous, current) => current is LandLogoutState,
+                  listener: (context, state) async {
+                    if (state is LandLogoutState) {
+                      Navigator.pop(context); // Close the dialog if it's open
+                      await PreferenceUtils.clearData();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginUi(),
+                          ));
+                    }
+                  },
+                  child: ListTile(
+                    leading: const Icon(
+                      Icons.logout_outlined,
+                      size: 27,
+                    ),
+                    title: const Text(
+                      "Logout",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    onTap: () {
+                      showCommonDialog(
+                          dialogTitle: "Logout",
+                          dialogMessage: "Are you sure you want to logout?",
+                          buttonTitle: "Logout",
+                          context: context,
+                          onCancel: () {
+                            Navigator.pop(context);
+                          },
+                          onEvent: () {
+                            _landBloc.add(LandLogoutEvent());
+                            Navigator.pop(context);
+                          });
+                    },
+                  ),
+                ),
+                BlocListener<LandBloc, LandState>(
+                  bloc: _landBloc,
+                  listenWhen: (previous, current) =>
+                      current is LandNavigateToChangePasswordState,
+                  listener: (context, state) {
+                    if (state is LandNavigateToChangePasswordState) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChangePasswordUI(),
+                        ),
+                      );
+                    }
+                  },
+                  child: ListTile(
+                    leading: const Icon(
+                      Icons.password_outlined,
+                      size: 27,
+                    ),
+                    title: const Text(
+                      "Change password",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    onTap: () {
+                      _landBloc.add(LandNavigateToChangePasswordEvent());
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
       appBar: AppBar(
         title: Text(
           PreferenceUtils.getString(UserData.name.name),
@@ -46,32 +167,32 @@ class LandUi extends StatelessWidget {
         ),
         // backgroundColor: CommonColors.primary,
         actions: [
-          BlocListener<LandBloc, LandState>(
-            bloc: _landBloc,
-            listenWhen: (previous, current) =>
-                current is LandNavigateToAllQuotesState,
-            listener: (context, state) {
-              if (state is LandNavigateToAllQuotesState) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AllQuotesUI(
-                        quotesList: state.quotesList,
-                      ),
-                    ));
-              }
-              // TODO: implement listener
-            },
-            child: IconButton(
-              onPressed: () {
-                _landBloc.add(LandNavigateToAllQuotesEvent());
-              },
-              icon: const Icon(
-                Icons.book_online_outlined,
-                color: CommonColors.planeWhite,
-              ),
-            ),
-          ),
+          // BlocListener<LandBloc, LandState>(
+          //   bloc: _landBloc,
+          //   listenWhen: (previous, current) =>
+          //       current is LandNavigateToAllQuotesState,
+          //   listener: (context, state) {
+          //     if (state is LandNavigateToAllQuotesState) {
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //           builder: (context) => AllQuotesUI(
+          //             quotesList: state.quotesList,
+          //           ),
+          //         ),
+          //       );
+          //     }
+          //   },
+          //   child: IconButton(
+          //     onPressed: () {
+          //       _landBloc.add(LandNavigateToAllQuotesEvent());
+          //     },
+          //     icon: const Icon(
+          //       Icons.book_online_outlined,
+          //       color: CommonColors.planeWhite,
+          //     ),
+          //   ),
+          // ),
           Badge(
             // alignment: Alignment.topLeft,
             alignment: Alignment.topCenter,
@@ -125,43 +246,54 @@ class LandUi extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(
-            width: 10,
-          ),
-          BlocListener<LandBloc, LandState>(
-            bloc: _landBloc,
-            listenWhen: (previous, current) => current is LandLogoutState,
-            listener: (context, state) async {
-              if (state is LandLogoutState) {
-                Navigator.pop(context); // Close the dialog if it's open
-                await PreferenceUtils.clearData();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LoginUi(),
-                    ));
+          IconButton(
+            onPressed: () {
+              try {
+                _scaffoldKey.currentState?.openEndDrawer();
+                // Scaffold.of(context).openEndDrawer();
+              } catch (e) {
+                print("ERROR>>> ${e.toString()}");
               }
             },
-            child: IconButton(
-              onPressed: () {
-                showCommonDialog(
-                    dialogTitle: "Logout",
-                    dialogMessage: "Are you sure you want to logout?",
-                    buttonTitle: "Logout",
-                    context: context,
-                    onCancel: () {
-                      Navigator.pop(context);
-                    },
-                    onEvent: () {
-                      _landBloc.add(LandLogoutEvent());
-                      Navigator.pop(context);
-                    });
-              },
-              icon: const Icon(Icons.logout_outlined),
-              iconSize: 27,
-              color: CommonColors.planeWhite,
-            ),
-          )
+            icon: Icon(Icons.menu_outlined),
+          ),
+          // const SizedBox(
+          //   width: 10,
+          // ),
+          // BlocListener<LandBloc, LandState>(
+          //   bloc: _landBloc,
+          //   listenWhen: (previous, current) => current is LandLogoutState,
+          //   listener: (context, state) async {
+          //     if (state is LandLogoutState) {
+          //       Navigator.pop(context); // Close the dialog if it's open
+          //       await PreferenceUtils.clearData();
+          //       Navigator.push(
+          //           context,
+          //           MaterialPageRoute(
+          //             builder: (context) => LoginUi(),
+          //           ));
+          //     }
+          //   },
+          //   child: IconButton(
+          //     onPressed: () {
+          //       showCommonDialog(
+          //           dialogTitle: "Logout",
+          //           dialogMessage: "Are you sure you want to logout?",
+          //           buttonTitle: "Logout",
+          //           context: context,
+          //           onCancel: () {
+          //             Navigator.pop(context);
+          //           },
+          //           onEvent: () {
+          //             _landBloc.add(LandLogoutEvent());
+          //             Navigator.pop(context);
+          //           });
+          //     },
+          //     icon: const Icon(Icons.logout_outlined),
+          //     iconSize: 27,
+          //     color: CommonColors.planeWhite,
+          //   ),
+          // )
         ],
       ),
       body: BlocProvider.value(

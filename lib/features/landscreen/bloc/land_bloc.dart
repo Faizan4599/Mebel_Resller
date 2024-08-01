@@ -64,6 +64,7 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     on<LandCartCountEvent>(landCartCountEvent);
     on<LandNavigateToAllQuotesEvent>(landNavigateToAllQuotesEvent);
     on<LandLoadtAllQuotesEvent>(landLoadtAllQuotesEvent);
+    on<LandNavigateToChangePasswordEvent>(landNavigateToChangePasswordEvent);
   }
 
   String sortDropdownValue = '';
@@ -585,5 +586,10 @@ class LandBloc extends Bloc<LandEvent, LandState> {
     } catch (e) {
       emit(LandErrorState(message: "Error occurred ${e.toString()}"));
     }
+  }
+
+  FutureOr<void> landNavigateToChangePasswordEvent(
+      LandNavigateToChangePasswordEvent event, Emitter<LandState> emit) {
+    emit(LandNavigateToChangePasswordState());
   }
 }
