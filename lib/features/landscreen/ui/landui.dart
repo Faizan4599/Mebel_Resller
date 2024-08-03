@@ -84,6 +84,7 @@ class LandUi extends StatelessWidget {
                       style: TextStyle(fontSize: 15),
                     ),
                     onTap: () {
+                      Navigator.pop(context);
                       _landBloc.add(LandNavigateToAllQuotesEvent());
                     },
                   ),
@@ -92,10 +93,11 @@ class LandUi extends StatelessWidget {
                   bloc: _landBloc,
                   listenWhen: (previous, current) => current is LandLogoutState,
                   listener: (context, state) async {
+                    print("OOOOOOOOOOOOO $state");
                     if (state is LandLogoutState) {
                       Navigator.pop(context); // Close the dialog if it's open
                       await PreferenceUtils.clearData();
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (context) => LoginUi(),
@@ -112,6 +114,7 @@ class LandUi extends StatelessWidget {
                       style: TextStyle(fontSize: 15),
                     ),
                     onTap: () {
+                      // Navigator.pop(context);
                       showCommonDialog(
                           dialogTitle: "Logout",
                           dialogMessage: "Are you sure you want to logout?",
@@ -151,6 +154,7 @@ class LandUi extends StatelessWidget {
                       style: TextStyle(fontSize: 15),
                     ),
                     onTap: () {
+                      Navigator.pop(context);
                       _landBloc.add(LandNavigateToChangePasswordEvent());
                     },
                   ),

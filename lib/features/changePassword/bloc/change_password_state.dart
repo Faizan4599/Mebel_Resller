@@ -9,7 +9,10 @@ class ChangePasswordInitial extends ChangePasswordState {}
 
 class ChangePasswordLoadingState extends ChangePasswordState {}
 
-class ChangePasswordErrorState extends ChangePasswordState {}
+class ChangePasswordErrorState extends ChangePasswordState {
+  String? message;
+  ChangePasswordErrorState({required this.message});
+}
 
 class ChangePasswordSuccessState extends ChangePasswordState {}
 
